@@ -5,4 +5,4 @@ Build OpenWrt using GitHub Actions
 
 ##### 文章链接
 
-https://github.com/kenzok8/LEDE-x86_64/blob/master/%E4%B8%8B%E8%BD%BD.png
+！{123}https://github.com/kenzok8/LEDE-x86_64/blob/master/%E4%B8%8B%E8%BD%BD.png
