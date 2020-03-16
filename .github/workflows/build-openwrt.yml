@@ -6,7 +6,7 @@
 # Blog: https://p3terx.com
 #=================================================
 
-name: Build OpenWrt
+name: Lean
 
 on:
   release:
@@ -103,8 +103,8 @@ jobs:
       uses: actions/upload-artifact@master
       if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
       with:
-        name: OpenWrt_directory
-        path: openwrt/bin
+        name:Lean
+        path: Lean/bin
 
     - name: Organize files
       id: organize
@@ -119,5 +119,5 @@ jobs:
       uses: actions/upload-artifact@master
       if: steps.organize.outputs.status == 'success' && !cancelled()
       with:
-        name: OpenWrt_firmware
+        name: Lean-x64
         path: ${{ env.FIRMWARE }}
