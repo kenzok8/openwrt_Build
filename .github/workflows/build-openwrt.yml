@@ -10,16 +10,16 @@ name: Lean-x64
 
 on:
   release:
-    types: published
+    types: [published]
   push:
     branches:
       - master
     paths:
       - '.config'
   schedule:
-    - cron: 0 8 * * 5
+    - cron: 2 3 * * *
   watch:
-    types: started
+    types: [started]
 
 env:
   REPO_URL: https://github.com/coolsnowwolf/lede
