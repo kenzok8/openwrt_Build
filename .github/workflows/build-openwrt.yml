@@ -13,7 +13,7 @@ on:
     types: published
   push:
     branches:
-      - master
+      - master 
     paths:
       - '.config'
   schedule:
