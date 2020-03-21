@@ -8,7 +8,7 @@
 # Modify default IP
 sed -i 's/192.168.1.1/192.168.3.1/g' package/base-files/files/bin/config_generate
 git clone https://github.com/kenzok8/litte.git package/litte
-Git clone https://github.com/Lienol/openwrt-package.git package/openwrt-package
+git clone https://github.com/Lienol/openwrt-package.git package/openwrt-package
 rm -rf package/litte/luci-app-passwall
 rm -rf package/litte/lluci-app-ssr-plus
 rm -rf package/litte/microsocks
