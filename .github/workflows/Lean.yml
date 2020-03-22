@@ -91,5 +91,5 @@ jobs:
     - name : 上传固件
       uses: actions/upload-artifact@master
       with:
-        name: ctc-x64
+        name: Lean-x64
         path: ./artifact/
