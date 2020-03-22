@@ -36,7 +36,7 @@ jobs:
     if: github.event.repository.owner.id == github.event.sender.id
 
     steps:
-    - name: Checkout
+    - name: 检查
       uses: actions/checkout@master
 
     - name: 初始化环境
@@ -79,7 +79,6 @@ jobs:
           cd openwrt
           echo -e "$(nproc) thread build."
           make -j$(nproc) V=s
-
 
     - name: 组装固件
       run: |
