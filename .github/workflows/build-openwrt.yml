@@ -74,16 +74,22 @@ jobs:
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
 
-    - name: 编译固件
-      id: compile
+    - name: 多线程编译
       run: |
-        cd openwrt
-        echo -e "$(nproc) thread compile"
-        make -j$(nproc) V=s
-        echo "::set-output name=status::success"
+          cd openwrt
+          echo -e "$(nproc) thread build."
+          make -j$(nproc) V=s
+
+
+    - name: 组装固件
+      run: |
+          rm -rf ./artifact/
+          mkdir -p ./artifact/
+          find openwrt/bin/targets/ -name "*sysupgrade*bin*" | xargs -i mv -f {} ./artifact/
+          find openwrt/bin/targets/ -name "*combined*img*" | xargs -i mv -f {} ./artifact/
 
     - name : 上传固件
       uses: actions/upload-artifact@master
       with:
-        name: lean-x64
-        path: openwrt/bin
+        name: ctc-x64
+        path: ./artifact/
