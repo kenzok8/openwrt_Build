@@ -7,6 +7,7 @@ Build OpenWrt using GitHub Actions
 
 [Lean固件下载地址](https://github.com/kenzok8/LEDE-x86_64/actions)
 
+[Lean固件下载地址](https://github.com/kenzok8/LEDE-x86_64/actions)
 
 #### 固件包含
 
