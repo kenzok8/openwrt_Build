@@ -5,4 +5,4 @@ Build OpenWrt using GitHub Actions
 
 ##### 固件下载链接
 
-![固件下载地址](https://github.com/kenzok8/LEDE-x86_64/actions)
+[固件下载地址](https://github.com/kenzok8/LEDE-x86_64/actions)
