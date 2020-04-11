@@ -9,6 +9,7 @@
 sed -i 's/192.168.1.1/192.168.3.1/g' package/base-files/files/bin/config_generate
 git clone https://github.com/kenzok8/litte.git package/litte
 git clone https://github.com/Lienol/openwrt-package.git package/openwrt-package
+rm -rf package/lean/luci-theme-argon
 rm -rf package/litte/luci-app-passwall && rm -rf package/litte/lluci-app-ssr-plus
 rm -rf package/litte/microsocks && rm -rf package/litte/redsocks2 && rm -rf package/litte/tcpping
 rm -rf package/openwrt-package/lienol/luci-theme-bootstrap-mod
