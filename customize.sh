@@ -16,3 +16,4 @@ sed -i "s/DISTRIB_DESCRIPTION.*/DISTRIB_DESCRIPTION='%D by kenzo'/g" package/bas
 sed -i "s/# REVISION:=x/REVISION:= $date/g" include/version.mk
 ./scripts/feeds update -a
 ./scripts/feeds install -a
+
