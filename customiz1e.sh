@@ -17,7 +17,7 @@ rm -rf package/ctcgfw/luci-app-openclash && rm -rf package/litte/luci-app-smartd
 rm -rf package/ctcgfw/luci-theme-atmaterial && rm -rf package/ctcgfw/luci-theme-opentomato && rm -rf package/ctcgfw/luci-theme-opentomcat
 cp -f package/litte/default-settings package/lean/default-settings/files/zzz-default-settings
 cp -f package/litte/banner package/base-files/files/etc/banner
-#cp -f package/litte/ctcdiffconfig diffconfig && cp diffconfig .config && make defconfig
+#cp -f package/litte/ctcdiffconfig .config && make defconfig
 ./scripts/feeds update -a && ./scripts/feeds install -a && ./scripts/feeds install -a
 
 
