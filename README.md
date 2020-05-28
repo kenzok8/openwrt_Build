@@ -5,8 +5,9 @@ Build OpenWrt using GitHub Actions
 
 ##### 固件下载链接
 
-- [Lienol固件下载地址](https://github.com/kenzok8/actions-openwrt-passwall/actions)
-- [Lean  固件下载地址](https://github.com/kenzok8/LEDE-x86_64/actions)
+- [Lienol固件下载地址](https://github.com/kenzok8/openwrt-actions/actions?query=workflow%3ALienol-19.07l/actions)
+- [Lean  固件下载地址](https://github.com/kenzok8/openwrt-actions/actions?query=workflow%3ALean-64)
+- [ctcteam固件下载地址](https://github.com/kenzok8/openwrt-actions/actions?query=workflow%3Actc-19.07)
 
 #### 固件包含
 
