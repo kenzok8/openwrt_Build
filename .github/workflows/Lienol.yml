@@ -1,10 +1,10 @@
 #=================================================
 # Description: Build OpenWrt using GitHub Actions
-# Lisence: ctc_x64
+# Lisence: Lienol_x64
 # Author: kenzo
 #=================================================
 
-name: ctc_x64
+name: Lienol_x64
 
 on:
   release:
@@ -15,7 +15,7 @@ on:
     paths:
       - '.config'
   schedule:
-    - cron: 0 8 * * 7
+    - cron: 0 8 * * 6
   watch:
     types: [started]
 
@@ -57,8 +57,8 @@ jobs:
 
     - name: 克隆源代码
       env: 
-        REPO_URL: https://github.com/project-openwrt/openwrt
-        REPO_BRANCH: openwrt-18.06
+        REPO_URL: https://github.com/Lienol/openwrt
+        REPO_BRANCH: dev-19.07
       run: |
         git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
         cd openwrt
@@ -76,12 +76,12 @@ jobs:
       run: |
         git clone https://github.com/kenzok8/litte package/litte      
 
-    - name: 配置自定义导入ctc.config
+    - name: 配置自定义导入Lienol.config
       env:
-        CONFIG_FILE: 'ctc.config'
+        CONFIG_FILE: 'Lienol.config'
       run: |
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
-        chmod +x ./ctc.sh && ./ctc.sh
+        chmod +x ./Lienol.sh && ./Lienol.sh
         cd openwrt && make defconfig
         
     - name: 下载dl文件
