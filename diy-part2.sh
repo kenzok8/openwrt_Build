@@ -5,20 +5,13 @@
 # Lisence: kenzo
 #============================================================
 
-# 自定义ip
+自定义ip
 sed -i 's/192.168.1.1/192.168.3.1/g' package/base-files/files/bin/config_generate
 
-#自定义主机名
-date=`date +%m.%d.%Y`
-sed -i "s/DISTRIB_DESCRIPTION.*/DISTRIB_DESCRIPTION='%D %V by kenzo'/g" package/base-files/files/etc/openwrt_release
-sed -i "s/# REVISION:=x/REVISION:= $date/g" include/version.mk
-
-#我的设置
-#openwrt/feeds/litte
-
+自定义主机名
 rm -rf feeds/litte/luci-app-ssr-plus
 rm -rf feeds/litte/microsocks && rm -rf feeds/litte/redsocks2 && rm -rf feeds/litte/tcpping
-#cp -f feeds/litte/default-settings package/lean/default-settings/files/zzz-default-settings
+cp -f feeds/litte/default-settings package/lean/default-settings/files/zzz-default-settings
 cp -f feeds/litte/banner package/base-files/files/etc/banner
 cp -f feeds/litte/Leandiffconfig .config && make defconfig
 ./scripts/feeds update -a
