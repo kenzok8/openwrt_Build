@@ -10,4 +10,4 @@ Build OpenWrt using GitHub Actions
 
 #### 固件包含
 
-#### SSRPLUS +passwall+clash+openclash （Lienol固件多smartdns）
+#### SSRPLUS +passwall+clash+openclash+adg+smartdns
