@@ -1,21 +1,22 @@
 #=================================================
 # Description: Build OpenWrt using GitHub Actions
-# Lisence: Lean_x64
+# Lisence: MIT
 # Author: kenzo
 #=================================================
 
 name: Lean_x64
 
-on:
+on: 
   release:
     types: [published]
+
   push:
-    branches:
+    branches: 
       - master
-    paths:
-      - '.config'
+
   schedule:
     - cron: 0 8 * * 5
+  
   watch:
     types: [started]
 
@@ -82,7 +83,7 @@ jobs:
         CONFIG_FILE: 'Lean.config'
       run: |
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
-        chmod +x ./Lean.sh && ./Lean.sh
+        chmod +x ./customize.sh && ./customize.sh
         cd openwrt && make defconfig
         
     - name: 下载dl文件
