@@ -101,5 +101,5 @@ jobs:
     - name : Upload artifact
       uses: actions/upload-artifact@master
       with:
-        name: OpenWrt
+        name: ctc
         path: openwrt/bin
