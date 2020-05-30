@@ -6,8 +6,9 @@
 #=================================================
 cp -f package/litte/default-settings package/lean/default-settings/files/zzz-default-settings
 cp -f package/litte/banner package/base-files/files/etc/banner
-#cp -f package/litte/Leandiffconfig .config && make defconfig
+cp -f package/litte/Leandiffconfig .config && make defconfig
 ./scripts/feeds update -a && ./scripts/feeds install -a && ./scripts/feeds install -a
+
 
 
 
