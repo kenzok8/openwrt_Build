@@ -81,7 +81,6 @@ jobs:
         CONFIG_FILE: 'Lean.config'
       run: |
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
-        chmod +x ./Lean1.sh && ./Lean1.sh
         cd openwrt && copy Lean .config && make defconfig
         
     - name: 下载dl文件
