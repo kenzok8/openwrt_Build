@@ -12,4 +12,4 @@ Build OpenWrt using GitHub Actions
 
 #### SSRPLUS +passwall+clash+openclash+adg+smartdns
 
-### Default Web Admin IP: 192.168.3.1, username root，password password
+* Default Web Admin IP: 192.168.3.1, username root，password password
