@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
+    - name: 检查
       uses: actions/checkout@master
 
     - name: Initialization environment
@@ -56,7 +56,7 @@ jobs:
         sudo -E apt-get -y autoremove --purge
         sudo -E apt-get clean
 
-    - name: Clone source code
+    - name: 克隆源代码
       env: 
         REPO_URL: https://github.com/coolsnowwolf/lede
         REPO_BRANCH: master
@@ -65,7 +65,7 @@ jobs:
         cd openwrt
         sed -i '5s/#//' feeds.conf.default
         
-    - name: Update & Install feeds
+    - name: 更新 & 安装 feeds
       working-directory: ./openwrt
       run: |
         ./scripts/feeds update -a
@@ -78,7 +78,7 @@ jobs:
         git clone https://github.com/Lienol/openwrt-package package/lienol
         git clone https://github.com/kenzok8/litte package/litte     
 
-    - name: Configuration Customization - Lean_x86_64
+    - name: 自定义配置文件Lean
       env:
         CONFIG_FILE: 'Lean.config'
       run: |
@@ -86,20 +86,20 @@ jobs:
         chmod +x ./customize.sh && ./customize.sh
         cd openwrt && make defconfig
         
-    - name: Download package
+    - name: 下载包文件
       working-directory: ./openwrt
       run: |
         make download -j$(nproc)
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
 
-    - name: Build firmware
+    - name: 编译固件
       working-directory: ./openwrt
       run: |
         echo -e "$(nproc) thread build."
         make -j$(nproc) V=s
 
-    - name : Upload artifact
+    - name : 上传固件与目录
       uses: actions/upload-artifact@master
       with:
         name: Lean
