@@ -56,12 +56,11 @@ jobs:
         sudo -E apt-get -y autoremove --purge
         sudo -E apt-get clean
 
-    - name: 克隆源代码
-      env: 
-        REPO_URL: https://github.com/project-openwrt/openwrt
-        REPO_BRANCH: openwrt-18.06
+    - name: 从sh文件获取安装源
       run: |
-        git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
+        cd /home/runner
+        bash ${GITHUB_WORKSPACE}/clone_source.sh
+        sudo chown -R runner:runner openwrt
         cd openwrt
         sed -i '5s/#//' feeds.conf.default
         
