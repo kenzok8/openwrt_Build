@@ -4,20 +4,6 @@
 # Lisence: MIT
 # Author: kenzo
 #=================================================
-echo '修改banner以及骚操作'
-rm -rf package/base-files/files/etc/banner
-cp -f package/litte/banner package/base-files/files/etc/banner
-rm-rf package/lean/default-settings/files/zzz-default-settings
-cp -f package/litte/default-settings package/lean/default-settings/files/zzz-default-settings
-rm -rf package/litte/microsocks
-rm -rf package/litte/redsocks2
-rm -rf package/litte/tcpping
-cp -f package/litte/Leandiffconfig .config
-make defconfig
-./scripts/feeds update -a
-./scripts/feeds install -a
-
-
 echo '修改机器名称'
 sed -i 's/OpenWrt/Kenzo/g' package/base-files/files/bin/config_generate
 
