@@ -2,15 +2,15 @@
 
 [openwrt-actions 详细图文教程](https://p3terx.com/archives/build-openwrt-with-github-actions.html)
 
-*   二合一固件编译，若fork本人仓库，进入你仓库地址按右上角Star,触发编译
+*   三合一固件编译，若fork本人仓库，进入你仓库地址按右上角Star,触发编译
 
-*   二合一固件编译，一次性编译Lean大源码(4.19.122) Lienol的源码(4.14.180)
+*   三合一固件编译，一次性编译Lean大源码(4.19.122) Lienol的源码(4.14.180) ctc team的源码（4.19.125）
 
 ##### 固件下载链接
 
 - [Lienol固件下载地址](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3ALienol.x86_64)
 - [Lean  固件下载地址](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3ALean_x86_64)
-
+- [ctc  固件下载地址](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3Actc.x86_64)
 
 #### 固件包含
 
