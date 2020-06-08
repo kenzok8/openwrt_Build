@@ -84,8 +84,8 @@ jobs:
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x ./customize.sh && ./customize.sh
         cd openwrt && rm -rf package/lienol/luci-app-passwall
-        chmod +x package/litte/adguardhome
-        chmod +x package/litte/luci-app-adguardhome
+        sudo -E chmod 777 package/litte/adguardhome
+        sudo -E chmod 777 package/litte/luci-app-adguardhome
         rm -rf package/lean/luci-app-ssr-plus && rm -rf package/ntlf9t/luci-app-clash
         rm -rf package/litte/microsocks && rm -rf package/litte/redsocks2 && rm -rf package/litte/tcpping
         rm -rf package/ntlf9t/AdGuardHome && rm -rf package/ctcgfw/luci-app-adguardhome
