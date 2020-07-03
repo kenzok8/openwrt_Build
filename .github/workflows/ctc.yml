@@ -70,7 +70,6 @@ jobs:
       run: |
         ./scripts/feeds update -a
         ./scripts/feeds install -a
-        ./scripts/feeds install -a
 
     - name: 自定义安装源
       working-directory: ./openwrt
@@ -84,7 +83,6 @@ jobs:
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x ./customize.sh && ./customize.sh
         cd openwrt && rm -rf package/lienol/luci-app-passwall
-        sudo -E chmod 755 package/litte/luci-app-adguardhome/root/etc/init.d/AdGuardHome
         rm -rf package/lean/luci-app-ssr-plus && rm -rf package/ntlf9t/luci-app-clash
         rm -rf package/litte/microsocks && rm -rf package/litte/redsocks2 && rm -rf package/litte/tcpping
         rm -rf package/ntlf9t/AdGuardHome && rm -rf package/ctcgfw/luci-app-adguardhome

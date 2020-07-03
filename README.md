@@ -4,7 +4,9 @@
 
 *   三合一固件编译，若fork本人仓库，进入你仓库地址按右上角Star,触发编译
 
-*   三合一固件编译，一次性编译Lean大源码(4.19.122) Lienol的源码(4.14.180) ctc team的源码（4.19.130）
+*   三合一固件编译，一次性编译Lean  的源码(4.19.123) 
+                              Lienol的源码(4.14.180) 
+                              ctc te的源码(4.19.130)
 
 ##### 固件下载链接
 
@@ -27,8 +29,7 @@
 + Turbo ACC 网络加速
 + Mwan3 负载均衡
 
-+ Default Web Admin IP: 192.168.3.1, username root，password password
-
++ 默认管理 IP: 192.168.3.1, 用户名 root，密码 password
 
 * 修改默认ip
 
