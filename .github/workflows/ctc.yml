@@ -75,7 +75,8 @@ jobs:
       working-directory: ./openwrt
       run: |
         git clone https://github.com/kenzok8/litte package/litte 
-
+        git clone https://github.com/kenzok8/small.git package/small
+        
     - name: 自定义配置ctc文件
       env:
         CONFIG_FILE: 'ctc.config'
