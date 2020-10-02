@@ -75,7 +75,7 @@ jobs:
     - name: 自定义安装源
       working-directory: ./openwrt
       run: |
-        git clone https://github.com/kenzok8/small package/small
+        git clone https://github.com/Lienol/openwrt-package package/openwrt-package
         git clone https://github.com/kenzok8/litte package/litte     
 
     - name: 自定义配置文件Lean
