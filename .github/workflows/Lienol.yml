@@ -59,7 +59,7 @@ jobs:
     - name: 克隆源代码
       env: 
         REPO_URL: https://github.com/Lienol/openwrt
-        REPO_BRANCH: dev-19.07
+        REPO_BRANCH: 19.07
       run: |
         git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
         cd openwrt
@@ -76,7 +76,6 @@ jobs:
       working-directory: ./openwrt
       run: |
         git clone https://github.com/kenzok8/litte package/litte
-        git clone https://github.com/kenzok8/small package/small
         
     - name: 自定义配置文件Lienol
       env:
@@ -85,7 +84,7 @@ jobs:
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x ./customize.sh && ./customize.sh
         cd openwrt && rm -rf package/litte/adguardhome
-        rm -rf package/litte/luci-app-adguardhome
+        rm -rf package/litte/luci-app-adguardhome && rm -rf package/small/naiveproxy
         cp -f package/litte/zzz-default-settings package/default-settings/files/zzz-default-settings
         cp -f package/litte/banner package/base-files/files/etc/banner
         cp -f package/litte/Lienoldiffconfig .config && make defconfig
