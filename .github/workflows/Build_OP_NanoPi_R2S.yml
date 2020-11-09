@@ -4,7 +4,7 @@
 # Author: kenzo
 #=================================================
 
-name: Lean_x86_64
+name: Build_NanoPi_R2S
 
 on: 
   release:
@@ -15,7 +15,7 @@ on:
       - master
 
   schedule:
-    - cron: 0 8 * * 5
+    - cron: 2 3 * * 5
   
   watch:
     types: [started]
@@ -25,10 +25,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: æ£€æŸ¥
+    - name: ¼ì²é
       uses: actions/checkout@master
 
-    - name: åˆå§‹åŒ–ç¯å¢ƒ
+    - name: ³õÊ¼»¯»·¾³
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
@@ -56,7 +56,7 @@ jobs:
         sudo -E apt-get -y autoremove --purge
         sudo -E apt-get clean
 
-    - name: å…‹éš†æºä»£ç 
+    - name: ¿ËÂ¡Ô´´úÂë
       env: 
         REPO_URL: https://github.com/coolsnowwolf/lede
         REPO_BRANCH: master
@@ -65,47 +65,38 @@ jobs:
         cd openwrt
         sed -i 's/#src-git helloworld/src-git helloworld/g' ./feeds.conf.default
         
-    - name: æ›´æ–° & å®‰è£… feeds
+    - name: ¸üĞÂ & °²×° feeds
       working-directory: ./openwrt
       run: |
         ./scripts/feeds update -a
         ./scripts/feeds install -a
-        ./scripts/feeds install -a
 
-    - name: è‡ªå®šä¹‰å®‰è£…æº
+    - name: ×Ô¶¨Òå°²×°Ô´
       working-directory: ./openwrt
       run: |
-        git clone https://github.com/kenzok8/small package/small
         git clone https://github.com/kenzok8/litte package/litte     
 
-    - name: è‡ªå®šä¹‰é…ç½®æ–‡ä»¶Lean
+    - name: ×Ô¶¨ÒåÅäÖÃBuild_NanoPi_R2S
       env:
-        CONFIG_FILE: 'Lean.config'
+        CONFIG_FILE: 'NanoPi_R2S.config'
       run: |
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x ./customize.sh && ./customize.sh
-        cd openwrt && rm -rf package/litte/naiveproxy
-        cp -f package/litte/default-settings package/lean/default-settings/files/zzz-default-settings
-        cp -f package/litte/banner package/base-files/files/etc/banner
-        cp -f package/litte/Leandiffconfig .config && make defconfig
-        git pull && ./scripts/feeds update -a
-        ./scripts/feeds install -a
+        cd openwrt && make defconfig
         
-    - name: ä¸‹è½½åŒ…æ–‡ä»¶
+    - name: ÏÂÔØ°üÎÄ¼ş
       working-directory: ./openwrt
       run: |
         make download -j$(nproc)
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
-
-    - name: ç¼–è¯‘å›ºä»¶
+    - name: ±àÒë¹Ì¼ş
       working-directory: ./openwrt
       run: |
         echo -e "$(nproc) thread build."
         make -j$(nproc) V=s
-
-    - name : ä¸Šä¼ å›ºä»¶ä¸ç›®å½•
+    - name : ÉÏ´«¹Ì¼şÓëÄ¿Â¼
       uses: actions/upload-artifact@master
       with:
-        name: Lean
+        name: NanoPi_R2S
         path: openwrt/bin

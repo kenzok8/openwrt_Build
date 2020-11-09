@@ -1,14 +1,13 @@
 ﻿## 搭建教程
 
-[openwrt-actions 详细图文教程](https://p3terx.com/archives/build-openwrt-with-github-actions.html)
+[esir 仓库地址](https://github.com/esirplayground/AutoBuild-OpenWrt.git)
 
-*   三合一固件编译，若fork本人仓库，进入你仓库地址按右上角Star,触发编译
-
-*   三合一固件编译，一次性编译
+*   四合一固件编译，若fork本人仓库，进入你仓库地址按右上角Star,触发编译
+*   四合一固件编译，一次性编译
 *   Lean  的源码(5.4.7*  ) 
 *   Lienol的源码(4.14.200) 
-*   ctc te的源码(4.19.154)
-
+*   ctc te的源码(4.19.155)
+*   NanoPi_R2S源码
 ##### 固件下载链接
 
 - [Lienol 固件下载地址](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3ALienol.x86_64)
