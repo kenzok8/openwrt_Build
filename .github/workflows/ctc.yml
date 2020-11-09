@@ -113,5 +113,5 @@ jobs:
     - name : 上传固件与目录
       uses: actions/upload-artifact@master
       with:
-        name: ctc
+        name: ctc_openwrt
         path: openwrt/bin
