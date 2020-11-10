@@ -74,15 +74,21 @@ jobs:
     - name: 自定义安装源
       working-directory: ./openwrt
       run: |
-        git clone https://github.com/kenzok8/litte package/litte     
+        git clone https://github.com/kenzok8/litte package/litte
+        git clone https://github.com/kenzok8/small package/small      
 
-    - name: 自定义配置 NanoPi_R2S
+    - name: 自定义配置文件NanoPi_R2S
       env:
-        CONFIG_FILE: 'NanoPi_R2S.config'
+        CONFIG_FILE: 'R2S.config'
       run: |
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x ./customize.sh && ./customize.sh
-        cd openwrt && make defconfig
+        cd openwrt && rm -rf package/litte/luci-app-ssr-plus && rm -rf package/litte/naiveproxy
+        cp -f package/litte/default-settings package/lean/default-settings/files/zzz-default-settings
+        cp -f package/litte/banner package/base-files/files/etc/banner
+        cp -f package/litte/R2Sdiffconfig .config && make defconfig
+        git pull && ./scripts/feeds update -a
+        ./scripts/feeds install -a
         
     - name: 下载包文件
       working-directory: ./openwrt
