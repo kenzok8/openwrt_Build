@@ -87,6 +87,7 @@ jobs:
         cd openwrt && rm -rf package/litte/naiveproxy
         cp -f package/litte/default-settings package/lean/default-settings/files/zzz-default-settings
         cp -f package/litte/banner package/base-files/files/etc/banner
+        cp -f package/litte/4.19Makefile target/linux/x86/Makefile
         cp -f package/litte/Leandiffconfig .config && make defconfig
         git pull && ./scripts/feeds update -a
         ./scripts/feeds install -a
