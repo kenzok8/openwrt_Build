@@ -10,10 +10,10 @@
 *   NanoPi_R2S源码
 ##### 固件下载链接
 
-- [Lienol 固件下载地址](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3ALienol.x86_64)
+- [Lienol 固件下载地址](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3ALienol_x86_64)
 - [Lean  固件下载地址](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3ALean_x86_64)
-- [ctc   固件下载地址](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3Actc.x86_64)
-- [NanoPi_R2S固件下载地址](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3ABuild_NanoPi_R2S)
+- [ctc   固件下载地址](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3Actc_x86_64)
+- [NanoPi_R2S固件下载地址](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3ANanoPi_R2S)
 
 ### 默认插件包含:
 
