@@ -107,5 +107,5 @@ jobs:
     - name : 上传固件与目录
       uses: actions/upload-artifact@master
       with:
-        name: Lean_5.4.7.*
+        name: Lean_5.4
         path: openwrt/bin
