@@ -5,15 +5,16 @@
 *   四合一固件编译，若fork本人仓库，进入你仓库地址按右上角Star,触发编译
 *   四合一固件编译，一次性编译
 *   Lean  的源码(4.19.1**) 更换内核
-*   Lienol的源码(4.14.200) 
-*   ctc te的源码(4.19.155)
+*   Lienol的源码(4.14.20*) 
+*   ctc te的源码(4.19.15*)
 *   NanoPi_R2S源码
 ##### 固件下载链接
 
-- [Lienol 固件下载地址](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3ALienol_x86_64)
-- [Lean  固件下载地址](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3ALean_x86_64)
-- [ctc   固件下载地址](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3Actc_x86_64)
-- [NanoPi_R2S固件下载地址](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3ANanoPi_R2S)
+- [Lienol4.14内核固件](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3ALienol_x86_64)
+- [Lean5.4内核固件地址](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3ALean_5.4.7.%2A)
+- [Lean4.19内核固件地址](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3ALean_x86_64)
+- [ctc4.19内核固件下载](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3Actc_x86_64)
+- [NanoPi_R2S固件下载](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3ANanoPi_R2S)
 
 ### 默认插件包含:
 
