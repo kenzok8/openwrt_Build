@@ -6,23 +6,17 @@
 
 name: Lienol_x86_64
 
-on:
-# 定时触发
-  schedule:
-    - cron: 0 1 * * *
-
-# Release 发布触发
-#  release:
-#    types: [published]
-
-# 点赞触发
-   watch:
-     types: [started]
-
-# 编辑触发
+on: 
+  release:
+    types: [published]
   push:
     branches: 
-       - master
+      - master
+  schedule:
+    - cron: 0 8 * * 5
+  
+  watch:
+    types: [started]
 
 jobs:
   build:
