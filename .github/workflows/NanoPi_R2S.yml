@@ -7,20 +7,20 @@
 name: NanoPi_R2S
 
 on: 
-# Release ·¢²¼´¥·¢
+# Release å‘å¸ƒè§¦å‘
   release:
     types: [published]
     
-# ±à¼­´¥·¢    
+# ç¼–è¾‘è§¦å‘    
   push:
     branches: 
       - master
       
-# ¶¨Ê±´¥·¢      
+# å®šæ—¶è§¦å‘      
   schedule:
     - cron: 0 8 * * 5
 
-# µãÔŞ´¥·¢  
+# ç‚¹èµè§¦å‘  
   watch:
     types: [started]
 
@@ -29,10 +29,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: ¼ì²é
+    - name: æ£€æŸ¥
       uses: actions/checkout@master
 
-    - name: ³õÊ¼»¯»·¾³
+    - name: åˆå§‹åŒ–ç¯å¢ƒ
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
@@ -60,7 +60,7 @@ jobs:
         sudo -E apt-get -y autoremove --purge
         sudo -E apt-get clean
 
-    - name: ¿ËÂ¡Ô´´úÂë
+    - name: å…‹éš†æºä»£ç 
       env: 
         REPO_URL: https://github.com/coolsnowwolf/lede
         REPO_BRANCH: master
@@ -69,19 +69,19 @@ jobs:
         cd openwrt
         sed -i 's/#src-git helloworld/src-git helloworld/g' ./feeds.conf.default
         
-    - name: ¸üĞÂ & °²×° feeds
+    - name: æ›´æ–° & å®‰è£… feeds
       working-directory: ./openwrt
       run: |
         ./scripts/feeds update -a
         ./scripts/feeds install -a
 
-    - name: ×Ô¶¨Òå°²×°Ô´
+    - name: è‡ªå®šä¹‰å®‰è£…æº
       working-directory: ./openwrt
       run: |
         git clone https://github.com/kenzok8/litte package/litte
-        git clone https://github.com/kenzok8/small package/small      
+        git clone https://github.com/xiaorouji/openwrt-passwall package/openwrt-passwall      
 
-    - name: ×Ô¶¨ÒåÅäÖÃÎÄ¼şNanoPi_R2S
+    - name: è‡ªå®šä¹‰é…ç½®æ–‡ä»¶NanoPi_R2S
       env:
         CONFIG_FILE: 'R2S.config'
       run: |
@@ -94,18 +94,18 @@ jobs:
         git pull && ./scripts/feeds update -a
         ./scripts/feeds install -a
         
-    - name: ÏÂÔØ°üÎÄ¼ş
+    - name: ä¸‹è½½åŒ…æ–‡ä»¶
       working-directory: ./openwrt
       run: |
         make download -j$(nproc)
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
-    - name: ±àÒë¹Ì¼ş
+    - name: ç¼–è¯‘å›ºä»¶
       working-directory: ./openwrt
       run: |
         echo -e "$(nproc) thread build."
         make -j$(nproc) V=s
-    - name : ÉÏ´«¹Ì¼şÓëÄ¿Â¼
+    - name : ä¸Šä¼ å›ºä»¶ä¸ç›®å½•
       uses: actions/upload-artifact@master
       with:
         name: NanoPi_R2S
