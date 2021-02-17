@@ -85,7 +85,7 @@ jobs:
         chmod +x ./customize.sh && ./customize.sh
         cd openwrt && rm -rf package/ctcgfw/brook && rm -rf package/ctcgfw/lua-maxminddb && rm -rf package/ctcgfw/luci-app-jd-dailybonus
         rm -rf package/ctcgfw/luci-app-openclash && rm -rf package/ctcgfw/luci-app-vssr && rm -rf package/ctcgfw/naiveproxy
-        rm -rf package/ctcgfw/ssocks && rm -rf package/ctcgfw/v2ray-plugin && rm -rf package/lean/tcpping
+        rm -rf package/ctcgfw/ssocks && rm -rf package/ctcgfw/v2ray-plugin
         rm -rf package/lean/kcptun && rm -rf package/lean/lean/luci-app-ssr-plus && rm -rf package/lean/microsocks && rm -rf package/lean/v2ray
         rm -rf package/lienol/dns2socks && rm -rf package/lienol/ipt2socks && rm -rf package/lienol/redsocks2 && rm -rf package/lienol/tcping
         rm -rf package/lienol/luci-app-passwall && rm -rf package/lienol/trojan-go && rm -rf package/lienol/trojan-plus && rm -rf package/lienol/trojan
