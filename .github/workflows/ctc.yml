@@ -75,7 +75,6 @@ jobs:
       working-directory: ./openwrt
       run: |
         git clone https://github.com/kenzok8/litte package/litte
-        git clone https://github.com/kenzok8/small package/small
 
     - name: 自定义配置ctc文件
       env:
@@ -83,14 +82,14 @@ jobs:
       run: |
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x ./customize.sh && ./customize.sh
-        cd openwrt && rm -rf package/ctcgfw/brook && rm -rf package/ctcgfw/lua-maxminddb && rm -rf package/ctcgfw/luci-app-jd-dailybonus
-        rm -rf package/ctcgfw/luci-app-openclash && rm -rf package/ctcgfw/luci-app-vssr && rm -rf package/ctcgfw/naiveproxy
-        rm -rf package/ctcgfw/ssocks && rm -rf package/ctcgfw/v2ray-plugin
-        rm -rf package/lean/kcptun && rm -rf package/lean/lean/luci-app-ssr-plus && rm -rf package/lean/microsocks && rm -rf package/lean/v2ray
-        rm -rf package/lienol/dns2socks && rm -rf package/lienol/ipt2socks && rm -rf package/lienol/redsocks2 && rm -rf package/lienol/tcping
-        rm -rf package/lienol/luci-app-passwall && rm -rf package/lienol/trojan-go && rm -rf package/lienol/trojan-plus && rm -rf package/lienol/trojan
+        cd openwrt && rm -rf package/litte/luci-app-passwall && rm -rf package/litte/luci-app-ssr-plus
+        rm -rf package/litte/microsocks && rm -rf package/litte/redsocks2 && rm -rf package/litte/tcping
+        rm -rf package/litte/AdGuardHome && rm -rf package/litte/luci-app-adguardhome && rm -rf package/litte/luci-app-jd-dailybonus
+        rm -rf package/litte/luci-app-advancedsetting && rm -rf package/litte/luci-app-aliddns && rm -rf package/litte/luci-app-clash
+        rm -rf package/litte/gost && rm -rf package/litte/luci-app-gost && rm -rf package/litte/luci-app-eqos && rm -rf package/litte/naiveproxy
+        rm -rf package/litte/luci-app-openclash && rm -rf package/litte/luci-app-smartdns && rm -rf package/litte/smartdns
         rm -rf package/ctcgfw/luci-theme-atmaterial && rm -rf package/ctcgfw/luci-theme-opentomato && rm -rf package/ctcgfw/luci-theme-opentomcat
-        cp -f package/litte/ctc-default-settings package/lean/default-settings/files/zzz-default-settings
+        cp -f package/litte/default-settings package/lean/default-settings/files/zzz-default-settings
         cp -f package/litte/banner package/base-files/files/etc/banner
         cp -f package/litte/ctcdiffconfig .config && make defconfig
         ./scripts/feeds update -a
