@@ -82,7 +82,7 @@ jobs:
       run: |
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x ./customize.sh && ./customize.sh
-        cd openwrt && rm -rf package/litte/naiveproxy && rm -rf package/lean/v2ray && rm -rf package/lean/v2ray-plugin
+        cd openwrt && rm -rf package/litte/naiveproxy && rm -rf package/lean/v2ray
         cp -f package/litte/default-settings package/lean/default-settings/files/zzz-default-settings
         cp -f package/litte/banner package/base-files/files/etc/banner
         cp -f package/litte/4.19Makefile target/linux/x86/Makefile
