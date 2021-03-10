@@ -106,8 +106,8 @@ jobs:
       run: |
         echo -e "$(nproc) thread build."
         make -j$(nproc) V=s
-    - name : 上传固件与目录
+    - name : 上传固件
       uses: actions/upload-artifact@master
       with:
-        name: NanoPi_R2S
-        path: openwrt/bin
+        name: NanoPi_R2S${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        path: ${{ env.FIRMWARE }}
