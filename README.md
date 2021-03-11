@@ -21,11 +21,9 @@
 
 + SSR Plus 
 + passwall
-+ clash
 + openclash
 + AdguardHome DNS+恶意网址过滤 （打包在ipk文件里）
 + 动态DDNS
-+ 京东签到
 + SmartDNS 域名解析加速+抗污染 （打包在ipk文件里）
 + UPNP 自动端口转发
 + Netdata 全能性能监控
