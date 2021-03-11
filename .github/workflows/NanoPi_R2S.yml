@@ -63,8 +63,7 @@ jobs:
     - name: 克隆源代码
       env: 
         REPO_URL: https://github.com/coolsnowwolf/lede
-        REPO_BRANCH: master
-        UPLOAD_FIRMWARE: true        
+        REPO_BRANCH: master      
       run: |
         git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
         cd openwrt
@@ -110,5 +109,5 @@ jobs:
     - name : 上传固件
       uses: actions/upload-artifact@master
       with:
-        name: NanoPi_R2S${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
-        path: ${{ env.FIRMWARE }}
+        name: NanoPi_R2S
+        path: openwrt/bin
