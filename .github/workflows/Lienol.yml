@@ -4,7 +4,7 @@
 # Author: kenzo
 #=================================================
 
-name: Lienol_4.14
+name: Lienol_4.14内核
 
 on: 
   release:

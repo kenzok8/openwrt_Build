@@ -4,7 +4,7 @@
 # Author: kenzo
 #=================================================
 
-name: Lean_5.4
+name: Lean_5.4内核
 
 on: 
   release:
