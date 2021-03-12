@@ -4,7 +4,7 @@
 # Author: kenzo
 #=================================================
 
-name: Lean_x86_64
+name: Lean_4.19
 
 on: 
   release:

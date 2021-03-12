@@ -4,7 +4,7 @@
 # Author: kenzo
 #=================================================
 
-name: Lienol_x86_64
+name: Lienol_4.14
 
 on: 
   release:

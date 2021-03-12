@@ -4,7 +4,7 @@
 # Author: kenzo
 #=================================================
 
-name: Lean_5.4.7.*
+name: Lean_5.4
 
 on: 
   release:
