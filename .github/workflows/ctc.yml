@@ -107,6 +107,6 @@ jobs:
     - name : 上传固件
       uses: actions/upload-artifact@master
       with:
-        name: ctc_openwrt
+        name: ctc_4.19
         path: openwrt/bin
         
