@@ -1,4 +1,4 @@
-﻿#=================================================
+﻿﻿#=================================================
 # Description: Build OpenWrt using GitHub Actions
 # Lisence: MIT
 # Author: kenzo
@@ -110,4 +110,3 @@ jobs:
       with:
         name: ctc_4.19
         path: openwrt/bin
-        
