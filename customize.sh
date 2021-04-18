@@ -14,10 +14,3 @@ sed -i 's/192.168.1.1/192.168.3.1/g' openwrt/package/base-files/files/bin/config
 #cp -f package/litte/Leandiffconfig diffconfig && cp diffconfig .config && make defconfig
 #./scripts/feeds update -a && ./scripts/feeds install -a && ./scripts/feeds install -a
 
-
-#3. Firmware diy settings
-sed -i 's/$(VERSION) &&/$(VERSION) ;/g' include/download.mk
-date=`date +%m.%d.%Y`
-sed -i "s/DISTRIB_DESCRIPTION.*/DISTRIB_DESCRIPTION='%D %V %C by kenzo'/g" package/base-files/files/etc/openwrt_release
-sed -i "s/# REVISION:=x/REVISION:= $date/g" include/version.mk
-
