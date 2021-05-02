@@ -75,8 +75,8 @@ jobs:
     - name: 自定义安装源
       working-directory: ./openwrt
       run: |
-        git clone https://github.com/kenzok78/litte package/litte
-        git clone https://github.com/kenzok8/small  package/small
+        git clone https://github.com/kenzok8/litte package/litte
+        git clone https://github.com/kenzok8/small package/small
 
     - name: 自定义配置ctc文件
       env:
