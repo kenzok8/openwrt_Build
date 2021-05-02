@@ -87,15 +87,14 @@ jobs:
 
     - name: 自定义配置文件Lean
       env:
-        CONFIG_FILE: '2102config'
+        CONFIG_FILE: '21diffconfig'
       run: |
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x ./customize.sh && ./customize.sh
         cd openwrt
         cp -f package/litte/commit/default-settings package/lean/default-settings/files/zzz-default-settings
         cp -f package/litte/commit/banner package/base-files/files/etc/banner
-        cp -f package/litte/commit/2102config .config && make defconfig
-        make defconfig
+        cp -f package/litte/commit/21diffconfig .config && make defconfig
         ./scripts/feeds update -a
         ./scripts/feeds install -a
         ./scripts/feeds install -a
