@@ -4,7 +4,7 @@
 # Author: kenzo
 #=================================================
 
-name: Lean_4.19内核
+name: Lean_5.4内核
 
 on: 
   release:
@@ -19,18 +19,11 @@ on:
   
   watch:
     types: [started]
-    
-    
-env:
-  REPO_TOKEN: ${{ secrets.REPO_TOKEN }}
-  SCKEY: ${{ secrets.SCKEY }}
-  TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-  TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-  TZ: Asia/Shanghai    
-    
+
 jobs:
   build:
     runs-on: Ubuntu-20.04
+
     steps:
     - name: 检查
       uses: actions/checkout@master
@@ -67,7 +60,7 @@ jobs:
       env: 
         REPO_URL: https://github.com/coolsnowwolf/lede
         REPO_BRANCH: master
-       
+        
       run: |
         git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
         cd openwrt
@@ -78,11 +71,12 @@ jobs:
       run: |
         ./scripts/feeds update -a
         ./scripts/feeds install -a
+        ./scripts/feeds install -a
 
     - name: 自定义安装源
       working-directory: ./openwrt
       run: |
-        git clone https://github.com/xiaorouji/openwrt-passwall package/openwrt-passwall
+        git clone https://github.com/xiaorouji/openwrt-passwall package/passwall
         git clone https://github.com/kenzok8/litte package/litte     
 
     - name: 自定义配置文件Lean
@@ -93,10 +87,8 @@ jobs:
         chmod +x ./customize.sh && ./customize.sh
         cd openwrt && rm -rf package/litte/naiveproxy && rm -rf package/lean/v2ray
         cp -f package/litte/banner package/base-files/files/etc/banner
-        cp -f package/litte/4.19Makefile target/linux/x86/Makefile
         cp -f package/litte/Leandiffconfig .config && make defconfig
-        ./scripts/feeds update -a
-        ./scripts/feeds install -a
+        git pull && ./scripts/feeds update -a
         ./scripts/feeds install -a
         
     - name: 下载包文件
@@ -111,39 +103,10 @@ jobs:
       run: |
         echo -e "$(nproc) thread build."
         make -j$(nproc) V=s
-       
+     
 
     - name : 上传固件
       uses: actions/upload-artifact@master
       with:
-        name: Lean_4.19
+        name: Lean_5.4
         path: openwrt/bin
-        
-        
-    - name: WeChat notification
-      continue-on-error: true
-      if: env.SCKEY
-      run: |
-        [ steps.compile.outputs.status == 'successfully' ] && curl https://sc.ftqq.com/${{ secrets.SCKEY }}.send?text=🎉固件_${{matrix.target}}编译完成😋|| curl https://sc.ftqq.com/${{ secrets.SCKEY }}.send?text=❌固件_${{matrix.target}}编译失败😂
-
-    - name: Telegram notification
-      if: env.TELEGRAM_TOKEN && ! contains(github.event.action, 'notg')
-      continue-on-error: true
-      run: |
-        # [ steps.compile.outputs.status == 'successfully' ] && curl -k --data chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" --data "text=🎉 固件 ${{matrix.target}} 编译成功 😋" "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage" || curl -k --data chat_id="${{ secrets.TELEGRAM_TO }}" --data "text=❌ 固件 ${{matrix.target}} 编译失败 😂" "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage"
-
-    - name: Delete workflow runs
-      uses: GitRML/delete-workflow-runs@main
-      with:
-        retain_days: 10
-        keep_minimum_runs: 0
-
-    - name: Remove old Releases
-      uses: dev-drprasad/delete-older-releases@master
-      continue-on-error: true
-      if: env.UPLOAD_FIRMWARE_FOR_RELEASE == 'true' && !cancelled()
-      with:
-        keep_latest: 15
-        delete_tags: true
-      env:
-        GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}

@@ -4,7 +4,7 @@
 # Author: kenzo
 #=================================================
 
-name: Lean_5.4内核
+name: openwrt_18.06
 
 on: 
   release:
@@ -58,37 +58,36 @@ jobs:
 
     - name: 克隆源代码
       env: 
-        REPO_URL: https://github.com/coolsnowwolf/lede
-        REPO_BRANCH: master
+        REPO_URL: https://github.com/immortalwrt/immortalwrt
+        REPO_BRANCH: openwrt-18.06
         
       run: |
         git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
         cd openwrt
-        sed -i 's/#src-git helloworld/src-git helloworld/g' ./feeds.conf.default
+        sed -i '5s/#//' feeds.conf.default
         
     - name: 更新 & 安装 feeds
       working-directory: ./openwrt
       run: |
         ./scripts/feeds update -a
         ./scripts/feeds install -a
-        ./scripts/feeds install -a
 
     - name: 自定义安装源
       working-directory: ./openwrt
       run: |
-        git clone https://github.com/xiaorouji/openwrt-passwall package/passwall
-        git clone https://github.com/kenzok8/litte package/litte     
+        git clone https://github.com/kenzok78/jeii  package/jeii
 
-    - name: 自定义配置文件Lean
+    - name: 自定义配置ctc文件
       env:
-        CONFIG_FILE: 'Lean.config'
+        CONFIG_FILE: 'ctc.config'
       run: |
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x ./customize.sh && ./customize.sh
-        cd openwrt && rm -rf package/litte/naiveproxy && rm -rf package/lean/v2ray
-        cp -f package/litte/banner package/base-files/files/etc/banner
-        cp -f package/litte/Leandiffconfig .config && make defconfig
-        git pull && ./scripts/feeds update -a
+        cd openwrt
+        cp -f package/jeii/banner package/base-files/files/etc/banner
+        cp -f package/jeii/ctcdiffconfig .config && make defconfig
+        ./scripts/feeds update -a
+        ./scripts/feeds install -a
         ./scripts/feeds install -a
         
     - name: 下载包文件
@@ -103,10 +102,10 @@ jobs:
       run: |
         echo -e "$(nproc) thread build."
         make -j$(nproc) V=s
-     
+
 
     - name : 上传固件
       uses: actions/upload-artifact@master
       with:
-        name: Lean_5.4
+        name: ctc_18.06
         path: openwrt/bin
