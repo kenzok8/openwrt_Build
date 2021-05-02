@@ -87,8 +87,9 @@ jobs:
         chmod +x ./customize.sh && ./customize.sh
         cd openwrt && rm -rf package/litte/AdGuardHome
         rm -rf package/litte/luci-app-adguardhome
-        cp -f package/litte/banner package/base-files/files/etc/banner
-        cp -f package/litte/Lienoldiffconfig .config && make defconfig
+        cp -f package/litte/commit/zzz-default-settings package/default-settings/files/zzz-default-settings
+        cp -f package/litte/commit/banner package/base-files/files/etc/banner
+        cp -f package//litte/commit/Lienoldiffconfig .config && make defconfig
         ./scripts/feeds update -a
         ./scripts/feeds install -a
         

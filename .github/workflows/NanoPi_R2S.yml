@@ -88,8 +88,9 @@ jobs:
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x ./customize.sh && ./customize.sh
         cd openwrt && rm -rf package/litte/luci-app-ssr-plus && rm -rf package/litte/naiveproxy
-        cp -f package/litte/banner package/base-files/files/etc/banner
-        cp -f package/litte/R2Sdiffconfig .config && make defconfig
+        cp -f feeds/litte/commit/default-settings package/lean/default-settings/files/zzz-default-settings
+        cp -f package/litte/commit/banner package/base-files/files/etc/banner
+        cp -f package/litte/commit/R2Sdiffconfig .config && make defconfig
         ./scripts/feeds update -a
         ./scripts/feeds install -a
         ./scripts/feeds install -a

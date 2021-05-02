@@ -84,8 +84,9 @@ jobs:
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x ./customize.sh && ./customize.sh
         cd openwrt
-        cp -f package/jeii/banner package/base-files/files/etc/banner
-        cp -f package/jeii/ctcdiffconfig .config && make defconfig
+        cp -f package/litte/commit/default-settings package/lean/default-settings/files/zzz-default-settings
+        cp -f package/litte/commit/banner package/base-files/files/etc/banner
+        cp -f package/litte/commit/ctcdiffconfig .config && make defconfig
         ./scripts/feeds update -a
         ./scripts/feeds install -a
         ./scripts/feeds install -a
