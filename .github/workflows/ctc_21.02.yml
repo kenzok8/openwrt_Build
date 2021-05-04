@@ -7,18 +7,18 @@
 name: openwrt_21.02
 
 on: 
-  release:
-    types: [published]
+#  release:
+#    types: [published]
     
-  push:
-    branches: 
-      - master
+#  push:
+#    branches: 
+#      - master
       
   schedule:
     - cron: 0 */48 * * *
   
-  watch:
-    types: [started]
+#  watch:
+#    types: started
     
     
 env:
@@ -82,7 +82,6 @@ jobs:
     - name: 自定义安装源
       working-directory: ./openwrt
       run: |
-        git clone https://github.com/xiaorouji/openwrt-passwall package/openwrt-passwall
         git clone https://github.com/kenzok8/litte package/litte     
 
     - name: 自定义配置文件Lean

@@ -7,18 +7,18 @@
 name: Lean_5.4内核
 
 on: 
-  release:
-    types: [published]
+#  release:
+#    types: [published]
     
-  push:
-    branches: 
-      - master
+#  push:
+#    branches: 
+#      - master
       
   schedule:
     - cron: 0 */48 * * *
   
-  watch:
-    types: [started]
+#  watch:
+#    types: started
 
 jobs:
   build:

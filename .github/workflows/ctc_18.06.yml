@@ -7,18 +7,18 @@
 name: openwrt_18.06
 
 on: 
-  release:
-    types: [published]
+#  release:
+#    types: [published]
     
-  push:
-    branches: 
-      - master
+#  push:
+#    branches: 
+#      - master
       
   schedule:
     - cron: 0 */48 * * *
   
-  watch:
-    types: [started]
+#  watch:
+#    types: started
 
 jobs:
   build:
@@ -76,7 +76,6 @@ jobs:
       working-directory: ./openwrt
       run: |
         git clone https://github.com/kenzok8/litte package/litte
-        git clone https://github.com/xiaorouji/openwrt-passwall package/openwrt-passwall
 
     - name: 自定义配置ctc文件
       env:
@@ -89,7 +88,6 @@ jobs:
         cp -f package/litte/commit/banner package/base-files/files/etc/banner
         cp -f package/litte/commit/ctcdiffconfig .config && make defconfig
         ./scripts/feeds update -a
-        ./scripts/feeds install -a
         ./scripts/feeds install -a
         
     - name: 下载包文件
