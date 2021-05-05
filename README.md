@@ -36,10 +36,10 @@
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/kenzok8/LEDE-x86_64?style=for-the-badge&label=Download)](https://github.com/kenzok78/Build-OpenWrt/releases/latest)
 
 *   五合一固件编译，一次性编译
-*   Lean  的源码(5.4.***)
-*   Lean  的源码(4.19.1**) 更换内核
-*   Lienol的源码(4.14.20*) 
-*   ctc te的源码(4.19.1**)
+*   Lean源码            (18.06)
+*   immortalwrt源码(18.06) 
+*   immortalwrt源码(21.02)
+*   Lienol的源码
 *   NanoPi_R2S源码
 
 ##### 固件下载链接
