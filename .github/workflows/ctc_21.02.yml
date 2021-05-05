@@ -133,13 +133,13 @@ jobs:
         # [ steps.compile.outputs.status == 'successfully' ] && curl -k --data chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" --data "text=🎉 固件 ${{matrix.target}} 编译成功 😋" "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage" || curl -k --data chat_id="${{ secrets.TELEGRAM_TO }}" --data "text=❌ 固件 ${{matrix.target}} 编译失败 😂" "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage"
 
     - name: Delete workflow runs
-      uses: GitRML/delete-workflow-runs@main
+      uses: GitRML/delete-workflow-runs@master
       with:
         retain_days: 3
         keep_minimum_runs: 0
 
     - name: Remove old Releases
-      uses: dev-drprasad/delete-older-releases@main
+      uses: dev-drprasad/delete-older-releases@mstaer
       continue-on-error: true
       if: env.UPLOAD_FIRMWARE_FOR_RELEASE == 'true' && !cancelled()
       with:
