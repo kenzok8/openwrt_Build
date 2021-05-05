@@ -33,7 +33,7 @@ jobs:
     runs-on: Ubuntu-20.04
     steps:
     - name: 检查
-      uses: actions/checkout@master
+      uses: actions/checkout@main
 
     - name: 初始化环境
       env:
@@ -114,7 +114,7 @@ jobs:
        
 
     - name : 上传固件
-      uses: actions/upload-artifact@master
+      uses: actions/upload-artifact@main
       with:
         name: ctc_21.02
         path: openwrt/bin
@@ -133,7 +133,7 @@ jobs:
         # [ steps.compile.outputs.status == 'successfully' ] && curl -k --data chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" --data "text=🎉 固件 ${{matrix.target}} 编译成功 😋" "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage" || curl -k --data chat_id="${{ secrets.TELEGRAM_TO }}" --data "text=❌ 固件 ${{matrix.target}} 编译失败 😂" "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage"
 
     - name: Delete workflow runs
-      uses: GitRML/delete-workflow-runs@master
+      uses: GitRML/delete-workflow-runs@main
       with:
         retain_days: 3
         keep_minimum_runs: 0
