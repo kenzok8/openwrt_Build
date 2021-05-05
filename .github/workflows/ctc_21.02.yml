@@ -17,8 +17,8 @@ on:
   schedule:
     - cron: 0 */48 * * *
   
-#  watch:
-#    types: started
+  watch:
+    types: started
     
     
 env:
@@ -83,7 +83,8 @@ jobs:
       working-directory: ./openwrt
       run: |
         git clone https://github.com/kenzok8/litte package/litte     
-
+        git clone https://github.com/kenzok8/small package/small
+        
     - name: 自定义配置文件Lean
       env:
         CONFIG_FILE: '21diffconfig'
