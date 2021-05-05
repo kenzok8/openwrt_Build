@@ -44,11 +44,11 @@
 
 ##### 固件下载链接
 
-- [Lienol_4.14内核固件](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3ALienol_4.14内核)
-- [Lean_5.4内核固件地址](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3ALean_5.4内核)
+- [Lienol_4.14___内核固件](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3ALienol_4.14内核)
+- [Lean_5.4内核_固件地址](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3ALean_5.4内核)
 - [immortalwrt-21.02固件](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3Aopenwrt_21.02)
 - [immortalwrt-18.06固件](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3Aopenwrt_18.06)
-- [NanoPi_R2S固件下载](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3ANanoPi_R2S)
+- [NanoPi_R2S__固件下载](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3ANanoPi_R2S)
 
 ### 默认插件包含:
 
