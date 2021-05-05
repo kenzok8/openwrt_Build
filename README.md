@@ -1,20 +1,53 @@
-﻿## 搭建教程
+﻿#### AutoBuild-OpenWrt
+[1]: https://img.shields.io/badge/license-GPLV2-brightgreen.svg
+[2]: /LICENSE
+[3]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg
+[4]: https://github.com/kenzok8/LEDE-x86_64/pulls
+[5]: https://img.shields.io/badge/Issues-welcome-brightgreen.svg
+[6]: https://github.com/kenzok8/LEDE-x86_64/issues/new
+[7]: https://img.shields.io/github/v/release/hyird/Action-Openwrt
+[8]: https://github.com/kenzok8/LEDE-x86_64/releases
+[10]: https://img.shields.io/badge/Contact-telegram-blue
+[11]: https://t.me/joinchat/JjxmyRZZXJWb74I-sCrryA
+[12]: https://github.com/kenzok8/LEDE-x86_64/workflows/autobuild/badge.svg
+[13]: https://github.com/kenzok8/LEDE-x86_64/actions
 
-[esir 仓库地址](https://github.com/esirplayground/AutoBuild-OpenWrt.git)
+[![license][1]][2]
+[![GitHub Stars](https://img.shields.io/github/stars/kenzok8/LEDE-x86_64.svg?style=flat-square&label=Stars)](https://github.com/kenzok8/LEDE-x86_64/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/kenzok8/LEDE-x86_64.svg?style=flat-square&label=Forks)](https://github.com/kenzok8/LEDE-x86_64)
+[![PRs Welcome][3]][4]
+[![Issue Welcome][5]][6]
+[![AutoBuild][12]][13]
 
-*   五合一固件编译，若fork本人仓库，进入你仓库地址按右上角Star,触发编译
+<a href="https://t.me/joinchat/JjxmyRZZXJWb74I-sCrryA" target="_blank">Telegram</a>
+
+
+
+#### 源码来源：
+[![esir](https://img.shields.io/badge/AutoBuild-OpenWrt-esir-red.svg?style=flat&logo=appveyor)](https://github.com/esirplayground/AutoBuild-OpenWrt)
+ [![Lienol](https://img.shields.io/badge/passwall-openwrt-blueviolet.svg?style=flat&logo=appveyor)](https://github.com/xiaorouji/openwrt-passwall) 
+[![immortalwrt](https://img.shields.io/badge/immortalwrt-openwrt-orange.svg?style=flat&logo=appveyor)](https://github.com/immortalwrt/immortalwrt) 
+[![Lean](https://img.shields.io/badge/package-Lean-blueviolet.svg?style=flat&logo=appveyor)](https://github.com/coolsnowwolf/lede) 
+[![P3TERX](https://img.shields.io/badge/Actions-P3TERX-success.svg?style=flat&logo=appveyor)](https://github.com/P3TERX/Actions-OpenWrt)
+
+
+##### 固件发布:
+
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/kenzok8/LEDE-x86_64?style=for-the-badge&label=Download)](https://github.com/kenzok78/Build-OpenWrt/releases/latest)
+
 *   五合一固件编译，一次性编译
 *   Lean  的源码(5.4.***)
 *   Lean  的源码(4.19.1**) 更换内核
 *   Lienol的源码(4.14.20*) 
 *   ctc te的源码(4.19.1**)
 *   NanoPi_R2S源码
+
 ##### 固件下载链接
 
 - [Lienol_4.14内核固件](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3ALienol_4.14内核)
 - [Lean_5.4内核固件地址](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3ALean_5.4内核)
-- [Lean_4.19内核固件地址](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3ALean_4.19内核)
-- [ctc_4.19内核固件下载](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3Actc_4.19内核)
+- [immortalwrt-21.02固件](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3Aopenwrt_21.02)
+- [immortalwrt-18.06固件](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3Aopenwrt_18.06)
 - [NanoPi_R2S固件下载](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3ANanoPi_R2S)
 
 ### 默认插件包含:
@@ -22,11 +55,8 @@
 + SSR Plus 
 + passwall
 + openclash
-+ AdguardHome DNS+恶意网址过滤 （打包在ipk文件里）
 + 动态DDNS
-+ SmartDNS 域名解析加速+抗污染 （打包在ipk文件里）
 + UPNP 自动端口转发
-+ Netdata 全能性能监控
 + Turbo ACC 网络加速
 + Mwan3 负载均衡
 + 默认多个主题
