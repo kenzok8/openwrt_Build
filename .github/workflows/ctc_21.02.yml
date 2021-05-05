@@ -139,7 +139,7 @@ jobs:
         keep_minimum_runs: 0
 
     - name: Remove old Releases
-      uses: dev-drprasad/delete-older-releases@mstaer
+      uses: dev-drprasad/delete-older-releases@master
       continue-on-error: true
       if: env.UPLOAD_FIRMWARE_FOR_RELEASE == 'true' && !cancelled()
       with:
