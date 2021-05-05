@@ -33,7 +33,7 @@ jobs:
     runs-on: Ubuntu-20.04
     steps:
     - name: 检查
-      uses: actions/checkout@main
+      uses: actions/checkout@master
 
     - name: 初始化环境
       env:
@@ -114,7 +114,7 @@ jobs:
        
 
     - name : 上传固件
-      uses: actions/upload-artifact@main
+      uses: actions/upload-artifact@master
       with:
         name: ctc_21.02
         path: openwrt/bin
