@@ -33,7 +33,7 @@ jobs:
     runs-on: Ubuntu-20.04
     steps:
     - name: 检查
-      uses: actions/checkout@master
+      uses: actions/checkout@main
 
     - name: 初始化环境
       env:
@@ -71,7 +71,7 @@ jobs:
       run: |
         git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
         cd openwrt
-        sed -i 's/#src-git helloworld/src-git helloworld/g' ./feeds.conf.default
+        sed -i '5s/#//' feeds.conf.default
         
     - name: 更新 & 安装 feeds
       working-directory: ./openwrt
@@ -113,7 +113,7 @@ jobs:
        
 
     - name : 上传固件
-      uses: actions/upload-artifact@master
+      uses: actions/upload-artifact@main
       with:
         name: ctc_21.02
         path: openwrt/bin
@@ -138,7 +138,7 @@ jobs:
         keep_minimum_runs: 0
 
     - name: Remove old Releases
-      uses: dev-drprasad/delete-older-releases@master
+      uses: dev-drprasad/delete-older-releases@main
       continue-on-error: true
       if: env.UPLOAD_FIRMWARE_FOR_RELEASE == 'true' && !cancelled()
       with:

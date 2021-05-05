@@ -30,7 +30,7 @@ jobs:
 
     steps:
     - name: 检查
-      uses: actions/checkout@master
+      uses: actions/checkout@main
 
     - name: 初始化环境
       env:
@@ -107,7 +107,7 @@ jobs:
         echo -e "$(nproc) thread build."
         make -j$(nproc) V=s
     - name : 上传固件
-      uses: actions/upload-artifact@master
+      uses: actions/upload-artifact@main
       with:
         name: NanoPi_R2S
         path: openwrt/bin

@@ -26,7 +26,7 @@ jobs:
 
     steps:
     - name: 检查
-      uses: actions/checkout@master
+      uses: actions/checkout@main
 
     - name: 初始化环境
       env:
@@ -107,7 +107,7 @@ jobs:
         make -j$(nproc) V=s       
 
     - name : 上传固件
-      uses: actions/upload-artifact@master
+      uses: actions/upload-artifact@main
       with:
         name: Lienol
         path: openwrt/bin
