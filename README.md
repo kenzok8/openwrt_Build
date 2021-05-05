@@ -35,12 +35,6 @@
 
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/kenzok8/LEDE-x86_64?style=for-the-badge&label=Download)](https://github.com/kenzok78/Build-OpenWrt/releases/latest)
 
-*   五合一固件编译，一次性编译
-*   Lean源码            (18.06)
-*   immortalwrt源码(18.06) 
-*   immortalwrt源码(21.02)
-*   Lienol的源码
-*   NanoPi_R2S源码
 
 ##### 固件下载链接
 
@@ -74,7 +68,7 @@ rm -rf package/lean/luci-theme-argon
 
 * 添加新的主题
 ```bash
-git clone https://github.com/kenzok8/luci-theme-atmaterial.git package/lean/luci-theme-atmaterial
+git clone https://github.com/kenzok8/luci-theme-ifit.git package/lean/luci-theme-ifit
 ```
 * 添加常用软件包
 ```bash
