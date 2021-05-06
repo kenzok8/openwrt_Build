@@ -19,9 +19,11 @@ on:
   
   watch:
     types: started
+  repository_dispatch:
 
 jobs:
-  build:
+  merge:
+    if: github.event.repository.owner.id == '39034242'
     runs-on: Ubuntu-20.04
 
     steps:
@@ -76,6 +78,7 @@ jobs:
       working-directory: ./openwrt
       run: |
         git clone https://github.com/kenzok78/jeii package/jeii
+        
     - name: 自定义配置ctc文件
       env:
         CONFIG_FILE: 'ctc.config'

@@ -84,7 +84,7 @@ jobs:
       run: |
         git clone https://github.com/kenzok78/jeii package/jeii     
         
-    - name: 自定义配置文件Lean
+    - name: 自定义配置文件
       env:
         CONFIG_FILE: '21diffconfig'
       run: |
@@ -136,7 +136,7 @@ jobs:
     - name: Delete workflow runs
       uses: GitRML/delete-workflow-runs@main
       with:
-        retain_days: 3
+        retain_days: 2
         keep_minimum_runs: 0
 
     - name: Remove old Releases
