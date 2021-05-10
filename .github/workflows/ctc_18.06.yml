@@ -19,11 +19,9 @@ on:
   
   watch:
     types: started
-  repository_dispatch:
 
 jobs:
   merge:
-    if: github.event.repository.owner.id == '39034242'
     runs-on: Ubuntu-20.04
 
     steps:
