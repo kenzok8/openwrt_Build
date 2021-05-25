@@ -2,19 +2,19 @@
 [1]: https://img.shields.io/badge/license-GPLV2-brightgreen.svg
 [2]: /LICENSE
 [3]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg
-[4]: https://github.com/kenzok8/LEDE-x86_64/pulls
+[4]: https://github.com/kenzok8/openwrt_Build/pulls
 [5]: https://img.shields.io/badge/Issues-welcome-brightgreen.svg
-[6]: https://github.com/kenzok8/LEDE-x86_64/issues/new
+[6]: https://github.com/kenzok8/openwrt_Build/issues/new
 [7]: https://img.shields.io/github/v/release/hyird/Action-Openwrt
-[8]: https://github.com/kenzok8/LEDE-x86_64/releases
+[8]: https://github.com/kenzok8/openwrt_Build/releases
 [10]: https://img.shields.io/badge/Contact-telegram-blue
 [11]: https://t.me/joinchat/JjxmyRZZXJWb74I-sCrryA
-[12]: https://github.com/kenzok8/LEDE-x86_64/workflows/autobuild/badge.svg
-[13]: https://github.com/kenzok8/LEDE-x86_64/actions
+[12]: https://github.com/kenzok8/openwrt_Build/workflows/autobuild/badge.svg
+[13]: https://github.com/kenzok8/openwrt_Build/actions
 
 [![license][1]][2]
-[![GitHub Stars](https://img.shields.io/github/stars/kenzok8/LEDE-x86_64.svg?style=flat-square&label=Stars)](https://github.com/kenzok8/LEDE-x86_64/stargazers)
-[![GitHub Forks](https://img.shields.io/github/forks/kenzok8/LEDE-x86_64.svg?style=flat-square&label=Forks)](https://github.com/kenzok8/LEDE-x86_64)
+[![GitHub Stars](https://img.shields.io/github/stars/kenzok8/openwrt_Build.svg?style=flat-square&label=Stars)](https://github.com/kenzok8/openwrt_Build/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/kenzok8/openwrt_Build.svg?style=flat-square&label=Forks)](https://github.com/kenzok8/openwrt_Build)
 [![PRs Welcome][3]][4]
 [![Issue Welcome][5]][6]
 [![AutoBuild][12]][13]
@@ -33,16 +33,16 @@
 
 ##### 固件发布:
 
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/kenzok8/LEDE-x86_64?style=for-the-badge&label=Download)](https://github.com/kenzok78/Build-OpenWrt/releases/latest)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/kenzok8/openwrt_Build?style=for-the-badge&label=Download)](https://github.com/kenzok78/Build-OpenWrt/releases/latest)
 
 
 ##### 固件下载链接
 
-- [Lienol_4.14___内核固件](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3ALienol_4.14内核)
-- [Lean_5.4内核_固件地址](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3ALean_5.4内核)
-- [immortalwrt-21.02固件](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3Aopenwrt_21.02)
-- [immortalwrt-18.06固件](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3Aopenwrt_18.06)
-- [NanoPi_R2S__固件下载](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3ANanoPi_R2S)
+- [Lienol_4.14___内核固件](https://github.com/kenzok8/openwrt_Build/actions?query=workflow%3ALienol_4.14内核)
+- [Lean_5.4内核_固件地址](https://github.com/kenzok8/openwrt_Build/actions?query=workflow%3ALean_5.4内核)
+- [immortalwrt-21.02固件](https://github.com/kenzok8/openwrt_Build/actions?query=workflow%3Aopenwrt_21.02)
+- [immortalwrt-18.06固件](https://github.com/kenzok8/openwrt_Build/actions?query=workflow%3Aopenwrt_18.06)
+- [NanoPi_R2S__固件下载](https://github.com/kenzok8/openwrt_Build/actions?query=workflow%3ANanoPi_R2S)
 
 ### 默认插件包含:
 
