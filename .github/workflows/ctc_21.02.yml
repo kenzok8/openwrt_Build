@@ -91,8 +91,8 @@ jobs:
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x ./customize.sh && ./customize.sh
         cd openwrt
-        cp -f package/jeii/commit/default-settings package/lean/default-settings/files/zzz-default-settings
-        cp -f package/jeii/commit/banner package/base-files/files/etc/banner
+        cp -f package/jeii/commit/default-settings package/emortal/default-settings/files/zzz-default-settings
+        cp -f package/jeii/commit/banner package/emortal/default-settings/files/openwrt_banner
         cp -f package/jeii/commit/21diffconfig .config && make defconfig
         ./scripts/feeds update -a
         ./scripts/feeds install -a
