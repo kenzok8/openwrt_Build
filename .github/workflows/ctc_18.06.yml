@@ -87,7 +87,6 @@ jobs:
         cp -f package/jeii/commit/default-settings package/lean/default-settings/files/zzz-default-settings
         cp -f package/jeii/commit/banner package/base-files/files/etc/banner
         cp -f package/jeii/commit/ctcdiffconfig .config && make defconfig
-        cp -f package/jeii/commit/luci-mod-admin-full feeds/luci/modules/luci-mod-admin-full/root/etc/uci-defaults/50_luci-mod-admin-full
         ./scripts/feeds update -a
         ./scripts/feeds install -a
         
