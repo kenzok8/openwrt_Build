@@ -77,7 +77,7 @@ jobs:
       run: |
         git clone https://github.com/kenzok78/jeii package/jeii
         
-    - name: 自定义配置ctc文件
+    - name: 自定义配置ctc
       env:
         CONFIG_FILE: 'ctc.config'
       run: |
