@@ -75,7 +75,7 @@ jobs:
     - name: 自定义安装源
       working-directory: ./openwrt
       run: |
-        git clone https://github.com/xiaorouji/openwrt-passwall package/passwall
+        git clone git clone https://github.com/kenzok8/small package/small
         git clone https://github.com/kenzok8/litte package/litte     
 
     - name: 自定义配置文件Lean
@@ -101,8 +101,8 @@ jobs:
     - name: 编译固件
       working-directory: ./openwrt
       run: |
-        echo -e "$(nproc) thread build."
-        make -j$(nproc) V=s
+        echo -e "$(($(nproc)+1)) thread compile"
+        make -j$(($(nproc)+1)) || make -j1 V=s
      
 
     - name : 上传固件
