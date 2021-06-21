@@ -84,7 +84,7 @@ jobs:
       run: |
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x ./customize.sh && ./customize.sh
-        cd openwrt
+        cd openwrt && 
         cp -f package/litte/commit/default-settings package/lean/default-settings/files/zzz-default-settings
         cp -f package/litte/commit/banner package/base-files/files/etc/banner
         cp -f package/litte/commit/Leandiffconfig .config && make defconfig
