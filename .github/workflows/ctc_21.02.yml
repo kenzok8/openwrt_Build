@@ -110,35 +110,9 @@ jobs:
         echo -e "$(($(nproc)+1)) thread compile"
         make -j$(($(nproc)+1)) || make -j1 V=s
        
-    - name: 准备 artifact
-      working-directory: ./openwrt
-      run: |
-        mkdir -p ./artifact/firmware
-        mkdir -p ./artifact/package
-        rm -rf $(find ./bin/targets/ -type d -name "packages")
-        cp -rf $(find ./bin/targets/ -type f) ./artifact/firmware/
-        cp -rf $(find ./bin/packages/ -type f -name "*.ipk") ./artifact/package/
-
-
-    - name: 提交软件包
+    - name : 上传固件
       uses: actions/upload-artifact@main
       with:
-        name: ctc-21.02_package
-        path: ./artifact/package/
-
-    - name: 提交固件
-      uses: actions/upload-artifact@main
-      with:
-        name: ctc-21.02_firmware
-        path: ./bin/targets/
-      
-    - name: 上传发布
-      if: github.event == 'release'
-      uses: svenstaro/upload-release-action@v2
-      with:
-        repo_token: ${{ secrets.YOURTOKEN }}
-        file: ./artifact/firmware/*
-        tag: ${{ github.ref }}
-        file_glob: true
-        
+        name: ctc_21.02
+        path: openwrt/bin
         
