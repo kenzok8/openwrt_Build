@@ -108,8 +108,24 @@ jobs:
         echo -e "$(($(nproc)+1)) thread compile"
         make -j$(($(nproc)+1)) || make -j1 V=s
         
-    - name : 上传固件
+    - name: 准备 artifact
+      run: |
+        mkdir -p ./artifact/firmware
+        mkdir -p ./artifact/package
+        mkdir -p ./artifact/buildinfo
+        rm -rf $(find ./bin/targets/ -type d -name "packages")
+        cp -rf $(find ./bin/targets/ -type f) ./artifact/firmware/
+        cp -rf $(find ./bin/packages/ -type f -name "*.ipk") ./artifact/package/
+
+
+    - name: 提交软件包
       uses: actions/upload-artifact@main
       with:
-        name: NanoPi_R2S
-        path: openwrt/bin
+        name: NanoPi_R2S_package
+        path: ./artifact/package/
+
+    - name: 提交固件
+      uses: actions/upload-artifact@main
+      with:
+        name: NanoPi_R2S_firmware
+        path: ./bin/targets/

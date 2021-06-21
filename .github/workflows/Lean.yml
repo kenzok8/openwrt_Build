@@ -114,16 +114,16 @@ jobs:
         cp -rf $(find ./bin/packages/ -type f -name "*.ipk") ./artifact/package/
 
 
-      - name: 提交插件包
-        uses: actions/upload-artifact@main
-        with:
-          name: Lean_5.4_package
-          path: ./artifact/package/
+    - name: 提交软件包
+      uses: actions/upload-artifact@main
+      with:
+        name: Lean-5.4_package
+        path: ./artifact/package/
 
-      - name: 提交固件
-        uses: actions/upload-artifact@main
-        with:
-          name: Lean_5.4_firmware
-          path: ./bin/targets/
-          
+    - name: 提交固件
+      uses: actions/upload-artifact@main
+      with:
+        name: Lean-5.4_firmware
+        path: ./bin/targets/
+        
           
