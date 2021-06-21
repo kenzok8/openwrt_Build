@@ -110,38 +110,26 @@ jobs:
         echo -e "$(($(nproc)+1)) thread compile"
         make -j$(($(nproc)+1)) || make -j1 V=s
        
+    - name: 准备 artifact
+      run: |
+        mkdir -p ./artifact/firmware
+        mkdir -p ./artifact/package
+        mkdir -p ./artifact/buildinfo
+        rm -rf $(find ./bin/targets/ -type d -name "packages")
+        cp -rf $(find ./bin/targets/ -type f) ./artifact/firmware/
+        cp -rf $(find ./bin/packages/ -type f -name "*.ipk") ./artifact/package/
 
-    - name : 上传固件
-      uses: actions/upload-artifact@main
-      with:
-        name: ctc_21.02
-        path: openwrt/bin
+
+      - name: 提交插件包
+        uses: actions/upload-artifact@main
+        with:
+          name: ctc-21.02_package
+          path: ./artifact/package/
+
+      - name: 提交固件
+        uses: actions/upload-artifact@main
+        with:
+          name: ctc-21.02_firmware
+          path: ./bin/targets/
         
         
-    - name: 微信通知
-      continue-on-error: true
-      if: env.SCKEY
-      run: |
-        [ steps.compile.outputs.status == 'successfully' ] && curl https://sc.ftqq.com/${{ secrets.SCKEY }}.send?text=🎉固件_${{matrix.target}}编译完成😋|| curl https://sc.ftqq.com/${{ secrets.SCKEY }}.send?text=❌固件_${{matrix.target}}编译失败😂
-
-    - name: 电报通知
-      if: env.TELEGRAM_TOKEN && ! contains(github.event.action, 'notg')
-      continue-on-error: true
-      run: |
-        # [ steps.compile.outputs.status == 'successfully' ] && curl -k --data chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" --data "text=🎉 固件 ${{matrix.target}} 编译成功 😋" "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage" || curl -k --data chat_id="${{ secrets.TELEGRAM_TO }}" --data "text=❌ 固件 ${{matrix.target}} 编译失败 😂" "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage"
-
-    - name: 删除工作流程
-      uses: GitRML/delete-workflow-runs@main
-      with:
-        retain_days: 2
-        keep_minimum_runs: 0
-
-    - name: 删除发布
-      uses: dev-drprasad/delete-older-releases@master
-      continue-on-error: true
-      if: env.UPLOAD_FIRMWARE_FOR_RELEASE == 'true' && !cancelled()
-      with:
-        keep_latest: 2
-        delete_tags: true
-      env:
-        GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
