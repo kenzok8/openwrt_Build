@@ -43,6 +43,7 @@
 - [immortalwrt-21.02固件](https://github.com/kenzok8/openwrt_Build/actions?query=workflow%3Aopenwrt_21.02)
 - [immortalwrt-18.06固件](https://github.com/kenzok8/openwrt_Build/actions?query=workflow%3Aopenwrt_18.06)
 - [NanoPi_R2S__固件下载](https://github.com/kenzok8/openwrt_Build/actions?query=workflow%3ANanoPi_R2S)
+- [NanoPi_R4S__固件下载](https://github.com/kenzok8/openwrt_Build/actions?query=workflow%3ANanoPi_R4S)
 
 ### 默认插件包含:
 
