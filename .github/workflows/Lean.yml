@@ -75,7 +75,7 @@ jobs:
     - name: 自定义安装源
       working-directory: ./openwrt
       run: |
-        git clone https://github.com/kenzok8/small package/small
+        git clone https://github.com/xiaorouji/openwrt-passwall package/passwall
         git clone https://github.com/kenzok8/litte package/litte     
 
     - name: 自定义配置文件Lean
@@ -88,7 +88,7 @@ jobs:
         cp -f package/litte/commit/default-settings package/lean/default-settings/files/zzz-default-settings
         cp -f package/litte/commit/banner package/base-files/files/etc/banner
         cp -f package/litte/commit/Leandiffconfig .config && make defconfig
-        git pull && ./scripts/feeds update -a
+        ./scripts/feeds update -a
         ./scripts/feeds install -a
         
     - name: 下载包文件
