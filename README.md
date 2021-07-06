@@ -21,7 +21,7 @@
 
 <a href="https://t.me/joinchat/JjxmyRZZXJWb74I-sCrryA" target="_blank">Telegram</a>
 
-
+#### 取消点赞触发(唯保留Lean编译样板，张三李四都来点，每天跑N次，实在浪费，若要开启fork后修改github/workflows下的yml，把里点赞触发的注释去掉，不清楚就对照Lean.yml的点赞触发！)
 
 #### 源码来源：
 [![esir](https://img.shields.io/badge/AutoBuild-esir-red.svg?style=flat&logo=appveyor)](https://github.com/esirplayground/AutoBuild-OpenWrt)
