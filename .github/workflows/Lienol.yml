@@ -7,22 +7,29 @@
 name: Lienol_4.14内核
 
 on: 
-#  release:
-#    types: [published]
+# Release 发布触发
+  release:
+    types: [published]
     
+# 编辑触发    
 #  push:
 #    branches: 
 #      - master
       
+# 定时触发      
   schedule:
     - cron: 0 */48 * * *
-  
-  watch:
-    types: started
+
+# 点赞触发  
+#  watch:
+#    types: started
 
 jobs:
   build:
     runs-on: Ubuntu-20.04
+    
+    if: github.event.repository.owner.id == github.event.sender.id
+     
 
     steps:
     - name: 检查

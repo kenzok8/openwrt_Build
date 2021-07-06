@@ -27,7 +27,9 @@ on:
 jobs:
   build:
     runs-on: Ubuntu-20.04
-
+    
+    if: github.event.repository.owner.id == github.event.sender.id
+    
     steps:
     - name: 检查
       uses: actions/checkout@main
