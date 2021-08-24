@@ -81,19 +81,35 @@ jobs:
     - name: 自定义安装源
       working-directory: ./openwrt
       run: |
-        git clone https://github.com/xiaorouji/openwrt-passwall package/passwall
-        git clone https://github.com/kenzok8/litte package/litte     
+       # git clone https://github.com/xiaorouji/openwrt-passwall package/passwall
+       # git clone https://github.com/kenzok8/litte package/litte
+       git clone https://github.com/kenzok8/small-package.git package/small-package
+       git clone https://github.com/kenzok8/small.git
 
-    - name: 自定义配置文件Lean
+    #- name: 自定义配置文件Lean
+    #  env:
+    #    CONFIG_FILE: 'Lean.config'
+    #  run: |
+    #    [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
+    #    chmod +x ./customize.sh && ./customize.sh
+    #    cd openwrt 
+    #    cp -f package/litte/commit/default-settings package/lean/default-settings/files/zzz-default-settings
+    #    cp -f package/litte/commit/banner package/base-files/files/etc/banner
+    #    cp -f package/litte/commit/Leandiffconfig .config && make defconfig
+    #    ./scripts/feeds update -a
+    #    ./scripts/feeds install -a
+    
+    - name: 连接SSH 个性化定制
+      uses: P3TERX/ssh2actions@v1.0.0
+      if: (github.event.inputs.ssh == 'true' && github.event.inputs.ssh  != 'false') || contains(github.event.action, 'ssh')
       env:
-        CONFIG_FILE: 'Lean.config'
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        
+    - name: 自定义配置
+      working-directory: ./openwrt
       run: |
-        [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
-        chmod +x ./customize.sh && ./customize.sh
-        cd openwrt 
-        cp -f package/litte/commit/default-settings package/lean/default-settings/files/zzz-default-settings
-        cp -f package/litte/commit/banner package/base-files/files/etc/banner
-        cp -f package/litte/commit/Leandiffconfig .config && make defconfig
+        make defconfig
         ./scripts/feeds update -a
         ./scripts/feeds install -a
         
