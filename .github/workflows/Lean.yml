@@ -23,6 +23,15 @@ on:
 # 点赞触发  
   watch:
     types: started
+    
+env:
+  UPLOAD_BIN_DIR: false
+  UPLOAD_FIRMWARE: true
+  UPLOAD_COWTRANSFER: false
+  UPLOAD_WETRANSFER: false
+  UPLOAD_RELEASE: true
+  TZ: Asia/Shanghai
+  
 
 jobs:
   build:
@@ -109,11 +118,79 @@ jobs:
       run: |
         echo -e "$(($(nproc)+1)) thread compile"
         make -j$(($(nproc)+1)) || make -j1 V=s
+        echo "::set-output name=status::success"        
      
-    - name : 上传固件
+    - name: 检查空间使用情况
+      if: (!cancelled())
+      run: df -hT
+
+    - name: 上传bin目录
       uses: actions/upload-artifact@main
+      if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
       with:
-        name: Lean_5.4
+        name: OpenWrt_bin${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: openwrt/bin
+
+    - name: 整理文件
+      id: organize
+      if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
+      run: |
+        mkdir firmware && find openwrt/bin/targets/*/*/ -maxdepth 1 \
+        -name "*combined*" \
+        -or -name "*sysupgrade*" \
+        -or -name "sha256sums" \
+        | xargs -i mv -f {} ./firmware/
+        cp openwrt/.config  ./firmware/${{matrix.target}}.config
+        cd firmware
+        echo ${{ env.date4 }} > version.txt
+        mv sha256sums ${{matrix.target}}_sha256sums
+        rename -v "s/^openwrt/${{ env.date3 }}-Lean/" *
+        echo "FIRMWARE=$PWD" >> $GITHUB_ENV
+        echo "::set-output name=status::success"
+      
+
+    - name: 上传固件目录
+      uses: actions/upload-artifact@main
+      if: steps.organize.outputs.status == 'success' && !cancelled()
+      with:
+        name: ${{ env.date3 }} _Lean
+        path: ${{ env.FIRMWARE }}
+
+    - name: 生成发布标签
+      id: tag
+      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+      run: |
+        echo "::set-output name=release_tag::$(date +"%m.%d")"
+        touch release.txt
+        [ $UPLOAD_COWTRANSFER = true ] && echo "🔗 [Cowtransfer](${{ steps.cowtransfer.outputs.url }})" >> release.txt
+        [ $UPLOAD_WETRANSFER = true ] && echo "🔗 [WeTransfer](${{ steps.wetransfer.outputs.url }})" >> release.txt
+        echo "::set-output name=status::success"
+
+    - name: 上传固件发布
+      uses: softprops/action-gh-release@v1
+      if: steps.tag.outputs.status == 'success' && !cancelled()
+      env:
+        GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
+      with:
+        files: "${{ env.FIRMWARE }}/*"
+        name: ${{ env.date2 }} ${{matrix.target}}
+        tag_name: ${{ env.date3 }}_${{matrix.target}}
+        body_path: release.txt
+
+    - name: 删除工作流
+      uses: GitRML/delete-workflow-runs@main
+      with:
+        retain_days: 5
+        keep_minimum_runs: 0
+
+    - name: 删除旧版本
+      uses: dev-drprasad/delete-older-releases@v0.1.0
+      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+      with:
+        keep_latest: 2
+        delete_tags: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
         
           
