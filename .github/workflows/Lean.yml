@@ -71,6 +71,14 @@ jobs:
         sudo -E apt-get -y autoremove --purge
         sudo -E apt-get clean
 
+    - name: current date
+      id: date
+      run: |
+        echo "date=$(date +'%m/%d_%Y_%H/%M')" >> $GITHUB_ENV
+        echo "date2=$(date +'%m/%d %Y')" >> $GITHUB_ENV
+        echo "date3=$(date +'%m.%d')" >> $GITHUB_ENV
+        echo "date4=$(date +'%m.%d.%Y')" >> $GITHUB_ENV
+
     - name: 克隆源代码
       env: 
         REPO_URL: https://github.com/coolsnowwolf/lede
