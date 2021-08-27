@@ -32,7 +32,6 @@ env:
   UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
   
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -71,7 +70,7 @@ jobs:
         sudo -E apt-get -y autoremove --purge
         sudo -E apt-get clean
 
-    - name: current date
+    - name: 设置当前的日期
       id: date
       run: |
         echo "date=$(date +'%m/%d_%Y_%H/%M')" >> $GITHUB_ENV
@@ -188,7 +187,7 @@ jobs:
     - name: 删除工作流
       uses: GitRML/delete-workflow-runs@main
       with:
-        retain_days: 5
+        retain_days: 3
         keep_minimum_runs: 0
 
     - name: 删除旧版本
