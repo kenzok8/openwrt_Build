@@ -26,8 +26,6 @@
 #### 默认48小时触发编译，若阁下觉得时间太久，请微调。
 
 
-#### 若要开启fork后修改github/workflows下的yml，把里点赞触发的注释去掉，不清楚就对照Lean.yml的点赞触发！
-
 #### 源码来源：
 [![esir](https://img.shields.io/badge/AutoBuild-esir-red.svg?style=flat&logo=appveyor)](https://github.com/esirplayground/AutoBuild-OpenWrt)
  [![Lienol](https://img.shields.io/badge/passwall-openwrt-blueviolet.svg?style=flat&logo=appveyor)](https://github.com/xiaorouji/openwrt-passwall) 
@@ -38,7 +36,7 @@
 
 ##### 固件发布:
 
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/kenzok8/openwrt_Build?style=for-the-badge&label=Download)](https://github.com/kenzok78/Build-OpenWrt/releases/latest)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/kenzok8/openwrt_Build?style=for-the-badge&label=Download)](https://github.com/kenzok8/openwrt_Build/releases/latest)
 
 
 ##### 固件下载链接
