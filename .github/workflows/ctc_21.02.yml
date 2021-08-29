@@ -151,7 +151,7 @@ jobs:
         cd firmware
         echo ${{ env.date4 }} > version.txt
         mv sha256sums ${{matrix.target}}_sha256sums
-        rename -v "s/^openwrt/${{ env.date3 }}-ctc_21.02/" *
+        rename -v "s/^immortalwrt/${{ env.date3 }}-ctc_21.02/" *
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "::set-output name=status::success"
       
@@ -160,7 +160,7 @@ jobs:
       uses: actions/upload-artifact@main
       if: steps.organize.outputs.status == 'success' && !cancelled()
       with:
-        name: ${{ env.date3 }} _Lean
+        name: ${{ env.date3 }} _ctc_21.02
         path: ${{ env.FIRMWARE }}
 
     - name: 生成发布标签

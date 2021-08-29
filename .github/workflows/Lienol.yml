@@ -163,7 +163,7 @@ jobs:
       uses: actions/upload-artifact@main
       if: steps.organize.outputs.status == 'success' && !cancelled()
       with:
-        name: ${{ env.date3 }} _Lean
+        name: ${{ env.date3 }} _Lienol
         path: ${{ env.FIRMWARE }}
 
     - name: 生成发布标签
