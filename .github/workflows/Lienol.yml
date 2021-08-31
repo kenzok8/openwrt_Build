@@ -6,23 +6,14 @@
 
 name: Lienol_4.14内核
 
-on: 
-# Release 发布触发
-  release:
-    types: [published]
-    
-# 编辑触发    
-#  push:
-#    branches: 
-#      - master
-      
-# 定时触发      
-  schedule:
-    - cron: 0 */48 * * *
-
-# 点赞触发  
-#  watch:
-#    types: started
+on:
+  repository_dispatch:
+  workflow_dispatch:
+    inputs:
+      ssh:
+        description: 'SSH connection to Actions'
+        required: false
+        default: 'false'
 
 env:
   UPLOAD_BIN_DIR: false
