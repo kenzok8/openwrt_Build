@@ -6,23 +6,9 @@
 
 name: NanoPi_R4S
 
-on: 
-# Release 发布触发
-  release:
-    types: [published]
-    
-# 编辑触发    
-#  push:
-#    branches: 
-#      - master
-      
-# 定时触发      
-  schedule:
-    - cron: 0 */48 * * *
-
-# 点赞触发  
-#  watch:
-#    types: started
+on:
+  repository_dispatch:
+  workflow_dispatch:
 
 env:
   UPLOAD_BIN_DIR: false

@@ -21,9 +21,7 @@
 
 <a href="https://t.me/joinchat/JjxmyRZZXJWb74I-sCrryA" target="_blank">Telegram</a>
 
-#### 取消点赞触发，唯保留Lean编译样板，张三李四都来点，每天跑N次，实在浪费。
-
-#### 默认48小时触发编译，若阁下觉得时间太久，请微调。
+#### 取消点赞触发，取消定时编译！
 
 
 #### 源码来源：
