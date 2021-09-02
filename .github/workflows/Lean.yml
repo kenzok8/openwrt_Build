@@ -174,7 +174,7 @@ jobs:
     - name: 删除工作流
       uses: GitRML/delete-workflow-runs@main
       with:
-        retain_days: 3
+        retain_days: 2
         keep_minimum_runs: 0
 
     - name: 删除旧版本

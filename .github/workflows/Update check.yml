@@ -26,20 +26,20 @@ jobs:
 
     steps:
 
-    - name: Get Commit Hash
+    - name: 获取提交哈希值
       id: getHash
       run: |
         git clone --depth 1 $REPO_URL -b $REPO_BRANCH .
         echo "::set-output name=commitHash::$(git rev-parse HEAD)"
 
-    - name: Compare Commit Hash
+    - name: 比较提交哈希值
       id: cacheHash
       uses: actions/cache@v2
       with:
         path: .commitHash
         key: HEAD-${{ steps.getHash.outputs.commitHash }}
 
-    - name: Save New Commit Hash
+    - name: 保存新的哈希值
       if: steps.cacheHash.outputs.cache-hit != 'true'
       run: |
         echo ${{ steps.getHash.outputs.commitHash }} | tee .commitHash
@@ -52,14 +52,14 @@ jobs:
         echo "date3=$(date +'%m.%d')" >> $GITHUB_ENV
         echo "date4=$(date +'%m.%d.%Y')" >> $GITHUB_ENV        
 
-    - name: Trigger build
+    - name: 触发编译
       if: steps.cacheHash.outputs.cache-hit != 'true'
       uses: peter-evans/repository-dispatch@v1
       with:
         token: ${{ secrets.REPO_TOKEN }}
         event-type: ${{ env.date3 }} 
  
-    - name: Delete workflow runs
+    - name: 删除工作流
       uses: GitRML/delete-workflow-runs@main
       with:
         retain_days: 1
