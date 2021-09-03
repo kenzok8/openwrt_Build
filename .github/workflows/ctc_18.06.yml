@@ -9,6 +9,11 @@ name: openwrt_18.06
 on:
   repository_dispatch:
   workflow_dispatch:
+    inputs:
+      ssh:
+        description: 'SSH connection to Actions'
+        required: false
+        default: 'false'
 
 env:
   UPLOAD_BIN_DIR: false
