@@ -21,7 +21,7 @@
 
 <a href="https://t.me/joinchat/JjxmyRZZXJWb74I-sCrryA" target="_blank">Telegram</a>
 
-#### 取消点赞触发，取消定时编译！
+#### 取消点赞触发，关联Update check触发编译！
 
 
 #### 源码来源：
