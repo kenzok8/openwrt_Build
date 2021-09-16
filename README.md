@@ -34,7 +34,7 @@
 
 ##### 固件发布:
 
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/kenzok8/openwrt_Build?style=for-the-badge&label=Download)](https://github.com/kenzok8/openwrt_Build/releases/latest)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/kenzok8/openwrt_Build?style=for-the-badge&label=固件下载)](https://github.com/kenzok8/openwrt_Build/releases/latest)
 
 
 ##### 固件下载链接
