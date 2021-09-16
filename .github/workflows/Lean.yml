@@ -112,6 +112,13 @@ jobs:
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
 
+    - name: 设置缓存
+      uses: klever1988/cachewrtbuild@main
+      with:
+        ccache: 'true'
+        prefix: ${{ github.workspace }}/openwrt
+
+
     - name: 编译固件
       working-directory: ./openwrt
       run: |
