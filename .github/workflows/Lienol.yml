@@ -78,7 +78,7 @@ jobs:
       run: |
         git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
         cd openwrt
-                sed -i '5s/#//' feeds.conf.default
+        echo "src-git ssrp https://github.com/fw876/helloworld.git" >> ./feeds.conf.default
         
     - name: 更新 & 安装 feeds
       working-directory: ./openwrt
@@ -99,7 +99,7 @@ jobs:
       run: |
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x ./customize.sh && ./customize.sh
-        cd openwrt && rm -rf package/litte/AdGuardHome
+        cd openwrt && rm -rf package/litte/adguardhome
         rm -rf package/litte/luci-app-adguardhome
         cp -f package/litte/commit/zzz-default-settings package/default-settings/files/zzz-default-settings
         cp -f package/litte/commit/banner package/base-files/files/etc/banner
