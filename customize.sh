@@ -2,7 +2,7 @@
 #=================================================
 shopt -s extglob
 sed -i '/	refresh_config();/d' scripts/feeds
-#=================================================
+
 #1. Modify default IP
 sed -i 's/192.168.1.1/192.168.3.1/g' openwrt/package/base-files/files/bin/config_generate
 
@@ -10,7 +10,6 @@ sed -i 's/192.168.1.1/192.168.3.1/g' openwrt/package/base-files/files/bin/config
 sma=$(date "+%Y-%m-%d")
 sed -i "s/DISTRIB_DESCRIPTION.*/DISTRIB_DESCRIPTION=\"0penwrt by kenzo'\"/g" package/base-files/files/etc/openwrt_release
 sed -i "s/DISTRIB_REVISION.*/DISTRIB_REVISION=\"sma'\"/g" package/base-files/files/etc/openwrt_release
-
 #Lean设置
 sed -i "s/LuCI Master.*/LuCI Master=\"kenzo'\"/g" package/lean/default-settings/files/zzz-default-settings
 sed -i "s/luciversion.*/luciversion=\"Sept'\"/g" package/lean/default-settings/files/zzz-default-settings
