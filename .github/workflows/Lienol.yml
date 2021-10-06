@@ -84,6 +84,8 @@ jobs:
         cd openwrt && rm -rf package/litte/adguardhome
         rm -rf package/litte/luci-app-adguardhome
         sed -i 's?zstd$?zstd ucl upx\n$(curdir)/upx/compile := $(curdir)/ucl/compile?g' tools/Makefile
+        date=`date +%m.%d`
+        sed -i "s/CONFIG_VERSION_CODE=.*/CONFIG_VERSION_CODE=\"$date\"/g" package/litte/commit/Lienoldiffconfig
         cp -f package/litte/commit/zzz-default-settings package/default-settings/files/zzz-default-settings
         cp -f package/litte/commit/banner package/base-files/files/etc/banner
         cp -f package/litte/commit/Lienoldiffconfig .config && make defconfig
