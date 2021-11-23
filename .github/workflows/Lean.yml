@@ -4,7 +4,7 @@
 # Author: kenzo
 #=================================================
 
-name: Lean_5.4内核
+name: Lean_5.10内核
 
 on:
   repository_dispatch:
@@ -19,9 +19,15 @@ on:
 env:
   UPLOAD_BIN_DIR: false
   UPLOAD_FIRMWARE: true
-  UPLOAD_COWTRANSFER: false
-  UPLOAD_WETRANSFER: false
+  UPLOAD_COWTRANSFER: true
+  UPLOAD_WETRANSFER: true
   UPLOAD_RELEASE: true
+  {{ matrix.target }}:Lean_5.10  
+  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+  REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+  REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
+  DOCKER_ID: ${{ secrets.DOCKER_ID }}
+  DOCKER_PASSWD: ${{ secrets.DOCKER_PASSWD }}  
   TZ: Asia/Shanghai
   
 jobs:
@@ -132,6 +138,18 @@ jobs:
         rename -v "s/^openwrt/${{ env.date3 }}-Lean/" *
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "::set-output name=status::success"
+        
+    - name: Deploy files to server
+      uses: easingthemes/ssh-deploy@main
+      if: env.SSH_PRIVATE_KEY && ! contains(github.event.action, 'noser')
+      with:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        ARGS: "-avzr --exclude="
+        SOURCE: firmware/
+        REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+        REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
+        REMOTE_USER: root
+        TARGET: "/www/wwwroot/{{ secrets.REMOTE_HOST }}/op/firmware/${{matrix.target}}/"          
       
     - name: 上传固件目录
       uses: actions/upload-artifact@main
@@ -139,6 +157,30 @@ jobs:
       with:
         name: ${{ env.date3 }} _Lean
         path: ${{ env.FIRMWARE }}
+        
+    - name: Set Up Docker Buildx
+      uses: docker/setup-buildx-action@master
+      if: env.DOCKER_ID && env.DOCKER_PASSWD
+
+    - name: Login To DockerHub
+      uses: docker/login-action@master
+      if: env.DOCKER_ID && env.DOCKER_PASSWD
+      with:
+        username: ${{ secrets.DOCKER_ID }}
+        password: ${{ secrets.DOCKER_PASSWD }}
+        
+    - name: Build and push docker image
+      uses: docker/build-push-action@master
+      continue-on-error: true
+      if: env.DOCKER_ID && env.DOCKER_PASSWD && ! contains(github.event.action, 'noser')
+      with:
+        platforms: ${{ env.ARCH }}
+        file: Dockerfile
+        context: .
+        push: true
+        tags: |
+          ${{ secrets.DOCKER_ID }}/openwrt-nginx:${{ matrix.target }}
+          ${{ env.DOCKERTAG }}         
 
     - name: 生成发布标签
       id: tag
@@ -164,7 +206,7 @@ jobs:
     - name: 删除工作流
       uses: GitRML/delete-workflow-runs@main
       with:
-        retain_days: 2
+        retain_days: 1
         keep_minimum_runs: 0
 
     - name: 删除旧版本
@@ -174,7 +216,7 @@ jobs:
         keep_latest: 2
         delete_tags: true
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
 
         
           
