@@ -138,7 +138,7 @@ jobs:
         cd firmware
         echo "${{ env.VERSION }}.$(date +'%Y')" > version.txt
         echo $REPO_BRANCH >> version.txt
-        mv sha256sums ${{matrix.target}}_sha256sums
+        rm -rf sha256sums
         rename -v "s/^openwrt/${{ env.date3 }}-Lienol/" *
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "DOCKERTAG=${{ secrets.DOCKER_ID }}/openwrt-4p:latest" >> $GITHUB_ENV
@@ -153,13 +153,13 @@ jobs:
         REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
         REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
         REMOTE_USER: root
-        TARGET: "/www/wwwroot/${{ secrets.REMOTE_HOST }}/op/firmware/$Lienol/"      
+        TARGET: "/www/wwwroot/${{ secrets.REMOTE_HOST }}/op/firmware/${{matrix.target}}/"        
       
     - name: 上传固件目录
       uses: actions/upload-artifact@main
       if: steps.organize.outputs.status == 'success' && !cancelled()
       with:
-        name: ${{ env.date3 }} _Lienol
+        name: ${{ env.date3 }}_Lienol
         path: ${{ env.FIRMWARE }}
         
     - name: Set Up Docker Buildx
@@ -176,7 +176,7 @@ jobs:
     - name: Build and push docker image
       uses: docker/build-push-action@master
       continue-on-error: true
-      if: env.DOCKER_ID && env.DOCKER_PASSWD && ! contains(github.event.action, 'noser')
+      if: env.DOCKER_ID && env.DOCKER_PASSWD
       with:
         platforms: ${{ env.ARCH }}
         file: Dockerfile
