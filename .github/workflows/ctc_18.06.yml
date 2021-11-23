@@ -148,7 +148,7 @@ jobs:
         REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
         REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
         REMOTE_USER: root
-        TARGET: "/www/wwwroot/${{ secrets.REMOTE_HOST }}/op/firmware/${{matrix.target}}/"         
+        TARGET: "/www/wwwroot/${{ secrets.REMOTE_HOST }}/op/firmware/ctc_18.06/"         
       
     - name: 上传固件目录
       uses: actions/upload-artifact@main
