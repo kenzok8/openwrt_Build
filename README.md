@@ -56,7 +56,7 @@
 + Turbo ACC 网络加速
 + Mwan3 负载均衡
 + 默认多个主题
-+ 默认管理 IP: 192.168.3.1, 用户名 root，密码 password
++ 默认管理 IP: 192.168.1.252, 用户名 root，密码 password
 
 * 修改默认ip
 
