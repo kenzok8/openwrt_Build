@@ -21,8 +21,7 @@ env:
   UPLOAD_FIRMWARE: true
   UPLOAD_COWTRANSFER: true
   UPLOAD_WETRANSFER: true
-  UPLOAD_RELEASE: true
-  {{ matrix.target }}:Lean_5.10  
+  UPLOAD_RELEASE: true  
   SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
   REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
   REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
@@ -131,10 +130,10 @@ jobs:
         -or -name "*sysupgrade*" \
         -or -name "sha256sums" \
         | xargs -i mv -f {} ./firmware/
-        cp openwrt/.config  ./firmware/${{matrix.target}}.config
+        cp openwrt/.config  ./firmware/Lean_5.10.config
         cd firmware
         echo ${{ env.date4 }} > version.txt
-        mv sha256sums ${{matrix.target}}_sha256sums
+        mv sha256sums Lean_5.10_sha256sums
         rename -v "s/^openwrt/${{ env.date3 }}-Lean/" *
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "::set-output name=status::success"
@@ -149,7 +148,7 @@ jobs:
         REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
         REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
         REMOTE_USER: root
-        TARGET: "/www/wwwroot/{{ secrets.REMOTE_HOST }}/op/firmware/${{matrix.target}}/"          
+        TARGET: "/www/wwwroot/{{ secrets.REMOTE_HOST }}/op/firmware/Lean_5.10/"          
       
     - name: 上传固件目录
       uses: actions/upload-artifact@main
@@ -179,7 +178,7 @@ jobs:
         context: .
         push: true
         tags: |
-          ${{ secrets.DOCKER_ID }}/openwrt-nginx:${{ matrix.target }}
+          ${{ secrets.DOCKER_ID }}/openwrt-nginx:Lean_5.10
           ${{ env.DOCKERTAG }}         
 
     - name: 生成发布标签
@@ -199,8 +198,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
       with:
         files: "${{ env.FIRMWARE }}/*"
-        name: ${{ env.date2 }} ${{matrix.target}}
-        tag_name: ${{ env.date }} ${{matrix.target}}
+        name: ${{ env.date2 }} Lean_5.10
+        tag_name: ${{ env.date }} Lean_5.10
         body_path: release.txt
 
     - name: 删除工作流

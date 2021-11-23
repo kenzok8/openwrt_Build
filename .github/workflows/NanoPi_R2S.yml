@@ -20,8 +20,7 @@ env:
   UPLOAD_FIRMWARE: true
   UPLOAD_COWTRANSFER: true
   UPLOAD_WETRANSFER: true
-  UPLOAD_RELEASE: true
-  {{ matrix.target }}:NanoPi_R2S   
+  UPLOAD_RELEASE: true  
   SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
   REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
   REMOTE_PORT: ${{ secrets.REMOTE_PORT }}

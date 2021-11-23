@@ -21,7 +21,6 @@ env:
   UPLOAD_COWTRANSFER: true
   UPLOAD_WETRANSFER: true
   UPLOAD_RELEASE: true
-  {{ matrix.target }}:ctc_18.06
   SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
   REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
   REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
