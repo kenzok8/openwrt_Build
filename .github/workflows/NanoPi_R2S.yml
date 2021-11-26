@@ -18,8 +18,8 @@ on:
 env:
   UPLOAD_BIN_DIR: false
   UPLOAD_FIRMWARE: true
-  UPLOAD_COWTRANSFER: true
-  UPLOAD_WETRANSFER: true
+  UPLOAD_COWTRANSFER: false
+  UPLOAD_WETRANSFER: false
   UPLOAD_RELEASE: true  
   SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
   REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
@@ -134,10 +134,10 @@ jobs:
         | xargs -i mv -f {} ./firmware/
         cp openwrt/.config  ./firmware/${{matrix.target}}.config
         cd firmware
-        echo "${{ env.VERSION }}.$(date +'%Y')" > version.txt
-        echo $REPO_BRANCH >> version.txt
+        echo "${{ env.VERSION }}.${{ env.date4 }}" > version.txt
+        echo "${{ secrets.DOCKER_ID }}" >> version.txt
         rm -rf sha256sums
-        rename -v "s/^openwrt/${{ env.date3 }}-NanoPi_R2S/" *
+        rename -v "s/^openwrt/${{ env.date3 }}_NanoPi_R2S/" *
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "DOCKERTAG=${{ secrets.DOCKER_ID }}/openwrt-4p:latest" >> $GITHUB_ENV
         echo "::set-output name=status::success"
@@ -151,7 +151,7 @@ jobs:
         REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
         REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
         REMOTE_USER: root
-        TARGET: "/www/wwwroot/${{ secrets.REMOTE_HOST }}/op/firmware/${{matrix.target}}/"           
+        TARGET: "/www/wwwroot/${{ secrets.REMOTE_HOST }}/op/firmware/NanoPi_R2S/"           
 
     - name: 上传固件目录
       uses: actions/upload-artifact@main
@@ -181,7 +181,7 @@ jobs:
         context: .
         push: true
         tags: |
-          ${{ secrets.DOCKER_ID }}/openwrt-nginx:${{ matrix.target }}
+          ${{ secrets.DOCKER_ID }}/openwrt-4p:NanoPi_R2S
           ${{ env.DOCKERTAG }}         
 
     - name: 上传固件cowtransfer
@@ -233,7 +233,7 @@ jobs:
       uses: dev-drprasad/delete-older-releases@v0.1.0
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
       with:
-        keep_latest: 2
+        keep_latest: 6
         delete_tags: true
       env:
         GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
