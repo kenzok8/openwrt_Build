@@ -23,6 +23,7 @@
 
 #### 取消点赞触发，关联Update check触发编译！
 
++ 谢谢 **kiddin9珠玉在前**[openwrt固件与插件下载](https://op.dllkids.xyz/op/firmware/)
 
 #### 源码来源：
 [![esir](https://img.shields.io/badge/AutoBuild-esir-red.svg?style=flat&logo=appveyor)](https://github.com/esirplayground/AutoBuild-OpenWrt)
