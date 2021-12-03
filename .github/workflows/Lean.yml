@@ -178,7 +178,7 @@ jobs:
         context: .
         push: true
         tags: |
-          ${{ secrets.DOCKER_ID }}/openwrt-4p:Lean_5.10
+          ${{ secrets.DOCKER_ID }}/openwrt-4p:Lean
           ${{ env.DOCKERTAG }}         
 
     - name: 上传固件cowtransfer

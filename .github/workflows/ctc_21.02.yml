@@ -180,7 +180,7 @@ jobs:
         context: .
         push: true
         tags: |
-          ${{ secrets.DOCKER_ID }}/openwrt-4p:${{ matrix.target }}
+          ${{ secrets.DOCKER_ID }}/openwrt-4p:ctc_21.02
           ${{ env.DOCKERTAG }}         
 
     - name: 上传固件cowtransfer
