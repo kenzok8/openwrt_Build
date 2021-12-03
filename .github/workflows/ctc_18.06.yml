@@ -138,7 +138,7 @@ jobs:
         rm -rf sha256sums
         rename -v "s/^immortalwrt/${{ env.date3 }}_ctc_18.06/" *
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
-        echo "DOCKERTAG=${{ secrets.DOCKER_ID }}/openwrt-4p:latest" >> $GITHUB_ENV
+        echo "DOCKERTAG=${{ secrets.DOCKER_ID }}/openwrt-6p:latest" >> $GITHUB_ENV
         echo "::set-output name=status::success"
         
     - name: 部署文件到服务器
@@ -180,7 +180,7 @@ jobs:
         context: .
         push: true
         tags: |
-          ${{ secrets.DOCKER_ID }}/openwrt-4p:ctc_18.06
+          ${{ secrets.DOCKER_ID }}/openwrt-6p:ctc_18.06
           ${{ env.DOCKERTAG }}        
 
     - name: 上传固件cowtransfer

@@ -139,7 +139,7 @@ jobs:
         rm -rf sha256sums
         rename -v "s/^openwrt/${{ env.date3 }}_NanoPi_R4S/" *
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
-        echo "DOCKERTAG=${{ secrets.DOCKER_ID }}/openwrt-4p:latest" >> $GITHUB_ENV
+        echo "DOCKERTAG=${{ secrets.DOCKER_ID }}/openwrt-6p:latest" >> $GITHUB_ENV
         echo "::set-output name=status::success"
         
     - name: 部署文件到服务器
@@ -181,7 +181,7 @@ jobs:
         context: .
         push: true
         tags: |
-          ${{ secrets.DOCKER_ID }}/openwrt-4p:NanoPi_R4S
+          ${{ secrets.DOCKER_ID }}/openwrt-6p:NanoPi_R4S
           ${{ env.DOCKERTAG }} 
 
     - name: 生成发布标签
