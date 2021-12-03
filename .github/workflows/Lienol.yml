@@ -136,9 +136,11 @@ jobs:
         | xargs -i mv -f {} ./firmware/
         cp openwrt/.config  ./firmware/${{matrix.target}}.config
         cd firmware
-        echo "${{ env.VERSION }}.${{ env.date4 }}" > version.txt
+        echo "v.${{ env.date4 }}" > version.txt
         echo "${{ secrets.DOCKER_ID }}" >> version.txt
         rm -rf sha256sums
+        md5=$((md5sum *squashfs-sysupgrade* || md5sum *squashfs-combined-efi*) | awk '{print $1}') 2>/dev/null
+        echo $md5 >> version.txt        
         rename -v "s/^openwrt/${{ env.date3 }}_Lienol/" *
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "DOCKERTAG=${{ secrets.DOCKER_ID }}/openwrt-6p:latest" >> $GITHUB_ENV
@@ -176,7 +178,7 @@ jobs:
     - name: 编译docker镜像
       uses: docker/build-push-action@master
       continue-on-error: true
-      if: env.DOCKER_ID && env.DOCKER_PASSWD
+      if: env.DOCKER_ID && env.DOCKER_PASSWD && ! contains(github.event.action, 'noser')
       with:
         platforms: ${{ env.ARCH }}
         file: Dockerfile

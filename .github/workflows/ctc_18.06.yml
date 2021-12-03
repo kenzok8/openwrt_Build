@@ -55,7 +55,7 @@ jobs:
         echo "date=$(date +'%Y.%m.%d-%H%M')" >> $GITHUB_ENV
         echo "date2=$(date +'%m/%d %Y')" >> $GITHUB_ENV
         echo "date3=$(date +'%m.%d')" >> $GITHUB_ENV
-        echo "date4=$(date +'%m.%d.%Y')" >> $GITHUB_ENV        
+        echo "date4=$(date +'%m.%d.%H')" >> $GITHUB_ENV        
         
     - name: 克隆源代码
       env: 
@@ -133,8 +133,10 @@ jobs:
         | xargs -i mv -f {} ./firmware/
         cp openwrt/.config  ./firmware/${{matrix.target}}.config
         cd firmware
-        echo "${{ env.VERSION }}.${{ env.date4 }}" > version.txt
+        echo "v.${{ env.date4 }}" > version.txt
         echo "${{ secrets.DOCKER_ID }}" >> version.txt
+        md5=$((md5sum *squashfs-sysupgrade* || md5sum *squashfs-combined-efi*) | awk '{print $1}') 2>/dev/null
+        echo $md5 >> version.txt        
         rm -rf sha256sums
         rename -v "s/^immortalwrt/${{ env.date3 }}_ctc_18.06/" *
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
@@ -173,7 +175,7 @@ jobs:
     - name: 编译docker镜像
       uses: docker/build-push-action@master
       continue-on-error: true
-      if: env.DOCKER_ID && env.DOCKER_PASSWD
+      if: env.DOCKER_ID && env.DOCKER_PASSWD && ! contains(github.event.action, 'noser')
       with:
         platforms: ${{ env.ARCH }}
         file: Dockerfile
