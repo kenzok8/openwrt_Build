@@ -4,7 +4,7 @@
 # Author: kenzo
 #=================================================
 
-name: Lean_5.10内核
+name: openwrt_18.06
 
 on:
   repository_dispatch:
@@ -15,23 +15,22 @@ on:
         required: false
         default: 'false'
 
-    
 env:
   UPLOAD_BIN_DIR: false
   UPLOAD_FIRMWARE: true
   UPLOAD_COWTRANSFER: false
   UPLOAD_WETRANSFER: false
-  UPLOAD_RELEASE: true  
+  UPLOAD_RELEASE: true
   SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
   REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
   REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
   DOCKER_ID: ${{ secrets.DOCKER_ID }}
   DOCKER_PASSWD: ${{ secrets.DOCKER_PASSWD }}  
   TZ: Asia/Shanghai
-  
+
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  merge:
+    runs-on: Ubuntu-20.04
     
     if: github.event.repository.owner.id == github.event.sender.id
     
@@ -49,31 +48,25 @@ jobs:
         sudo -E apt-get -qq autoremove --purge
         sudo -E apt-get -qq clean
         sudo timedatectl set-timezone "$TZ"
-
+        
     - name: 设置当前的日期
       id: date
       run: |
         echo "date=$(date +'%Y.%m.%d-%H%M')" >> $GITHUB_ENV
         echo "date2=$(date +'%m/%d %Y')" >> $GITHUB_ENV
         echo "date3=$(date +'%m.%d')" >> $GITHUB_ENV
-        echo "date4=$(date +'%m.%d.%Y')" >> $GITHUB_ENV
-
+        echo "date4=$(date +'%m.%d.%H')" >> $GITHUB_ENV        
+        
     - name: 克隆源代码
       env: 
-        REPO_URL: https://github.com/coolsnowwolf/lede
-        REPO_BRANCH: master
-        
+        REPO_URL: https://github.com/immortalwrt/immortalwrt
+        REPO_BRANCH: openwrt-18.06
+        TZ: Asia/Shanghai
       run: |
         git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
         cd openwrt
         echo "src-git ssrp https://github.com/fw876/helloworld.git" >> ./feeds.conf.default
-
-    - name: 设置缓存
-      uses: klever1988/cachewrtbuild@main
-      with:
-        ccache: 'true'
-        prefix: ${{ github.workspace }}/openwrt
-        
+  
     - name: 更新 & 安装 feeds
       working-directory: ./openwrt
       run: |
@@ -83,15 +76,18 @@ jobs:
     - name: 自定义安装源
       working-directory: ./openwrt
       run: |
-        git clone https://github.com/kenzok8/small-package package/small-package     
-
-    - name: 自定义配置文件Lean
+        git clone https://github.com/kenzok78/jeii package/jeii
+        
+    - name: 自定义配置ctc
+      env:
+        CONFIG_FILE: 'ctc.config'
       run: |
+        [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x ./customize.sh && ./customize.sh
-        cd openwrt 
-        cp -f package/small-package/diy/default-settings package/lean/default-settings/files/zzz-default-settings
-        cp -f package/small-package/diy/banner package/base-files/files/etc/banner
-        cp -f package/small-package/diy/Leandiffconfig .config && make defconfig
+        cd openwrt
+        cp -f package/jeii/commit/default-settings package/emortal/default-settings/files/zzz-default-settings
+        cp -f package/jeii/commit/banner package/emortal/default-settings/files/openwrt_banner
+        cp -f package/jeii/commit/ctcdiffconfig .config && make defconfig
         ./scripts/feeds update -a
         ./scripts/feeds install -a
         
@@ -101,6 +97,12 @@ jobs:
         make download -j$(nproc)
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
+
+    - name: 设置缓存
+      uses: klever1988/cachewrtbuild@main
+      with:
+        ccache: 'true'
+        prefix: ${{ github.workspace }}/openwrt
 
     - name: 编译固件
       working-directory: ./openwrt
@@ -129,14 +131,14 @@ jobs:
         -or -name "*sysupgrade*" \
         -or -name "sha256sums" \
         | xargs -i mv -f {} ./firmware/
-        cp openwrt/.config  ./firmware/Lean_5.10.config
+        cp openwrt/.config  ./firmware/${{matrix.target}}.config
         cd firmware
         echo "v.${{ env.date4 }}" > version.txt
         echo "${{ secrets.DOCKER_ID }}" >> version.txt
-        rm -rf sha256sums
         md5=$((md5sum *squashfs-sysupgrade* || md5sum *squashfs-combined-efi*) | awk '{print $1}') 2>/dev/null
         echo $md5 >> version.txt        
-        rename -v "s/^openwrt/${{ env.date3 }}_Lean/" *
+        rm -rf sha256sums
+        rename -v "s/^immortalwrt/${{ env.date3 }}_ctc_18.06/" *
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "DOCKERTAG=${{ secrets.DOCKER_ID }}/openwrt-6p:latest" >> $GITHUB_ENV
         echo "::set-output name=status::success"
@@ -150,13 +152,13 @@ jobs:
         REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
         REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
         REMOTE_USER: root
-        TARGET: "/www/wwwroot/${{ secrets.REMOTE_HOST }}/op/firmware/Lean/"           
+        TARGET: "/www/wwwroot/${{ secrets.REMOTE_HOST }}/op/firmware/ctc_18.06/"         
       
     - name: 上传固件目录
       uses: actions/upload-artifact@main
       if: steps.organize.outputs.status == 'success' && !cancelled()
       with:
-        name: ${{ env.date3 }} _Lean
+        name: ${{ env.date3 }}_ctc_18.06
         path: ${{ env.FIRMWARE }}
         
     - name: 设置Docker编译信息
@@ -180,8 +182,8 @@ jobs:
         context: .
         push: true
         tags: |
-          ${{ secrets.DOCKER_ID }}/openwrt-6p:Lean
-          ${{ env.DOCKERTAG }}         
+          ${{ secrets.DOCKER_ID }}/openwrt-6p:ctc_18.06
+          ${{ env.DOCKERTAG }}        
 
     - name: 上传固件cowtransfer
       id: cowtransfer
@@ -237,6 +239,4 @@ jobs:
         delete_tags: true
       env:
         GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
-
         
-          

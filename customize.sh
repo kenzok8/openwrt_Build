@@ -1,15 +1,12 @@
 #!/bin/bash
 #=================================================
-# Description: DIY script
-# Lisence: MIT
-# Author: kenzo
-#=================================================
+shopt -s extglob
+sed -i '/	refresh_config();/d' scripts/feeds
+
 #1. Modify default IP
-sed -i 's/192.168.1.1/192.168.3.1/g' openwrt/package/base-files/files/bin/config_generate
+sed -i 's/192.168.1.1/192.168.1.252/g' openwrt/package/base-files/files/bin/config_generate
 
-#2. 自定义设置
-#cp -f package/litte/default-settings package/lean/default-settings/files/zzz-default-settings
-#cp -f package/litte/banner package/base-files/files/etc/banner
-#cp -f package/litte/Leandiffconfig diffconfig && cp diffconfig .config && make defconfig
-#./scripts/feeds update -a && ./scripts/feeds install -a && ./scripts/feeds install -a
-
+#2. Custom settings
+#sed -i 's?zstd$?zstd ucl upx\n$(curdir)/upx/compile := $(curdir)/ucl/compile?g' tools/Makefile
+#sed -i 's/$(TARGET_DIR)) install/$(TARGET_DIR)) install --force-overwrite/' package/Makefile
+#sed -i 's/root:.*/root:$1$tTPCBw1t$ldzfp37h5lSpO9VXk4uUE\/:18336:0:99999:7:::/g' package/base-files/files/etc/shadow

@@ -1,37 +1,63 @@
-﻿## 搭建教程
+﻿#### AutoBuild-OpenWrt
+[1]: https://img.shields.io/badge/license-GPLV2-brightgreen.svg
+[2]: /LICENSE
+[3]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg
+[4]: https://github.com/kenzok8/openwrt_Build/pulls
+[5]: https://img.shields.io/badge/Issues-welcome-brightgreen.svg
+[6]: https://github.com/kenzok8/openwrt_Build/issues/new
+[7]: https://img.shields.io/github/v/release/hyird/Action-Openwrt
+[8]: https://github.com/kenzok8/openwrt_Build/releases
+[10]: https://img.shields.io/badge/Contact-telegram-blue
+[11]: https://t.me/joinchat/JjxmyRZZXJWb74I-sCrryA
+[12]: https://github.com/kenzok8/openwrt_Build/workflows/autobuild/badge.svg
+[13]: https://github.com/kenzok8/openwrt_Build/actions
 
-[esir 仓库地址](https://github.com/esirplayground/AutoBuild-OpenWrt.git)
+[![license][1]][2]
+[![GitHub Stars](https://img.shields.io/github/stars/kenzok8/openwrt_Build.svg?style=flat-square&label=Stars)](https://github.com/kenzok8/openwrt_Build/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/kenzok8/openwrt_Build.svg?style=flat-square&label=Forks)](https://github.com/kenzok8/openwrt_Build)
+[![PRs Welcome][3]][4]
+[![Issue Welcome][5]][6]
+[![AutoBuild][12]][13]
 
-*   四合一固件编译，若fork本人仓库，进入你仓库地址按右上角Star,触发编译
-*   四合一固件编译，一次性编译
-*   Lean  的源码(4.19.1**) 更换内核
-*   Lienol的源码(4.14.20*) 
-*   ctc te的源码(4.19.15*)
-*   NanoPi_R2S源码
+<a href="https://t.me/joinchat/JjxmyRZZXJWb74I-sCrryA" target="_blank">Telegram</a>
+
+#### 取消点赞触发，关联Update check触发编译！
+
++ 谢谢 **kiddin9珠玉在前**[openwrt固件与插件下载](https://op.dllkids.xyz/op/firmware/)
+
+#### 源码来源：
+[![esir](https://img.shields.io/badge/AutoBuild-esir-red.svg?style=flat&logo=appveyor)](https://github.com/esirplayground/AutoBuild-OpenWrt)
+ [![Lienol](https://img.shields.io/badge/passwall-openwrt-blueviolet.svg?style=flat&logo=appveyor)](https://github.com/xiaorouji/openwrt-passwall) 
+[![immortalwrt](https://img.shields.io/badge/immortalwrt-openwrt-orange.svg?style=flat&logo=appveyor)](https://github.com/immortalwrt/immortalwrt) 
+[![Lean](https://img.shields.io/badge/package-Lean-blueviolet.svg?style=flat&logo=appveyor)](https://github.com/coolsnowwolf/lede) 
+[![P3TERX](https://img.shields.io/badge/Actions-P3TERX-success.svg?style=flat&logo=appveyor)](https://github.com/P3TERX/Actions-OpenWrt)
+
+
+##### 固件发布:
+
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/kenzok8/openwrt_Build?style=for-the-badge&label=固件下载)](https://github.com/kenzok8/openwrt_Build/releases/latest)
+
+
 ##### 固件下载链接
 
-- [Lienol4.14内核固件](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3ALienol_x86_64)
-- [Lean5.4内核固件地址](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3ALean_5.4.7.%2A)
-- [Lean4.19内核固件地址](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3ALean_x86_64)
-- [ctc4.19内核固件下载](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3Actc_x86_64)
-- [NanoPi_R2S固件下载](https://github.com/kenzok8/LEDE-x86_64/actions?query=workflow%3ANanoPi_R2S)
+- [Lienol5.10内核固件地址](https://github.com/kenzok8/openwrt_Build/actions?query=workflow%3ALienol_5.10内核)
+- [Lean_5.10内核 固件地址](https://github.com/kenzok8/openwrt_Build/actions?query=workflow%3ALean_5.10内核)
+- [immortalwrt-21.02固件](https://github.com/kenzok8/openwrt_Build/actions?query=workflow%3Aopenwrt_21.02)
+- [immortalwrt-18.06固件](https://github.com/kenzok8/openwrt_Build/actions?query=workflow%3Aopenwrt_18.06)
+- [NanoPi_R2S__固件下载](https://github.com/kenzok8/openwrt_Build/actions?query=workflow%3ANanoPi_R2S)
+- [NanoPi_R4S__固件下载](https://github.com/kenzok8/openwrt_Build/actions?query=workflow%3ANanoPi_R4S)
 
 ### 默认插件包含:
 
 + SSR Plus 
 + passwall
-+ clash
 + openclash
-+ AdguardHome DNS+恶意网址过滤 （打包在ipk文件里）
 + 动态DDNS
-+ 京东签到
-+ SmartDNS 域名解析加速+抗污染 （打包在ipk文件里）
 + UPNP 自动端口转发
-+ Netdata 全能性能监控
 + Turbo ACC 网络加速
 + Mwan3 负载均衡
 + 默认多个主题
-+ 默认管理 IP: 192.168.3.1, 用户名 root，密码 password
++ 默认管理 IP: 192.168.1.252, 用户名 root，密码 password
 
 * 修改默认ip
 
@@ -45,7 +71,7 @@ rm -rf package/lean/luci-theme-argon
 
 * 添加新的主题
 ```bash
-git clone https://github.com/kenzok8/luci-theme-atmaterial.git package/lean/luci-theme-atmaterial
+git clone https://github.com/kenzok8/luci-theme-ifit.git package/lean/luci-theme-ifit
 ```
 * 添加常用软件包
 ```bash

@@ -4,7 +4,7 @@
 # Author: kenzo
 #=================================================
 
-name: Lean_5.10内核
+name: NanoPi_R4S
 
 on:
   repository_dispatch:
@@ -15,23 +15,22 @@ on:
         required: false
         default: 'false'
 
-    
 env:
   UPLOAD_BIN_DIR: false
   UPLOAD_FIRMWARE: true
   UPLOAD_COWTRANSFER: false
   UPLOAD_WETRANSFER: false
-  UPLOAD_RELEASE: true  
+  UPLOAD_RELEASE: true 
   SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
   REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
   REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
   DOCKER_ID: ${{ secrets.DOCKER_ID }}
   DOCKER_PASSWD: ${{ secrets.DOCKER_PASSWD }}  
   TZ: Asia/Shanghai
-  
+
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: Ubuntu-20.04
     
     if: github.event.repository.owner.id == github.event.sender.id
     
@@ -56,23 +55,17 @@ jobs:
         echo "date=$(date +'%Y.%m.%d-%H%M')" >> $GITHUB_ENV
         echo "date2=$(date +'%m/%d %Y')" >> $GITHUB_ENV
         echo "date3=$(date +'%m.%d')" >> $GITHUB_ENV
-        echo "date4=$(date +'%m.%d.%Y')" >> $GITHUB_ENV
+        echo "date4=$(date +'%m.%d.%Y')" >> $GITHUB_ENV   
 
     - name: 克隆源代码
       env: 
         REPO_URL: https://github.com/coolsnowwolf/lede
         REPO_BRANCH: master
-        
+        TZ: Asia/Shanghai     
       run: |
         git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
         cd openwrt
         echo "src-git ssrp https://github.com/fw876/helloworld.git" >> ./feeds.conf.default
-
-    - name: 设置缓存
-      uses: klever1988/cachewrtbuild@main
-      with:
-        ccache: 'true'
-        prefix: ${{ github.workspace }}/openwrt
         
     - name: 更新 & 安装 feeds
       working-directory: ./openwrt
@@ -83,15 +76,19 @@ jobs:
     - name: 自定义安装源
       working-directory: ./openwrt
       run: |
-        git clone https://github.com/kenzok8/small-package package/small-package     
+        git clone https://github.com/kenzok8/litte package/litte
+        git clone https://github.com/xiaorouji/openwrt-passwall package/passwall
 
-    - name: 自定义配置文件Lean
+    - name: 自定义配置文件NanoPi_R4S
+      env:
+        CONFIG_FILE: 'R4S.config'
       run: |
+        [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x ./customize.sh && ./customize.sh
-        cd openwrt 
-        cp -f package/small-package/diy/default-settings package/lean/default-settings/files/zzz-default-settings
-        cp -f package/small-package/diy/banner package/base-files/files/etc/banner
-        cp -f package/small-package/diy/Leandiffconfig .config && make defconfig
+        cd openwrt && rm -rf package/litte/luci-app-ssr-plus && rm -rf package/litte/naiveproxy
+        cp -f package/litte/commit/default-settings package/lean/default-settings/files/zzz-default-settings
+        cp -f package/litte/commit/banner package/base-files/files/etc/banner
+        cp -f package/litte/commit/R4Sdiffconfig .config && make defconfig
         ./scripts/feeds update -a
         ./scripts/feeds install -a
         
@@ -101,6 +98,12 @@ jobs:
         make download -j$(nproc)
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
+        
+    - name: 设置缓存
+      uses: klever1988/cachewrtbuild@main
+      with:
+        ccache: 'true'
+        prefix: ${{ github.workspace }}/openwrt
 
     - name: 编译固件
       working-directory: ./openwrt
@@ -120,7 +123,7 @@ jobs:
         name: OpenWrt_bin${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: openwrt/bin
 
-    - name: 整理文件
+    - name: 整理编译文件
       id: organize
       if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
       run: |
@@ -129,14 +132,14 @@ jobs:
         -or -name "*sysupgrade*" \
         -or -name "sha256sums" \
         | xargs -i mv -f {} ./firmware/
-        cp openwrt/.config  ./firmware/Lean_5.10.config
+        cp openwrt/.config  ./firmware/${{matrix.target}}.config
         cd firmware
         echo "v.${{ env.date4 }}" > version.txt
         echo "${{ secrets.DOCKER_ID }}" >> version.txt
         rm -rf sha256sums
         md5=$((md5sum *squashfs-sysupgrade* || md5sum *squashfs-combined-efi*) | awk '{print $1}') 2>/dev/null
         echo $md5 >> version.txt        
-        rename -v "s/^openwrt/${{ env.date3 }}_Lean/" *
+        rename -v "s/^openwrt/${{ env.date3 }}_NanoPi_R4S/" *
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "DOCKERTAG=${{ secrets.DOCKER_ID }}/openwrt-6p:latest" >> $GITHUB_ENV
         echo "::set-output name=status::success"
@@ -150,15 +153,15 @@ jobs:
         REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
         REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
         REMOTE_USER: root
-        TARGET: "/www/wwwroot/${{ secrets.REMOTE_HOST }}/op/firmware/Lean/"           
+        TARGET: "/www/wwwroot/${{ secrets.REMOTE_HOST }}/op/firmware/NanoPi_R4S/"           
       
     - name: 上传固件目录
       uses: actions/upload-artifact@main
       if: steps.organize.outputs.status == 'success' && !cancelled()
       with:
-        name: ${{ env.date3 }} _Lean
+        name: ${{ env.date3 }} _NanoPi_R2S
         path: ${{ env.FIRMWARE }}
-        
+
     - name: 设置Docker编译信息
       uses: docker/setup-buildx-action@master
       if: env.DOCKER_ID && env.DOCKER_PASSWD
@@ -180,8 +183,19 @@ jobs:
         context: .
         push: true
         tags: |
-          ${{ secrets.DOCKER_ID }}/openwrt-6p:Lean
-          ${{ env.DOCKERTAG }}         
+          ${{ secrets.DOCKER_ID }}/openwrt-6p:NanoPi_R4S
+          ${{ env.DOCKERTAG }} 
+
+    - name: 生成发布标签
+      id: tag
+      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+      run: |
+        echo -e "墙内外加速下载 🎈:\n" >> release.txt
+        echo -e "[kenzo] (https://op.dllkids.xyz/op/)\n" >> release.txt
+        touch release.txt
+        [ $UPLOAD_COWTRANSFER = true ] && echo "🔗 [Cowtransfer](${{ steps.cowtransfer.outputs.url }})" >> release.txt
+        [ $UPLOAD_WETRANSFER = true ] && echo "🔗 [WeTransfer](${{ steps.wetransfer.outputs.url }})" >> release.txt
+        echo "::set-output name=status::success"
 
     - name: 上传固件cowtransfer
       id: cowtransfer
@@ -200,17 +214,6 @@ jobs:
         ./transfer wet -s -p 16 --no-progress ${FIRMWARE} 2>&1 | tee wetransfer.log
         echo "::warning file=wetransfer.com::$(cat wetransfer.log | grep https)"
         echo "::set-output name=url::$(cat wetransfer.log | grep https | cut -f3 -d" ")"
-
-    - name: 生成发布标签
-      id: tag
-      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
-      run: |
-        echo -e "墙内外加速下载 🎈:\n" >> release.txt
-        echo -e "[kenzo] (https://op.dllkids.xyz/op/)\n" >> release.txt
-        touch release.txt
-        [ $UPLOAD_COWTRANSFER = true ] && echo "🔗 [Cowtransfer](${{ steps.cowtransfer.outputs.url }})" >> release.txt
-        [ $UPLOAD_WETRANSFER = true ] && echo "🔗 [WeTransfer](${{ steps.wetransfer.outputs.url }})" >> release.txt
-        echo "::set-output name=status::success"
 
     - name: 上传固件发布
       uses: softprops/action-gh-release@v1
@@ -237,6 +240,3 @@ jobs:
         delete_tags: true
       env:
         GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
-
-        
-          
