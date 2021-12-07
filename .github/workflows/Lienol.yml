@@ -144,7 +144,6 @@ jobs:
         echo "${{ env.VERSION }}.$(date +'%Y')" > version.txt
         rename -v "s/^openwrt/${{ env.VERSION }}-openwrt/" *
         rename -v "s/friendlyarm_//" *gz
-        md5=$((md5sum *squashfs-sysupgrade* || md5sum *squashfs-combined-efi*) | awk '{print $1}') 2>/dev/null
         echo $md5 >> version.txt
         echo $REPO_BRANCH >> version.txt     
         mv sha256sums ${{matrix.target}}_sha256sums
