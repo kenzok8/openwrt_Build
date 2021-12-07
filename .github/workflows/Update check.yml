@@ -56,7 +56,7 @@ jobs:
       if: steps.cacheHash.outputs.cache-hit != 'true'
       uses: peter-evans/repository-dispatch@v1
       with:
-        token: ${{ secrets.REPO_TOKEN }}
+        token: ${{ secrets.PAT1 }}
         event-type: ${{ env.date3 }} 
  
     - name: 删除工作流
