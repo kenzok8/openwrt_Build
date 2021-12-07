@@ -30,9 +30,14 @@ env:
 
 jobs:
   build:
-    runs-on: Ubuntu-20.04
-    
+    runs-on: Ubuntu-20.04    
     if: github.event.repository.owner.id == github.event.sender.id
+    
+    name: Build ${{matrix.target}}
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [NanoPi_R4S]    
     
     steps:
     - name: 检查
@@ -55,7 +60,10 @@ jobs:
         echo "date=$(date +'%Y.%m.%d-%H%M')" >> $GITHUB_ENV
         echo "date2=$(date +'%m/%d %Y')" >> $GITHUB_ENV
         echo "date3=$(date +'%m.%d')" >> $GITHUB_ENV
-        echo "date4=$(date +'%m.%d.%Y')" >> $GITHUB_ENV   
+        echo "date4=$(date +'%m.%d.%H')" >> $GITHUB_ENV
+        echo "DOCKERTAG=${{ secrets.DOCKER_ID }}/openwrt-4p:latest" >> $GITHUB_ENV
+        VERSION="$(echo "${{github.event.action}}" | grep -Eo " [0-9.]+" | sed -e 's/ //')" || true
+        [ "$VERSION" ] && echo "VERSION=$VERSION" >> $GITHUB_ENV || echo "VERSION=$(date +'%m.%d')" >> $GITHUB_ENV    
 
     - name: 克隆源代码
       env: 
@@ -79,7 +87,7 @@ jobs:
         git clone https://github.com/kenzok8/litte package/litte
         git clone https://github.com/xiaorouji/openwrt-passwall package/passwall
 
-    - name: 自定义配置文件NanoPi_R4S
+    - name: 自定义配置文件${{matrix.target}}
       env:
         CONFIG_FILE: 'R4S.config'
       run: |
@@ -127,19 +135,18 @@ jobs:
       id: organize
       if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
       run: |
-        mkdir firmware && find openwrt/bin/targets/*/*/ -maxdepth 1 \
-        -name "*combined*" \
-        -or -name "*sysupgrade*" \
-        -or -name "sha256sums" \
-        | xargs -i mv -f {} ./firmware/
+        mkdir firmware
+        mv -f openwrt/bin/targets/*/*/{*combined*,*sysupgrade*} ./firmware/ 2>/dev/null || true
         cp openwrt/.config  ./firmware/${{matrix.target}}.config
+        cp openwrt/build_dir/target-*/linux-*/linux-*/.config ./firmware/${{matrix.target}}_kernel.config
         cd firmware
-        echo "v.${{ env.date4 }}" > version.txt
-        echo "${{ secrets.DOCKER_ID }}" >> version.txt
-        rm -rf sha256sums
+        echo "${{ env.VERSION }}.$(date +'%Y')" > version.txt
+        rename -v "s/^openwrt/${{ env.VERSION }}-openwrt/" *
+        rename -v "s/friendlyarm_//" *gz
         md5=$((md5sum *squashfs-sysupgrade* || md5sum *squashfs-combined-efi*) | awk '{print $1}') 2>/dev/null
-        echo $md5 >> version.txt        
-        rename -v "s/^openwrt/${{ env.date3 }}_NanoPi_R4S/" *
+        echo $md5 >> version.txt
+        echo $REPO_BRANCH >> version.txt     
+        mv sha256sums ${{matrix.target}}_sha256sums
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "DOCKERTAG=${{ secrets.DOCKER_ID }}/openwrt-6p:latest" >> $GITHUB_ENV
         echo "::set-output name=status::success"
@@ -153,7 +160,7 @@ jobs:
         REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
         REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
         REMOTE_USER: root
-        TARGET: "/www/wwwroot/${{ secrets.REMOTE_HOST }}/op/firmware/NanoPi_R4S/"           
+        TARGET: "/www/wwwroot/${{ secrets.REMOTE_HOST }}/op/firmware/${{matrix.target}}/"           
       
     - name: 上传固件目录
       uses: actions/upload-artifact@main
@@ -183,7 +190,7 @@ jobs:
         context: .
         push: true
         tags: |
-          ${{ secrets.DOCKER_ID }}/openwrt-6p:NanoPi_R4S
+          ${{ secrets.DOCKER_ID }}/openwrt-6p:${{matrix.target}}
           ${{ env.DOCKERTAG }} 
 
     - name: 生成发布标签
