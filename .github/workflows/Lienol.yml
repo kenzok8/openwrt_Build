@@ -146,7 +146,7 @@ jobs:
         rename -v "s/friendlyarm_//" *gz
         echo $md5 >> version.txt
         echo $REPO_BRANCH >> version.txt     
-        mv sha256sums ${{matrix.target}}_sha256sums
+        rm -rf sha256sums
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "DOCKERTAG=${{ secrets.DOCKER_ID }}/openwrt-6p:latest" >> $GITHUB_ENV
         echo "::set-output name=status::success"

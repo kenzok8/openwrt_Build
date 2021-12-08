@@ -142,10 +142,9 @@ jobs:
         echo "${{ env.VERSION }}.$(date +'%Y')" > version.txt
         rename -v "s/^immortalwrt/${{ env.VERSION }}-openwrt/" *
         rename -v "s/friendlyarm_//" *gz
-        md5=$((md5sum *squashfs-sysupgrade* || md5sum *squashfs-combined-efi*) | awk '{print $1}') 2>/dev/null
         echo $md5 >> version.txt
         echo $REPO_BRANCH >> version.txt     
-        mv sha256sums ${{matrix.target}}_sha256sums
+        rm -rf sha256sums
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "DOCKERTAG=${{ secrets.DOCKER_ID }}/openwrt-6p:latest" >> $GITHUB_ENV
         echo "::set-output name=status::success"
