@@ -40,8 +40,8 @@
 
 ##### 固件下载链接
 
-- [Lienol5.10内核固件地址](https://github.com/kenzok8/openwrt_Build/actions?query=workflow%3ALienol_5.10内核)
-- [Lean_5.10内核 固件地址](https://github.com/kenzok8/openwrt_Build/actions?query=workflow%3ALean_5.10内核)
+- [Lienol5.10内核固件地址](https://github.com/kenzok8/openwrt_Build/actions?query=workflow%3ALienol)
+- [Lean_5.10内核 固件地址](https://github.com/kenzok8/openwrt_Build/actions?query=workflow%3ALean)
 - [immortalwrt-21.02固件](https://github.com/kenzok8/openwrt_Build/actions?query=workflow%3Aopenwrt_21.02)
 - [immortalwrt-18.06固件](https://github.com/kenzok8/openwrt_Build/actions?query=workflow%3Aopenwrt_18.06)
 - [NanoPi_R2S__固件下载](https://github.com/kenzok8/openwrt_Build/actions?query=workflow%3ANanoPi_R2S)
