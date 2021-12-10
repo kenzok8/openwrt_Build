@@ -140,8 +140,10 @@ jobs:
         cp openwrt/.config  ./firmware/${{matrix.target}}.config
         cp openwrt/build_dir/target-*/linux-*/linux-*/.config ./firmware/${{matrix.target}}_kernel.config
         cd firmware
-        echo "${{ env.VERSION }}.$(date +'%Y')" > version.txt
-        rename -v "s/^openwrt/${{ env.VERSION }}-openwrt/" *
+        echo "v${{ env.date4 }}" > version.txt
+        md5=$((md5sum *squashfs-sysupgrade* || md5sum *squashfs-combined-efi*) | awk '{print $1}') 2>/dev/null
+        echo $md5 >> version.txt
+        rename -v "s/^openwrt-x86-64-generic-squashfs-combined.img/${{ env.VERSION }}-${{matrix.target}}/" *
         rename -v "s/friendlyarm_//" *gz
         echo $md5 >> version.txt
         echo $REPO_BRANCH >> version.txt     
@@ -242,7 +244,7 @@ jobs:
       uses: dev-drprasad/delete-older-releases@v0.1.0
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
       with:
-        keep_latest: 6
+        keep_latest: 2
         delete_tags: true
       env:
         GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
