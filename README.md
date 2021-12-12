@@ -34,6 +34,16 @@
 [![Lean](https://img.shields.io/badge/package-Lean-blueviolet.svg?style=flat&logo=appveyor)](https://github.com/coolsnowwolf/lede) 
 [![P3TERX](https://img.shields.io/badge/Actions-P3TERX-success.svg?style=flat&logo=appveyor)](https://github.com/P3TERX/Actions-OpenWrt)
 
+| 设备           | 固件下载                                             | 🐳 Docker                              |说明                                        |
+|----------------|----------------------------------------------------- |----------------------------------------|--------------------------------------------|
+| Lean           | [📥](https://op.dllkids.xyz/op/firmware/Lean/)       | [kenzok8/openwrt-6p:Lean](https://hub.docker.com/r/kenzok8/openwrt-6p)      |                                 |
+| Lienol         | [📥](https://op.dllkids.xyz/op/firmware/Lienol/)     | [kenzok8/openwrt-6p:Lienol](https://hub.docker.com/r/kenzok8/openwrt-6p)      |                                 |
+| immortalwrt-18 | [📥](https://op.dllkids.xyz/op/firmware/ctc_18.06/)  | [kenzok8/openwrt-6p:ctc_18.06](https://hub.docker.com/r/kenzok8/openwrt-6p)      |                                 |
+| immortalwrt-21 | [📥](https://op.dllkids.xyz/op/firmware/ctc_21.02/)  | [kenzok8/openwrt-6p:ctc_21.02](https://hub.docker.com/r/kenzok8/openwrt-6p)      |                                 |
+| NanoPi-R2S     | [📥](https://op.dllkids.xyz/op/firmware/NanoPi_R2S/) | [kenzok8/openwrt-6p:nanopi-r2s](https://hub.docker.com/r/kenzok8/openwrt-6p)  |                                 |
+| NanoPi-R4S     | [📥](https://op.dllkids.xyz/op/firmware/NanoPi_R4S/) | [kenzok8/openwrt-6p:nanopi-r4s](https://hub.docker.com/r/kenzok8/openwrt-6p)  |
+
+
 
 ##### 固件发布:
 
