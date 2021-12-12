@@ -21,6 +21,8 @@
 
 <a href="https://t.me/joinchat/JjxmyRZZXJWb74I-sCrryA" target="_blank">Telegram</a>
 
+<img src="https://v1.jinrishici.com/all.svg?font-size=24&spacing=6">
+
 #### 取消点赞触发，关联Update check触发编译，默认每周六更新！
 
 ##### 谢谢 **kiddin9珠玉在前**[openwrt固件与插件下载](https://op.dllkids.xyz/op/firmware/)
