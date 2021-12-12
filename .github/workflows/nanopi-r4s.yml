@@ -4,7 +4,7 @@
 # Author: kenzo
 #=================================================
 
-name: NanoPi_R4S
+name: nanopi-r4s
 
 on:
   repository_dispatch:
@@ -37,7 +37,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [nanopi-r2s]    
+        target: [nanopi-r4s]    
     
     steps:
     - name: 检查
@@ -71,7 +71,7 @@ jobs:
         REPO_BRANCH: master
         TZ: Asia/Shanghai     
       run: |
-        git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
+        git clone --depth 1 $REPO_URL -b ${{matrix.target}} openwrt
         cd openwrt
         echo "src-git ssrp https://github.com/fw876/helloworld.git" >> ./feeds.conf.default
         
@@ -146,7 +146,7 @@ jobs:
         rename -v "s/^openwrt-rockchip-armv8-${{matrix.target}}-squashfs-sysupgrade/${{ env.VERSION }}-${{matrix.target}}/" *
         rename -v "s/friendlyarm_//" *gz
         echo $md5 >> version.txt
-        echo $REPO_BRANCH >> version.txt     
+        echo ${{matrix.target}} >> version.txt     
         rm -rf sha256sums
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         

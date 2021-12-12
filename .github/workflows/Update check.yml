@@ -29,7 +29,7 @@ jobs:
     - name: 获取提交哈希值
       id: getHash
       run: |
-        git clone --depth 1 $REPO_URL -b $REPO_BRANCH .
+        git clone --depth 1 $REPO_URL -b ${{matrix.target}} .
         echo "::set-output name=commitHash::$(git rev-parse HEAD)"
 
     - name: 比较提交哈希值

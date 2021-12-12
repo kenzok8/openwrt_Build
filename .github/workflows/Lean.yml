@@ -72,7 +72,7 @@ jobs:
         REPO_BRANCH: master
         
       run: |
-        git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
+        git clone --depth 1 $REPO_URL -b ${{matrix.target}} openwrt
         cd openwrt
         echo "src-git ssrp https://github.com/fw876/helloworld.git" >> ./feeds.conf.default
 
@@ -143,7 +143,7 @@ jobs:
         rename -v "s/^openwrt-x86-64-generic-squashfs-combined/${{ env.VERSION }}-${{matrix.target}}/" *
         rename -v "s/friendlyarm_//" *gz
         echo $md5 >> version.txt
-        echo $REPO_BRANCH >> version.txt     
+        echo ${{matrix.target}} >> version.txt     
         rm -rf sha256sums
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         
