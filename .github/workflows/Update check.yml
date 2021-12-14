@@ -14,6 +14,7 @@ name: Update Checker
 env:
   REPO_URL: https://github.com/kenzok8/small-package
   REPO_BRANCH: main
+  TZ: Asia/Shanghai
 
 on:
   workflow_dispatch:
@@ -51,6 +52,7 @@ jobs:
         echo "date2=$(date +'%m/%d %Y')" >> $GITHUB_ENV
         echo "date3=$(date +'%m.%d')" >> $GITHUB_ENV
         echo "date4=$(date +'%m.%d.%H')" >> $GITHUB_ENV        
+        sudo timedatectl set-timezone "$TZ"
 
     - name: 触发编译
       if: steps.cacheHash.outputs.cache-hit != 'true'
