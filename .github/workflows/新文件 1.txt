@@ -1,3 +1,0 @@
-openwrt-rockchip-armv8-nanopi-r4s-squashfs-sysupgrade
-
-rename -v "s/^openwrt/${{ env.VERSION }}-openwrt/" *
