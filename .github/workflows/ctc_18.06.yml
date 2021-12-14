@@ -142,9 +142,9 @@ jobs:
         echo "v${{ env.date4 }}" > version.txt
         md5=$((md5sum *squashfs-sysupgrade* || md5sum *squashfs-combined-efi*) | awk '{print $1}') 2>/dev/null
         echo $md5 >> version.txt
-        rename -v "s/^immortalwrt-x86-64-generic-squashfs-combined/${{ env.VERSION }}-${{matrix.target}}/" *
-        rename -v "s/^immortalwrt-x86-64-generic-squashfs-rootfs/openwrt-x86-64-generic-squashfs-rootfs/" *
-        rename -v "s/friendlyarm_//" *gz
+        rename -v "s/^immortalwrt-x86-64-generic-squashfs-combined/${{ env.VERSION }}-${{matrix.target}}/" * || true
+        rename -v "s/^immortalwrt-x86-64-generic-squashfs-rootfs/openwrt-x86-64-generic-squashfs-rootfs/" * || true
+        rename -v "s/friendlyarm_//" *gz || true
         echo $md5 >> version.txt
         echo ${{matrix.target}} >> version.txt     
         rm -rf sha256sums
