@@ -93,8 +93,11 @@ jobs:
       run: |
         git clone https://github.com/kenzok8/small-package package/small-package     
 
-    - name: 自定义配置文件Lean
+    - name: 自定义配置${{matrix.target}}
+      env:
+        CONFIG_FILE: '${{matrix.target}}.config'
       run: |
+        [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x ./customize.sh && ./customize.sh
         cd openwrt 
         cp -f package/small-package/diy/default-settings package/lean/default-settings/files/zzz-default-settings
