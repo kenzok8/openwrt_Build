@@ -84,7 +84,7 @@ jobs:
     - name: 自定义安装源
       working-directory: ./openwrt
       run: |
-         git clone https://github.com/kenzok8/small-package package/small-package
+         git clone https://github.com/kenzok8/small-package package/jeii
         
     - name: 自定义配置文件${{matrix.target}}
       env:
@@ -92,11 +92,10 @@ jobs:
       run: |
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x ./customize.sh && ./customize.sh
-        cd openwrt && rm -rf package/litte/adguardhome
-        rm -rf package/litte/luci-app-adguardhome
-        cp -f package/litte/commit/zzz-default-settings package/default-settings/files/zzz-default-settings
-        cp -f package/litte/commit/banner package/base-files/files/etc/banner
-        cp -f package/litte/commit/Lienoldiffconfig .config && make defconfig
+        cd openwrt
+        cp -f package/jeii/diy/default-settings package/lean/default-settings/files/zzz-default-settings
+        cp -f package/jeii/diy/banner package/base-files/files/etc/banner
+        cp -f package/jeii/diy/Lienoldiffconfig .config && make defconfig
         ./scripts/feeds update -a
         ./scripts/feeds install -a
         
