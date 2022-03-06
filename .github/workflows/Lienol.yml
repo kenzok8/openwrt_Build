@@ -93,7 +93,7 @@ jobs:
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x ./customize.sh && ./customize.sh
         cd openwrt
-        cp -f package/jeii/diy/default-settings package/lean/default-settings/files/zzz-default-settings
+        cp -f package/jeii/diy/zzz-default-settings package/default-settings/files/zzz-default-settings
         cp -f package/jeii/diy/banner package/base-files/files/etc/banner
         cp -f package/jeii/diy/Lienoldiffconfig .config && make defconfig
         ./scripts/feeds update -a
