@@ -84,7 +84,7 @@ jobs:
     - name: 自定义安装源
       working-directory: ./openwrt
       run: |
-         git clone https://github.com/kenzok8/small-package package/small-package
+         git clone https://github.com/kenzok8/small-package package/jeii
 
     - name: 自定义配置文件${{matrix.target}}
       env:
