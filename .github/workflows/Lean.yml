@@ -99,6 +99,9 @@ jobs:
         cp -f package/jeii/diy/Leandiffconfig .config && make defconfig
         ./scripts/feeds update -a
         ./scripts/feeds install -a
+        make download -j$(($(nproc)+1))
+        find dl -size -1024c -exec ls -l {} \;
+        find dl -size -1024c -exec rm -f {} \;        
         
     - name: 设置缓存
       uses: klever1988/cachewrtbuild@main
@@ -106,13 +109,6 @@ jobs:
         ccache: 'true'
         prefix: ${{ github.workspace }}/openwrt
         
-    - name: 下载包文件
-      working-directory: ./openwrt
-      run: |
-        make download -j$(nproc)
-        find dl -size -1024c -exec ls -l {} \;
-        find dl -size -1024c -exec rm -f {} \;
-
     - name: 编译固件
       working-directory: ./openwrt
       run: |
