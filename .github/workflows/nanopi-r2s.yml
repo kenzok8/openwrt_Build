@@ -93,8 +93,11 @@ jobs:
         chmod +x ./customize.sh && ./customize.sh
         cd openwrt
         cp -f package/jeii/diy/default-settings package/emortal/default-settings/files/99-default-settings
+        sed -i 's/v$date1/Mar/g' package/emortal/default-settings/files/99-default-settings
         cp -f package/jeii/diy/banner package/emortal/default-settings/files/openwrt_banner
+        sed -i 's/%D %V, %C/openwrt Mar by kenzo/g' package/emortal/default-settings/files/openwrt_banner
         cp -f package/jeii/diy/banner package/base-files/files/etc/banner
+        sed -i 's/%D %V, %C/openwrt Mar by kenzo/g' package/base-files/files/etc/banner
         cp -f package/jeii/diy/R2Sdiffconfig .config && make defconfig
         ./scripts/feeds update -a
         ./scripts/feeds install -a

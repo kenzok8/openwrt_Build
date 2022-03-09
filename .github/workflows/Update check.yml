@@ -59,7 +59,7 @@ jobs:
       uses: peter-evans/repository-dispatch@v1
       with:
         token: ${{ secrets.REPO_TOKEN }}
-        event-type: ${{ env.date4 }}编译
+        event-type: ${{ env.date4 }} 编译
  
     - name: 删除工作流
       uses: GitRML/delete-workflow-runs@main
