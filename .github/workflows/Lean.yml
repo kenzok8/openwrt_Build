@@ -10,10 +10,10 @@ on:
   repository_dispatch:
   workflow_dispatch:
     inputs:
-      version:
-        description: 'Version'
+      ssh:
+        description: 'SSH connection to Actions'
         required: false
-        default: ''
+        default: 'false'
     
 env:
   UPLOAD_BIN_DIR: false
