@@ -8,12 +8,6 @@ name: Lean
 
 on:
   repository_dispatch:
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'Version'
-        required: false
-        default: ''
     
 env:
   UPLOAD_BIN_DIR: false
@@ -30,7 +24,7 @@ env:
   
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: Ubuntu-20.04
     if: github.event.repository.owner.id == github.event.sender.id
     
     name: Build ${{matrix.target}}
