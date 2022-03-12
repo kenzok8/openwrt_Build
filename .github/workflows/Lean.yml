@@ -10,10 +10,10 @@ on:
   repository_dispatch:
   workflow_dispatch:
     inputs:
-      ssh:
-        description: 'SSH connection to Actions'
+      version:
+        description: 'Version'
         required: false
-        default: 'false'
+        default: ''
     
 env:
   UPLOAD_BIN_DIR: false
@@ -98,10 +98,7 @@ jobs:
         cp -f package/jeii/diy/banner package/base-files/files/etc/banner
         sed -i 's/%D %V, %C/openwrt Mar by kenzo/g' package/base-files/files/etc/banner
         cp -f package/jeii/diy/Leandiffconfig .config && make defconfig
-        ./scripts/feeds update -a
-        ./scripts/feeds install -a
-        make download -j$(($(nproc)+1))
-        find dl -size -1024c -exec ls -l {} \;
+        make download -j8
         find dl -size -1024c -exec rm -f {} \;        
         
     - name: 设置缓存
