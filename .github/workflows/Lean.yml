@@ -69,7 +69,7 @@ jobs:
       env: 
         REPO_URL: https://github.com/coolsnowwolf/lede
         REPO_BRANCH: master
-        
+        TZ: Asia/Shanghai         
       run: |
         git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
         cd openwrt
@@ -95,7 +95,7 @@ jobs:
         sed -i 's/v$date1/Mar/g' package/lean/default-settings/files/zzz-default-settings
         cp -f package/jeii/diy/banner package/base-files/files/etc/banner
         sed -i 's/%D %V, %C/openwrt Mar by kenzo/g' package/base-files/files/etc/banner
-        cp -f package/jeii/diy/Leandiffconfig .config && make defconfig
+        cp -f package/jeii/diy/${{matrix.target}}.config .config && make defconfig
         ./scripts/feeds update -a
         ./scripts/feeds install -a       
         
@@ -103,7 +103,6 @@ jobs:
       working-directory: ./openwrt
       run: |
         make download -j$(nproc)
-        find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
 
     - name: 设置缓存

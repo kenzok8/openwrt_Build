@@ -87,7 +87,7 @@ jobs:
 
     - name: 自定义配置文件${{matrix.target}}
       env:
-        CONFIG_FILE: 'R2S.config'
+        CONFIG_FILE: '${{matrix.target}}.config'
       run: |
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x ./customize.sh && ./customize.sh
@@ -98,7 +98,7 @@ jobs:
         sed -i 's/%D %V, %C/openwrt Mar by kenzo/g' package/emortal/default-settings/files/openwrt_banner
         cp -f package/jeii/diy/banner package/base-files/files/etc/banner
         sed -i 's/%D %V, %C/openwrt Mar by kenzo/g' package/base-files/files/etc/banner
-        cp -f package/jeii/diy/R2Sdiffconfig .config && make defconfig
+        cp -f package/jeii/diy/${{matrix.target}}.config .config && make defconfig
         ./scripts/feeds update -a
         ./scripts/feeds install -a
       
@@ -106,7 +106,6 @@ jobs:
       working-directory: ./openwrt
       run: |
         make download -j$(nproc)
-        find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
 
     - name: 设置缓存

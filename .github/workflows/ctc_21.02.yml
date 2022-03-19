@@ -71,7 +71,7 @@ jobs:
       env: 
         REPO_URL: https://github.com/immortalwrt/immortalwrt
         REPO_BRANCH: openwrt-21.02
-       
+        TZ: Asia/Shanghai        
       run: |
         git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
         cd openwrt
@@ -87,9 +87,9 @@ jobs:
         ./scripts/feeds update -a
         ./scripts/feeds install -a   
         
-    - name: 自定义配置文件
+    - name: 自定义配置文件${{matrix.target}}
       env:
-        CONFIG_FILE: '21diffconfig'
+        CONFIG_FILE: '${{matrix.target}}.config'
       run: |
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x ./customize.sh && ./customize.sh
@@ -100,7 +100,7 @@ jobs:
         sed -i 's/%D %V, %C/openwrt Mar by kenzo/g' package/emortal/default-settings/files/openwrt_banner
         cp -f package/jeii/commit/banner package/base-files/files/etc/banner
         sed -i 's/%D %V, %C/openwrt Mar by kenzo/g' package/base-files/files/etc/banner
-        cp -f package/jeii/commit/21diffconfig .config && make defconfig
+        cp -f package/jeii/commit/${{matrix.target}}.config .config && make defconfig
         ./scripts/feeds update -a
         ./scripts/feeds install -a
         
@@ -108,7 +108,6 @@ jobs:
       working-directory: ./openwrt
       run: |
         make download -j$(nproc)
-        find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
 
     - name: 设置缓存
