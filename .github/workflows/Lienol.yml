@@ -98,7 +98,7 @@ jobs:
         cp -f package/jeii/diy/${{matrix.target}}.config .config && make defconfig
         ./scripts/feeds update -a
         ./scripts/feeds install -a
-	
+
     - name: 下载包文件
       working-directory: ./openwrt
       run: |
