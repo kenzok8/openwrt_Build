@@ -25,7 +25,7 @@ env:
   REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
   REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
   DOCKER_ID: ${{ secrets.DOCKER_ID }}
-  DOCKER_PASSWD: ${{ secrets.DOCKER_PASSWD }}  
+  DOCKER_PASSWD: ${{ secrets.DOCKER_PASSWD }}
   TZ: Asia/Shanghai
 
 jobs:
@@ -83,9 +83,9 @@ jobs:
       working-directory: ./openwrt
       run: |
         ./scripts/feeds update -a
-        ./scripts/feeds install -a   
+        ./scripts/feeds install -a
         
-    - name: 自定义配置${{matrix.target}}
+    - name: 自定义配置 ${{matrix.target}}
       env:
         CONFIG_FILE: '${{matrix.target}}.config'
       run: |
@@ -115,7 +115,7 @@ jobs:
       run: |
         echo -e "$(($(nproc)+1)) thread compile"
         make -j$(($(nproc)+1)) || make -j1 V=s
-        echo "::set-output name=status::success"        
+        echo "::set-output name=status::success"      
      
     - name: 检查空间使用情况
       if: (!cancelled())
