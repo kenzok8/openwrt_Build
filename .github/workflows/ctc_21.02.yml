@@ -86,7 +86,7 @@ jobs:
         ./scripts/feeds update -a
         ./scripts/feeds install -a   
         
-    - name: 自定义配置文件${{matrix.target}}
+    - name: 自定义配置 ${{matrix.target}}
       env:
         CONFIG_FILE: '${{matrix.target}}.config'
       run: |
