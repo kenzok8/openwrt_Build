@@ -29,16 +29,16 @@ env:
   TZ: Asia/Shanghai
 
 jobs:
-  build:
-    runs-on: Ubuntu-20.04 
+  merge:
+    runs-on: Ubuntu-20.04
     if: github.event.repository.owner.id == github.event.sender.id
-    
+
     name: Build ${{matrix.target}}
     strategy:
       fail-fast: false
       matrix:
-        target: [Lienol]    
-     
+        target: [Lienol]
+    
     steps:
     - name: 检查
       uses: actions/checkout@main
@@ -69,11 +69,11 @@ jobs:
       env: 
         REPO_URL: https://github.com/Lienol/openwrt
         REPO_BRANCH: main
-        TZ: Asia/Shanghai       
+        TZ: Asia/Shanghai
       run: |
         git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
         cd openwrt
-        
+  
     - name: 自定义安装源
       working-directory: ./openwrt
       run: |
@@ -83,9 +83,9 @@ jobs:
       working-directory: ./openwrt
       run: |
         ./scripts/feeds update -a
-        ./scripts/feeds install -a
+        ./scripts/feeds install -a   
         
-    - name: 自定义配置文件${{matrix.target}}
+    - name: 自定义配置${{matrix.target}}
       env:
         CONFIG_FILE: '${{matrix.target}}.config'
       run: |
@@ -97,9 +97,7 @@ jobs:
         cp -f package/jeii/diy/banner package/base-files/files/etc/banner
         sed -i 's/%D %V, %C/openwrt Mar by kenzo/g' package/base-files/files/etc/banner
         cp -f package/jeii/diy/${{matrix.target}}.config .config && make defconfig
-        ./scripts/feeds update -a
-        ./scripts/feeds install -a
-
+        
     - name: 下载包文件
       working-directory: ./openwrt
       run: |
@@ -158,7 +156,7 @@ jobs:
         REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
         REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
         REMOTE_USER: root
-        TARGET: "/www/wwwroot/${{ secrets.REMOTE_HOST }}/op/firmware/${{matrix.target}}/"        
+        TARGET: "/www/wwwroot/${{ secrets.REMOTE_HOST }}/op/firmware/${{matrix.target}}/"         
       
     - name: 上传固件目录
       uses: actions/upload-artifact@main
@@ -189,7 +187,7 @@ jobs:
         push: true
         tags: |
           ${{ secrets.DOCKER_ID }}/openwrt-6p:${{matrix.target}}
-          ${{ env.DOCKERTAG }}         
+          ${{ env.DOCKERTAG }}        
 
     - name: 上传固件cowtransfer
       id: cowtransfer

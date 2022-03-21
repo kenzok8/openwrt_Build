@@ -98,10 +98,9 @@ jobs:
         sed -i 's/%D %V, %C/openwrt Mar by kenzo/g' package/emortal/default-settings/files/openwrt_banner
         cp -f package/jeii/diy/banner package/base-files/files/etc/banner
         sed -i 's/%D %V, %C/openwrt Mar by kenzo/g' package/base-files/files/etc/banner
+        cp -f package/jeii/diy/index_x86.htm package/emortal/autocore/files/generic/index.htm        
         cp -f package/jeii/diy/${{matrix.target}}.config .config && make defconfig
-        ./scripts/feeds update -a
-        ./scripts/feeds install -a
- 
+
     - name: 下载包文件
       working-directory: ./openwrt
       run: |
