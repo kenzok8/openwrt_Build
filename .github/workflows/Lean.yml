@@ -96,7 +96,7 @@ jobs:
         cp -f package/jeii/diy/default-settings package/lean/default-settings/files/zzz-default-settings
         sed -i 's/v$date1/Mar/g' package/lean/default-settings/files/zzz-default-settings
         cp -f package/jeii/diy/banner package/base-files/files/etc/banner
-        patch -p1 < "package/jeii/diy//patches/prereq-build_new.patch"
+        patch -p1 < "package/jeii/diy/patches/prereq-build_new.patch"
         sed -i 's/%D %V, %C/openwrt Mar by kenzo/g' package/base-files/files/etc/banner
         cp -f package/jeii/diy/index_x86.htm package/lean/autocore/files/x86/index.htm
         cp -f package/jeii/diy/${{matrix.target}}.config .config && make defconfig
