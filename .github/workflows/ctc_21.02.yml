@@ -99,7 +99,7 @@ jobs:
         sed -i 's/%D %V, %C/openwrt Mar by kenzo/g' package/emortal/default-settings/files/openwrt_banner
         cp -f package/jeii/commit/banner package/base-files/files/etc/banner
         sed -i 's/%D %V, %C/openwrt Mar by kenzo/g' package/base-files/files/etc/banner
-        patch -p1 < "package/jeii/diy//patches/prereq-build_new.patch"
+        patch -p1 < "package/jeii/commit/patches/prereq-build_new.patch"
         cp -f package/jeii/commit/${{matrix.target}}.config .config && make defconfig
         
     - name: 下载包文件
