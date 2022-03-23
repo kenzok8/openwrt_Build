@@ -74,11 +74,12 @@ jobs:
       run: |
         git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
         cd openwrt
-        
-    - name: 自定义安装源
-      working-directory: ./openwrt
-      run: |
-        git clone https://github.com/kenzok78/jeii package/jeii
+        sed -i '$a src-git smpackage https://github.com/kenzok8/small-package' feeds.conf.default
+
+    #- name: 自定义安装源
+    #  working-directory: ./openwrt
+    #  run: |
+    #    git clone https://github.com/kenzok78/jeii package/jeii
 
     - name: 更新 & 安装 feeds
       working-directory: ./openwrt
@@ -93,14 +94,14 @@ jobs:
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x ./customize.sh && ./customize.sh
         cd openwrt
-        cp -f package/jeii/commit/default-settings package/emortal/default-settings/files/99-default-settings
+        cp -f feeds/smpackage/diy/default-settings package/emortal/default-settings/files/99-default-settings
         sed -i 's/v$date1/Mar/g' package/emortal/default-settings/files/99-default-settings
-        cp -f package/jeii/commit/banner package/emortal/default-settings/files/openwrt_banner
+        cp -f feeds/smpackage/diy/banner package/emortal/default-settings/files/openwrt_banner
         sed -i 's/%D %V, %C/openwrt Mar by kenzo/g' package/emortal/default-settings/files/openwrt_banner
-        cp -f package/jeii/commit/banner package/base-files/files/etc/banner
+        cp -f feeds/smpackage/diy/banner package/base-files/files/etc/banner
         sed -i 's/%D %V, %C/openwrt Mar by kenzo/g' package/base-files/files/etc/banner
-        patch -p1 < "package/jeii/commit/prereq-build_new.patch"
-        cp -f package/jeii/commit/${{matrix.target}}.config .config && make defconfig
+        patch -p1 < "feeds/smpackage/diy/prereq-build_new.patch"
+        cp -f feeds/smpackage/diy/${{matrix.target}}.config .config && make defconfig
         
     - name: 下载包文件
       working-directory: ./openwrt
