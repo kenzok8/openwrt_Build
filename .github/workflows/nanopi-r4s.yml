@@ -69,7 +69,7 @@ jobs:
     - name: 克隆源代码
       env: 
         REPO_URL: https://github.com/immortalwrt/immortalwrt
-        REPO_BRANCH: openwrt-18.06-k5.4    
+        REPO_BRANCH: openwrt-21.02   
       run: |
         git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
         cd openwrt
@@ -99,7 +99,7 @@ jobs:
         sed -i 's/%D %V, %C/openwrt Mar by kenzo/g' package/emortal/default-settings/files/openwrt_banner
         cp -f feeds/smpackage/diy/banner package/base-files/files/etc/banner
         sed -i 's/%D %V, %C/openwrt Mar by kenzo/g' package/base-files/files/etc/banner
-        cp -f feeds/smpackage/diy/index_x86.htm package/emortal/autocore/files/generic/index.htm        
+        patch -p1 < "feeds/smpackage/diy/patches/prereq-build_new.patch"
         cp -f feeds/smpackage/diy/${{matrix.target}}.config .config && make defconfig
 
     - name: 下载包文件
