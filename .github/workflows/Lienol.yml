@@ -94,6 +94,7 @@ jobs:
         chmod +x ./customize.sh && ./customize.sh
         cd openwrt
         rm -rf /feeds/luci/themes/luci-theme-argon
+        ./scripts/feeds update -a && ./scripts/feeds install -a
         cp -f feeds/smpackage/diy/zzz-default-settings package/default-settings/files/zzz-default-settings
         sed -i 's/v$date1/Mar/g' package/default-settings/files/zzz-default-settings
         cp -f feeds/smpackage/diy/banner package/base-files/files/etc/banner
