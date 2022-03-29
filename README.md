@@ -53,7 +53,8 @@
 ### 默认插件包含:
 
 + SSR Plus 
-+ passwall
++ passwall2
++ bypass
 + openclash
 + 动态DDNS
 + UPNP 自动端口转发
