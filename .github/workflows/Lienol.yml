@@ -98,6 +98,7 @@ jobs:
         cp -f feeds/smpackage/diy/zzz-default-settings package/default-settings/files/zzz-default-settings
         sed -i 's/v$date1/April/g' package/default-settings/files/zzz-default-settings
         cp -f feeds/smpackage/diy/banner package/base-files/files/etc/banner
+        cp -Rf feeds/smpackage/diy/files/* files
         sed -i 's/%D %V, %C/openwrt April by kenzo/g' package/base-files/files/etc/banner
         cp -f feeds/smpackage/diy/${{matrix.target}}.config .config && make defconfig
         
