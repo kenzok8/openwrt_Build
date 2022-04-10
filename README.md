@@ -58,8 +58,6 @@
 + openclash
 + 动态DDNS
 + UPNP 自动端口转发
-+ Turbo ACC 网络加速
-+ Mwan3 负载均衡
 + 默认多个主题
 + 默认管理 IP: 192.168.1.252, 用户名 root，密码 password
 
