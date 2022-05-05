@@ -153,7 +153,30 @@ jobs:
         REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
         REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
         REMOTE_USER: root
-        TARGET: "/www/wwwroot/${{ secrets.REMOTE_HOST }}/op/firmware/${{matrix.target}}/"         
+        TARGET: "/www/wwwroot/${{ secrets.REMOTE_HOST }}/op/firmware/${{matrix.target}}/"
+	
+    - name: Deploy some packages to server
+      uses: easingthemes/ssh-deploy@main
+      if: env.SSH_PRIVATE_KEY && ! contains(github.event.action, 'noser')
+      with:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        ARGS: "-avzr"
+        SOURCE: openwrt/bin/packages/*/base/*-firmware*
+        REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+        REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
+        REMOTE_USER: root
+        TARGET: "/www/wwwroot/${{ secrets.REMOTE_HOST }}/packages/${{matrix.target}}/"
+
+    - name: remote ssh command
+      uses: appleboy/ssh-action@master
+      if: env.SSH_PRIVATE_KEY && ! contains(github.event.action, 'noser')
+      with:
+        host: ${{ secrets.REMOTE_HOST }}
+        username: root
+        key: ${{ env.SSH_PRIVATE_KEY }}
+        script: |
+          cd /www/wwwroot/${{ secrets.REMOTE_HOST }}/packages/${{matrix.target}}/
+          opkg &
 
     - name: 上传固件目录
       uses: actions/upload-artifact@main
