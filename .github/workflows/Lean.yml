@@ -172,6 +172,7 @@ jobs:
       if: env.SSH_PRIVATE_KEY && ! contains(github.event.action, 'noser')
       with:
         host: ${{ secrets.REMOTE_HOST }}
+        port: ${{ secrets.REMOTE_PORT }}
         username: root
         key: ${{ env.SSH_PRIVATE_KEY }}
         script: |
