@@ -22,6 +22,7 @@ env:
   UPLOAD_WETRANSFER: false
   UPLOAD_RELEASE: true
   SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+  PASSWORD: ${{ secrets.PASSWORD }}
   REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
   REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
   DOCKER_ID: ${{ secrets.DOCKER_ID }}
@@ -174,7 +175,7 @@ jobs:
         host: ${{ secrets.REMOTE_HOST }}
         port: ${{ secrets.REMOTE_PORT }}
         username: root
-        key: ${{ env.SSH_PRIVATE_KEY }}
+        password: ${{ secrets.PASSWORD }}
         script: |
           cd /www/wwwroot/${{ secrets.REMOTE_HOST }}/packages/${{matrix.target}}/
           opkg &
