@@ -95,12 +95,12 @@ jobs:
         chmod +x ./customize.sh && ./customize.sh
         cd openwrt
         cp -f feeds/smpackage/diy/default-settings package/emortal/default-settings/files/99-default-settings
-        sed -i 's/v$date1/May/g' package/emortal/default-settings/files/99-default-settings
+        sed -i 's/v$date1/June/g' package/emortal/default-settings/files/99-default-settings
         cp -f feeds/smpackage/diy/banner package/emortal/default-settings/files/openwrt_banner
-        sed -i 's/%D %V, %C/openwrt May by kenzo/g' package/emortal/default-settings/files/openwrt_banner
+        sed -i 's/%D %V, %C/openwrt June by kenzo/g' package/emortal/default-settings/files/openwrt_banner
         cp -f feeds/smpackage/diy/banner package/base-files/files/etc/banner
         cp -Rf feeds/smpackage/diy/files/* files
-        sed -i 's/%D %V, %C/openwrt May by kenzo/g' package/base-files/files/etc/banner
+        sed -i 's/%D %V, %C/openwrt June by kenzo/g' package/base-files/files/etc/banner
         patch -p1 < "feeds/smpackage/diy/patches/prereq-build_new.patch"
         cp -f feeds/smpackage/diy/${{matrix.target}}.config .config && make defconfig
         
