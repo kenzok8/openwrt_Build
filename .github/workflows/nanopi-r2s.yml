@@ -69,8 +69,8 @@ jobs:
 
     - name: 克隆源代码
       env: 
-        REPO_URL: https://github.com/immortalwrt/immortalwrt
-        REPO_BRANCH: openwrt-18.06-k5.4    
+        REPO_URL: https://github.com/coolsnowwolf/lede
+        REPO_BRANCH: master   
       run: |
         git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
         cd openwrt
@@ -94,13 +94,11 @@ jobs:
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x ./customize.sh && ./customize.sh
         cd openwrt
-        cp -f feeds/smpackage/diy/default-settings package/emortal/default-settings/files/99-default-settings
-        sed -i 's/v$date1/Nov/g' package/emortal/default-settings/files/99-default-settings
-        cp -f feeds/smpackage/diy/banner package/emortal/default-settings/files/openwrt_banner
-        sed -i 's/%D %V, %C/openwrt Nov by kenzo/g' package/emortal/default-settings/files/openwrt_banner
+        cp -f feeds/smpackage/diy/default-settings package/lean/default-settings/files/zzz-default-settings
+        sed -i 's/v$date1/Nov/g' package/lean/default-settings/files/zzz-default-settings
         cp -f feeds/smpackage/diy/banner package/base-files/files/etc/banner
         sed -i 's/%D %V, %C/openwrt Nov by kenzo/g' package/base-files/files/etc/banner
-        cp -f feeds/smpackage/diy/index_x86.htm package/emortal/autocore/files/generic/index.htm         
+        cp -f feeds/smpackage/diy/index_x86.htm package/lean/autocore/files/x86/index.htm
         cp -f feeds/smpackage/diy/${{matrix.target}}.config .config && make defconfig
       
     - name: 下载包文件
