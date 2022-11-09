@@ -143,10 +143,10 @@ jobs:
         echo "v${{ env.date4 }}" > version.txt
         md5=$((md5sum *squashfs-sysupgrade* || md5sum *squashfs-combined-efi*) | awk '{print $1}') 2>/dev/null
         echo $md5 >> version.txt
-        rename -v "s/^immortalwrt/${{ env.VERSION }}-openwrt/" * || true
+        rename -v "s/^openwrt/${{ env.VERSION }}-openwrt/" * || true
         rename -v "s/friendlyarm_//" *gz || true
         echo $md5 >> version.txt
-        echo ${{matrix.target}} >> version.txt     
+        echo ${{matrix.target}} >> version.txt
         rm -rf sha256sums
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         
