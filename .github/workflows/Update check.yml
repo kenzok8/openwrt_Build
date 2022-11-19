@@ -67,7 +67,7 @@ jobs:
         event-type: ${{ env.date3 }} ${{ github.event.inputs.version }}
  
     - name: 删除工作流
-      uses: GitRML/delete-workflow-runs@main
+      uses: Mattraks/delete-workflow-runs@v2.0.2
       with:
         retain_days: 1
         keep_minimum_runs: 1
