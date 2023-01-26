@@ -40,7 +40,7 @@ jobs:
 
     - name: 比较提交哈希值
       id: cacheHash
-      uses: actions/cache@v2
+      uses: actions/cache@main
       with:
         path: .commitHash
         key: HEAD-${{ steps.getHash.outputs.commitHash }}
@@ -61,13 +61,13 @@ jobs:
 
     - name: 触发编译
       if: steps.cacheHash.outputs.cache-hit != 'true'
-      uses: peter-evans/repository-dispatch@v1
+      uses: peter-evans/repository-dispatch@main
       with:
         token: ${{ secrets.REPO_TOKEN }}
         event-type: ${{ env.date3 }} ${{ github.event.inputs.version }}
  
     - name: 删除工作流
-      uses: Mattraks/delete-workflow-runs@v2.0.2
+      uses: Mattraks/delete-workflow-runs@main
       with:
         retain_days: 1
         keep_minimum_runs: 1

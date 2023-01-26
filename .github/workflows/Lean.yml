@@ -113,7 +113,6 @@ jobs:
       run: |
         echo -e "$(($(nproc)+1)) thread compile"
         make -j$(($(nproc)+1)) || make -j1 V=s
-        echo "::set-output name=status::success"
      
     - name: 检查空间使用情况
       if: (!cancelled())
@@ -217,7 +216,7 @@ jobs:
         echo "::set-output name=status::success"
 
     - name: 上传固件发布
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@master
       if: steps.tag.outputs.status == 'success' && !cancelled()
       env:
         GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
@@ -228,13 +227,13 @@ jobs:
         body_path: release.txt
 
     - name: 删除工作流
-      uses: GitRML/delete-workflow-runs@main
+      uses: Mattraks/delete-workflow-runs@main
       with:
         retain_days: 1
         keep_minimum_runs: 0
 
     - name: 删除旧版本
-      uses: dev-drprasad/delete-older-releases@v0.1.0
+      uses: dev-drprasad/delete-older-releases@master
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
       with:
         keep_latest: 6
