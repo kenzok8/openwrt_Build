@@ -9,7 +9,7 @@
 [8]: https://github.com/kenzok8/openwrt_Build/releases
 [10]: https://img.shields.io/badge/Contact-telegram-blue
 [11]: https://t.me/joinchat/JjxmyRZZXJWb74I-sCrryA
-[12]: https://github.com/github/docs/actions/workflows/Lean.yml/badge.svg
+[12]: https://github.com/github/docs/actions/workflows/master.yml/badge.svg
 [13]: https://github.com/kenzok8/openwrt_Build/actions
 
 [![license][1]][2]
@@ -43,12 +43,12 @@
 
 ##### 固件下载链接
 
-- [Lienol5.10内核固件地址](https://github.com/kenzok8/openwrt_Build/actions?query=workflow%3ALienol)
-- [Lean_5.15内核 固件地址](https://github.com/kenzok8/openwrt_Build/actions?query=workflow%3ALean)
-- [immortalwrt-21.02固件](https://github.com/kenzok8/openwrt_Build/actions?query=workflow%3Aopenwrt_21.02)
-- [immortalwrt-18.06固件](https://github.com/kenzok8/openwrt_Build/actions?query=workflow%3Aopenwrt_18.06)
-- [nanopi-r2s__固件下载](https://github.com/kenzok8/openwrt_Build/actions?query=workflow%3Ananopi-r2s)
-- [nanopi-r4s__固件下载](https://github.com/kenzok8/openwrt_Build/actions?query=workflow%3Ananopi-r4s)
+- [Lienol       固件地址](https://op.dllkids.xyz/op/firmware/Lienol/)
+- [Lean_6.**内核固件地址](https://op.dllkids.xyz/op/firmware/Lean/)
+- [immortalwrt-21.02固件](https://op.dllkids.xyz/op/firmware/ctc_21.02/)
+- [immortalwrt-18.06固件](https://op.dllkids.xyz/op/firmware/ctc_18.06/)
+- [nanopi-r2s__ 固件下载](https://op.dllkids.xyz/op/firmware/nanopi-r2s/)
+- [nanopi-r4s__ 固件下载](https://op.dllkids.xyz/op/firmware/nanopi-r4s/)
 
 ### 默认插件包含:
 
