@@ -25,7 +25,7 @@
 
 #### 取消点赞触发，关联Update check触发编译，默认每周六更新！
 
-##### 谢谢 **kiddin9珠玉在前**[openwrt固件与插件下载](https://op.dllkids.xyz/op/firmware/)
+##### [openwrt固件与插件下载](https://op.dllkids.xyz/op/firmware/)
 
 ##### [docker镜像下载](https://hub.docker.com/r/kenzok8/openwrt-6p/tags)
 
@@ -43,12 +43,12 @@
 
 ##### 固件下载链接
 
-- [Lienol       固件地址](https://op.dllkids.xyz/op/firmware/Lienol/)
+- [Lienol固件地址](https://op.dllkids.xyz/op/firmware/Lienol/)
 - [Lean_6.**内核固件地址](https://op.dllkids.xyz/op/firmware/Lean/)
 - [immortalwrt-21.02固件](https://op.dllkids.xyz/op/firmware/ctc_21.02/)
 - [immortalwrt-18.06固件](https://op.dllkids.xyz/op/firmware/ctc_18.06/)
-- [nanopi-r2s__ 固件下载](https://op.dllkids.xyz/op/firmware/nanopi-r2s/)
-- [nanopi-r4s__ 固件下载](https://op.dllkids.xyz/op/firmware/nanopi-r4s/)
+- [nanopi-r2s固件下载](https://op.dllkids.xyz/op/firmware/nanopi-r2s/)
+- [nanopi-r4s固件下载](https://op.dllkids.xyz/op/firmware/nanopi-r4s/)
 
 ### 默认插件包含:
 
