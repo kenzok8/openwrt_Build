@@ -96,9 +96,9 @@ jobs:
         chmod +x ./customize.sh && ./customize.sh
         cd openwrt
         cp -f feeds/smpackage/diy/default-settings package/lean/default-settings/files/zzz-default-settings
-        sed -i 's/v$date1/Jan/g' package/lean/default-settings/files/zzz-default-settings
+        sed -i 's/v$date1/v$date2/g' package/lean/default-settings/files/zzz-default-settings
         cp -f feeds/smpackage/diy/banner package/base-files/files/etc/banner
-        sed -i 's/%D %V, %C/openwrt Jan by kenzo/g' package/base-files/files/etc/banner
+        sed -i 's/%D %V, %C/openwrt v$date by kenzo/g' package/base-files/files/etc/banner
         cp -f feeds/smpackage/diy/index_x86.htm package/lean/autocore/files/x86/index.htm
         cp -f feeds/smpackage/diy/${{matrix.target}}.config .config && make defconfig
         
