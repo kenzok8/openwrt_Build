@@ -97,10 +97,8 @@ jobs:
         cd openwrt
         cp -f feeds/smpackage/diy/default-settings package/emortal/default-settings/files/99-default-settings
         cp -f feeds/smpackage/diy/banner package/emortal/default-settings/files/openwrt_banner
-        sed -i 's/%D %V, %C/openwrt $(date +%b) by kenzo/g' package/emortal/default-settings/files/openwrt_banner
         cp -f feeds/smpackage/diy/banner package/base-files/files/etc/banner
         cp -Rf feeds/smpackage/diy/files/* files
-        sed -i 's/%D %V, %C/openwrt $(date +%b) by kenzo/g' package/base-files/files/etc/banner
         cp -f feeds/smpackage/diy/${{matrix.target}}.config .config && make defconfig
         
     - name: 下载包文件
