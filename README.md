@@ -23,7 +23,6 @@
 
 <img src="https://v1.jinrishici.com/all.svg?font-size=24&spacing=3">
 
-#### 取消点赞触发，关联Update check触发编译，默认每周六更新！
 
 ##### [openwrt固件与插件下载](https://op.dllkids.xyz/op/firmware/)
 
