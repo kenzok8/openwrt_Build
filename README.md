@@ -9,7 +9,7 @@
 [8]: https://github.com/kenzok8/openwrt_Build/releases
 [10]: https://img.shields.io/badge/Contact-telegram-blue
 [11]: https://t.me/joinchat/JjxmyRZZXJWb74I-sCrryA
-[12]: https://github.com/github/docs/actions/workflows/main.yml/badge.svg
+[12]: https://github.com/kenzok8/openwrt_Build/actions/workflows/Lean.yml/badge.svg
 [13]: https://github.com/kenzok8/openwrt_Build/actions
 
 [![license][1]][2]
