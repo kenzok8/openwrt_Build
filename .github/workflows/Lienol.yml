@@ -95,10 +95,10 @@ jobs:
         cd openwrt
         rm -rf feeds/luci/themes/luci-theme-argon
         ./scripts/feeds update -a && ./scripts/feeds install -a
-        cp -f feeds/smpackage/diy/zzz-default-settings package/default-settings/files/zzz-default-settings
-        cp -f feeds/smpackage/diy/banner package/base-files/files/etc/banner
-        cp -Rf feeds/smpackage/diy/files/* files
-        cp -f feeds/smpackage/diy/${{matrix.target}}.config .config && make defconfig
+        cp -f feeds/smpackage/.github/diy/zzz-default-settings package/default-settings/files/zzz-default-settings
+        cp -f feeds/smpackage/.github/diy/banner package/base-files/files/etc/banner
+        cp -Rf feeds/smpackage/.github/diy/files/* files
+        cp -f feeds/smpackage/.github/diy/${{matrix.target}}.config .config && make defconfig
         
     - name: 下载包文件
       working-directory: ./openwrt

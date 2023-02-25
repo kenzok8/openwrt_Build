@@ -92,11 +92,11 @@ jobs:
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x ./customize.sh && ./customize.sh
         cd openwrt
-        cp -f feeds/smpackage/diy/default-settings package/emortal/default-settings/files/99-default-settings
-        cp -f feeds/smpackage/diy/banner package/emortal/default-settings/files/openwrt_banner
-        cp -f feeds/smpackage/diy/banner package/base-files/files/etc/banner
-        cp -f feeds/smpackage/diy/index_x86.htm package/emortal/autocore/files/generic/index.htm
-        cp -f feeds/smpackage/diy/${{matrix.target}}.config .config && make defconfig
+        cp -f feeds/smpackage/.github/diy/default-settings package/emortal/default-settings/files/99-default-settings
+        cp -f feeds/smpackage/.github/diy/banner package/emortal/default-settings/files/openwrt_banner
+        cp -f feeds/smpackage/.github/diy/banner package/base-files/files/etc/banner
+        cp -f feeds/smpackage/.github/diy/index_x86.htm package/emortal/autocore/files/generic/index.htm
+        cp -f feeds/smpackage/.github/diy/${{matrix.target}}.config .config && make defconfig
         
     - name: 下载包文件
       working-directory: ./openwrt
