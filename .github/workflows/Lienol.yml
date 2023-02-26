@@ -98,6 +98,7 @@ jobs:
         cp -f feeds/smpackage/.github/diy/zzz-default-settings package/default-settings/files/zzz-default-settings
         cp -f feeds/smpackage/.github/diy/banner package/base-files/files/etc/banner
         cp -Rf feeds/smpackage/.github/diy/files/* files
+        rm -rf tools/upx && cp -Rf feeds/smpackage/upx tools/upx
         cp -f feeds/smpackage/.github/diy/${{matrix.target}}.config .config && make defconfig
         
     - name: 下载包文件
