@@ -93,12 +93,13 @@ jobs:
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x ./customize.sh && ./customize.sh
         cd openwrt
-        rm -rf feeds/luci/themes/luci-theme-argon
-        ./scripts/feeds update -a && ./scripts/feeds install -a
+        rm -rf feeds/luci/themes/luci-theme-argon && rm -rf feeds/other/luci-app-adguardhome && rm -rf feeds/packages/net/adguardhome
+        rm -rf feeds/lienol/luci-app-filebrowser && rm -rf feeds/other/luci-app-dockerman && rm -rf feeds/packages/net/smartdns
+        rm -rf tools/upx && cp -Rf feeds/smpackage/upx tools/upx
         cp -f feeds/smpackage/.github/diy/zzz-default-settings package/default-settings/files/zzz-default-settings
         cp -f feeds/smpackage/.github/diy/banner package/base-files/files/etc/banner
         cp -Rf feeds/smpackage/.github/diy/files/* files
-        rm -rf tools/upx && cp -Rf feeds/smpackage/upx tools/upx
+        ./scripts/feeds update -a && ./scripts/feeds install -a
         cp -f feeds/smpackage/.github/diy/${{matrix.target}}.config .config && make defconfig
         
     - name: 下载包文件
