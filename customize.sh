@@ -2,7 +2,6 @@
 #===============================================
 #1. Modify default IP
 sed -i 's/192.168.1.1/192.168.1.252/g' openwrt/package/base-files/files/bin/config_generate
-sed -i "s/%D %V, %C/openwrt $(date +'%m.%d') by kenzo/g" package/base-files/files/etc/banner
 
 #2. Custom settings
 #sed -i 's?zstd$?zstd ucl upx\n$(curdir)/upx/compile := $(curdir)/ucl/compile?g' tools/Makefile
