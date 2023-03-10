@@ -99,6 +99,7 @@ jobs:
         cp -f feeds/smpackage/.github/diy/zzz-default-settings package/default-settings/files/zzz-default-settings
         cp -f feeds/smpackage/.github/diy/banner package/base-files/files/etc/banner
         sed -i "s/%D %V, %C/openwrt $(date +'%m.%d') by kenzo/g" package/base-files/files/etc/banner
+        rm -rf tools/upx && cp -Rf feeds/smpackage/upx tools/upx && rm -rf feeds/smpackage/upx tools/upx
         cp -Rf feeds/smpackage/.github/diy/files/* files
         ./scripts/feeds update -a && ./scripts/feeds install -a
         cp -f feeds/smpackage/.github/diy/${{matrix.target}}.config .config && make defconfig
