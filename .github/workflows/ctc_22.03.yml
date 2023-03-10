@@ -4,7 +4,7 @@
 # Author: kenzo
 #=================================================
 
-name: openwrt_21.02
+name: openwrt_22.03
 
 on:
   repository_dispatch:
