@@ -95,10 +95,8 @@ jobs:
         rm -rf feeds/luci/themes/luci-theme-argon && rm -rf feeds/other/luci-app-adguardhome && rm -rf feeds/packages/net/adguardhome
         rm -rf feeds/lienol/luci-app-fileassistant && rm -rf feeds/other/luci-app-dockerman && rm -rf feeds/packages/net/smartdns
         cp -f feeds/smpackage/.github/diy/zzz-default-settings package/default-settings/files/zzz-default-settings
-        cp -f feeds/smpackage/.github/diy/banner package/base-files/files/etc/banner
+        cp -f feeds/smpackage/.github/diy/banner package/base-files/files/etc/banner && rm -rf feeds/smpackage/upx
         sed -i "s/%D %V, %C/openwrt $(date +'%m.%d') by kenzo/g" package/base-files/files/etc/banner
-        rm -rf tools/upx && cp -Rf feeds/smpackage/upx tools/upx
-        cp -Rf feeds/smpackage/.github/diy/files/* files
         ./scripts/feeds update -a && ./scripts/feeds install -a
         cp -f feeds/smpackage/.github/diy/${{matrix.target}}.config .config && make defconfig
         
