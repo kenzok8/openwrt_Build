@@ -51,10 +51,11 @@
 
 ### 默认插件包含:
 
-+ SSR Plus 
-+ passwall2
-+ bypass
++ adguardhome
++ alist
++ Mosdns
 + openclash
++ SSR Plus 
 + 动态DDNS
 + UPNP 自动端口转发
 + 默认多个主题
@@ -65,9 +66,9 @@
 ```bash
 sed -i 's/192.168.1.1/192.168.3.1/g' package/base-files/files/bin/config_generate
 ```
-* 删除原主题	
+* 替换终端为bash	
 ```bash
-rm -rf package/lean/luci-theme-argon
+sed -i 's/\/bin\/ash/\/bin\/bash/' package/base-files/files/etc/passwd
 ```
 
 * 添加新的主题
@@ -85,7 +86,5 @@ sed -i "/CYXluq4wUazHjmCDBCqXF/d" package/lean/default-settings/files/zzz-defaul
 
 * 取消bootstrap为默认主题	
 ```bash
-sed -i '/set luci.main.mediaurlbase=\/luci-static\/bootstrap/d' feeds/luci/themes/luci-theme-bootstrap/root/etc/uci-defaults/30_luci-theme-bootstrap
+sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/Makefile
 ```
-
-
