@@ -69,7 +69,7 @@ jobs:
     - name: 克隆源代码
       env: 
         REPO_URL: https://github.com/immortalwrt/immortalwrt
-        REPO_BRANCH: openwrt-21.02
+        REPO_BRANCH: openwrt-23.05
         TZ: Asia/Shanghai        
       run: |
         git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
