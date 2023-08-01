@@ -69,16 +69,11 @@ jobs:
     - name: 克隆源代码
       env: 
         REPO_URL: https://github.com/Lienol/openwrt
-        REPO_BRANCH: 23.05
+        REPO_BRANCH: 22.03
       run: |
         git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
         cd openwrt
         sed -i '$a src-git smpackage https://github.com/kenzok8/small-package' feeds.conf.default
-  
-    #- name: 自定义安装源
-    #  working-directory: ./openwrt
-    #  run: |
-    #    git clone https://github.com/kenzok8/small-package package/jeii
 
     - name: 更新 feeds
       working-directory: ./openwrt
