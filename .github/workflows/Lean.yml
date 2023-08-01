@@ -76,6 +76,15 @@ jobs:
         cd openwrt
         sed -i '$a src-git smpackage https://github.com/kenzok8/small-package' feeds.conf.default
 
+    - name: Free up disk space
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        sudo mkdir -p -m 777 /mnt/openwrt/dl /mnt/openwrt/bin /mnt/openwrt/staging_dir
+        ln -sf /mnt/openwrt/dl openwrt/dl
+        ln -sf /mnt/openwrt/bin openwrt/bin
+        ln -sf /mnt/openwrt/staging_dir openwrt/staging_dir
+
     - name: Update feeds
       working-directory: ./openwrt
       run: |
@@ -99,7 +108,7 @@ jobs:
     - name: Download package
       working-directory: ./openwrt
       run: |
-        make download -j$(($(nproc)+1)) &
+        make download -j$(($(nproc)+1))
         find dl -size -1024c -exec rm -f {} \;
         
     - name: Cache
