@@ -41,10 +41,10 @@ jobs:
         target: [Lean]
     
     steps:
-    - name: 检查
+    - name: Checkout
       uses: actions/checkout@main
 
-    - name: 初始化环境
+    - name: Initialization environment
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
@@ -57,7 +57,7 @@ jobs:
         sudo -E apt-get -qq clean ) &
         sudo timedatectl set-timezone "$TZ"
         
-    - name: 设置当前的日期
+    - name: Get current date
       id: date
       run: |
         echo "date=$(date +'%m/%d_%Y_%H/%M')" >> $GITHUB_ENV
@@ -67,7 +67,7 @@ jobs:
         VERSION="$(echo "${{github.event.action}}" | grep -Eo " [0-9.]+" | sed -e 's/ //')" || true
         [ "$VERSION" ] && echo "VERSION=$VERSION" >> $GITHUB_ENV || echo "VERSION=$(date +'%m.%d')" >> $GITHUB_ENV
         
-    - name: 克隆源代码
+    - name: Clone source code
       env: 
         REPO_URL: https://github.com/coolsnowwolf/lede
         REPO_BRANCH: master
@@ -76,17 +76,12 @@ jobs:
         cd openwrt
         sed -i '$a src-git smpackage https://github.com/kenzok8/small-package' feeds.conf.default
 
-    #- name: 自定义安装源
-    #  working-directory: ./openwrt
-    #  run: |
-    #    git clone https://github.com/kenzok8/small-package package/jeii
-
-    - name: 更新 & 安装 feeds
+    - name: Update feeds
       working-directory: ./openwrt
       run: |
         ./scripts/feeds update -a
 
-    - name: 自定义配置 ${{matrix.target}}
+    - name: Defconfig ${{matrix.target}}
       env:
         CONFIG_FILE: '${{matrix.target}}.config'
       run: |
@@ -101,36 +96,43 @@ jobs:
         ./scripts/feeds update -a && ./scripts/feeds install -a
         cp -f feeds/smpackage/.github/diy/${{matrix.target}}.config .config && make defconfig
         
-    - name: 下载包文件
+    - name: Download package
       working-directory: ./openwrt
       run: |
-        make download -j$(nproc)
+        make download -j$(($(nproc)+1)) &
         find dl -size -1024c -exec rm -f {} \;
         
     - name: Cache
-      uses: klever1988/cachewrtbuild@main
+      uses: stupidloud/cachewrtbuild@main
       with:
         ccache: 'true'
+        mixkey: ${{ matrix.target }}
+        clean: ${{ contains(github.event.action, 'nocache') }}
         prefix: ${{ github.workspace }}/openwrt
+    
+    - name: Check space usage
+      run: |
+        shopt -s extglob
+        cd openwrt
+        if [[ -f staging_dir/*${{ env.MTARGET }}*/bin ]]; then
+            rm -rf staging_dir/!(*${{ env.MTARGET }}*|host|hostpkg) build_dir/!(*${{ env.MTARGET }}*|host|hostpkg)
+        fi
+        df -hT
 
-    - name: 编译固件
+    - name: Compile the firmware
       working-directory: ./openwrt
       run: |
         echo -e "$(($(nproc)+1)) thread compile"
         make -j$(($(nproc)+1)) || make -j1 V=s
-     
-    - name: 检查空间使用情况
-      if: (!cancelled())
-      run: df -hT
 
-    - name: 上传bin目录
+    - name: Upload bin directory
       uses: actions/upload-artifact@main
       if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
       with:
         name: OpenWrt_bin${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: openwrt/bin
 
-    - name: 整理文件
+    - name: Organize files
       id: organize
       if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
       run: |
@@ -149,7 +151,7 @@ jobs:
         rm -rf sha256sums
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         
-    - name: 部署文件到服务器
+    - name: Deploy imagebuilder to server
       uses: easingthemes/ssh-deploy@main
       with:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -160,25 +162,25 @@ jobs:
         REMOTE_USER: root
         TARGET: "/www/wwwroot/${{ secrets.REMOTE_HOST }}/op/firmware/${{matrix.target}}/"
 
-    - name: 上传固件目录
+    - name: Upload firmware directory
       uses: actions/upload-artifact@main
       if: steps.organize.outputs.status == 'success' && !cancelled()
       with:
         name: ${{ env.date3 }}_${{matrix.target}}
         path: ${{ env.FIRMWARE }}
         
-    - name: 设置Docker编译信息
+    - name: Set Up Docker Buildx
       uses: docker/setup-buildx-action@master
       if: env.DOCKER_ID && env.DOCKER_PASSWD
 
-    - name: 登录DockerHub
+    - name: Login To DockerHub
       uses: docker/login-action@master
       if: env.DOCKER_ID && env.DOCKER_PASSWD
       with:
         username: ${{ secrets.DOCKER_ID }}
         password: ${{ secrets.DOCKER_PASSWD }}
         
-    - name: 编译docker镜像
+    - name: Build and push docker image
       uses: docker/build-push-action@master
       continue-on-error: true
       if: env.DOCKER_ID && env.DOCKER_PASSWD && ! contains(github.event.action, 'noser')
@@ -191,7 +193,7 @@ jobs:
           ${{ secrets.DOCKER_ID }}/openwrt-6p:${{matrix.target}}
           ${{ env.DOCKERTAG }}        
 
-    - name: 上传固件cowtransfer
+    - name: Upload firmware to cowtransfer
       id: cowtransfer
       if: steps.organize.outputs.status == 'success' && env.UPLOAD_COWTRANSFER == 'true' && !cancelled()
       run: |
@@ -200,7 +202,7 @@ jobs:
         echo "::warning file=cowtransfer.com::$(cat cowtransfer.log | grep https)"
         echo "url=$(cat cowtransfer.log | grep https | cut -f3 -d" ")" >> $GITHUB_OUTPUT
 
-    - name: 上传固件WeTransfer
+    - name: Upload firmware to WeTransfer
       id: wetransfer
       if: steps.organize.outputs.status == 'success' && env.UPLOAD_WETRANSFER == 'true' && !cancelled()
       run: |
@@ -209,7 +211,7 @@ jobs:
         echo "::warning file=wetransfer.com::$(cat wetransfer.log | grep https)"
         echo "url=$(cat wetransfer.log | grep https | cut -f3 -d" ")" >> $GITHUB_OUTPUT
 
-    - name: 生成发布标签
+    - name: Generate release tag
       id: tag
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
       run: |
@@ -220,7 +222,7 @@ jobs:
         [ $UPLOAD_WETRANSFER = true ] && echo "🔗 [WeTransfer](${{ steps.wetransfer.outputs.url }})" >> release.txt
         echo "status=success" >> $GITHUB_OUTPUT
 
-    - name: 上传固件发布
+    - name: Upload firmware to release
       uses: softprops/action-gh-release@master
       if: steps.tag.outputs.status == 'success' && !cancelled()
       env:
@@ -231,13 +233,13 @@ jobs:
         tag_name: ${{ env.date }}_${{matrix.target}}
         body_path: release.txt
 
-    - name: 删除工作流
+    - name: Delete workflow runs
       uses: Mattraks/delete-workflow-runs@main
       with:
         retain_days: 1
         keep_minimum_runs: 0
 
-    - name: 删除旧版本
+    - name: Remove old Releases
       uses: dev-drprasad/delete-older-releases@master
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
       with:
