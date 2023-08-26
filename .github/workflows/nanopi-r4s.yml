@@ -68,8 +68,8 @@ jobs:
 
     - name: Clone source code
       env: 
-        REPO_URL: https://github.com/Lienol/openwrt
-        REPO_BRANCH: 22.03
+        REPO_URL: https://github.com/immortalwrt/immortalwrt
+        REPO_BRANCH: openwrt-23.05
       run: |
         git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
         cd openwrt
