@@ -87,6 +87,8 @@ jobs:
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x ./customize.sh && ./customize.sh
         cd openwrt
+	rm -rf feeds/packages/lang/golang
+	git clone https://github.com/sbwml/packages_lang_golang -b 21.x feeds/packages/lang/golang
         rm -rf feeds/luci/themes/luci-theme-argon && rm -rf feeds/other/luci-app-adguardhome && rm -rf feeds/packages/net/adguardhome
         rm -rf feeds/lienol/luci-app-fileassistant && rm -rf feeds/other/luci-app-dockerman && rm -rf feeds/packages/net/smartdns
         cp -f feeds/smpackage/.github/diy/zzz-default-settings package/default-settings/files/zzz-default-settings

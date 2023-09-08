@@ -86,6 +86,8 @@ jobs:
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x ./customize.sh && ./customize.sh
         cd openwrt
+	rm -rf feeds/packages/lang/golang
+	git clone https://github.com/sbwml/packages_lang_golang -b 21.x feeds/packages/lang/golang
         cp -f feeds/smpackage/.github/diy/default-settings package/emortal/default-settings/files/99-default-settings
         cp -f feeds/smpackage/.github/diy/banner package/emortal/default-settings/files/openwrt_banner
         cp -f feeds/smpackage/.github/diy/banner package/base-files/files/etc/banner
