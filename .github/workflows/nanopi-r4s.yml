@@ -87,6 +87,13 @@ jobs:
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x ./customize.sh && ./customize.sh
         cd openwrt
+	rm -rf feeds/smpackage/{base-files,dnsmasq,firewall*,fullconenat,libnftnl,nftables,ppp,opkg,ucl,upx,vsftpd-alt,miniupnpd-iptables,wireless-regdb}
+        pushd feeds/packages/lang
+        rm -rf golang && svn co https://github.com/openwrt/packages/branches/openwrt-23.05/lang/golang
+        popd
+        rm -rf feeds/packages/net/{alist,adguardhome,brook,chinadns-ng,dns2socks,dns2tcp,hysteria,ipt2socks}
+        rm -rf feeds/packages/net/{lua-neturl,microsocks,naiveproxy,pdnsd-alt,redsocks2,simple-obfs,sing-box,ssocks,tcping,tuic-client}
+        rm -rf feeds/packages/net/{gost,mosdns,redsocks*,smartdns,trojan*,v2ray*,xray*}		
         cp -f feeds/smpackage/.github/diy/default-settings package/emortal/default-settings/files/99-default-settings
         cp -f feeds/smpackage/.github/diy/banner package/emortal/default-settings/files/openwrt_banner
         cp -f feeds/smpackage/.github/diy/banner package/base-files/files/etc/banner
