@@ -46,7 +46,7 @@
 - [Lean固件地址](https://op.dllkids.xyz/op/firmware/Lean/)
 - [immortalwrt-23.05固件](https://op.dllkids.xyz/op/firmware/ctc_23.05/)
 - [immortalwrt-18.06固件](https://op.dllkids.xyz/op/firmware/ctc_18.06/)
-- [nanopi-r2s固件下载](https://op.dllkids.xyz/op/firmware/nanopi-r2s/)
+- [nanopi-r5s固件下载](https://op.dllkids.xyz/op/firmware/nanopi-r5s/)
 - [nanopi-r4s固件下载](https://op.dllkids.xyz/op/firmware/nanopi-r4s/)
 
 ### 默认插件包含:
