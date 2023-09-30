@@ -30,7 +30,7 @@ env:
 
 jobs:
   merge:
-    runs-on: Ubuntu-20.04
+    runs-on: Ubuntu-22.04
     if: github.event.repository.owner.id == github.event.sender.id
 
     name: Build ${{matrix.target}}
