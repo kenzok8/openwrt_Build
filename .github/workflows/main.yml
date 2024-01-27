@@ -30,7 +30,7 @@ env:
     
 jobs:
   build:
-    runs-on: Ubuntu-22.04   
+    runs-on: Ubuntu-23.10.1
     if: github.event.repository.owner.id == github.event.sender.id
 
     name: Build ${{matrix.target}}
@@ -47,15 +47,21 @@ jobs:
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
-        sudo -E apt-get -qq update
-        sudo -E apt-get -qq install build-essential clang flex g++ gawk gcc-multilib gettext \
-        git libncurses5-dev libssl-dev python3-distutils python3-pyelftools python3-setuptools \
-        libpython3-dev rsync unzip zlib1g-dev swig aria2 jq subversion qemu-utils ccache rename \
-        libelf-dev device-tree-compiler libgnutls28-dev coccinelle libgmp3-dev libmpc-dev libfuse-dev
-        sudo -E apt-get -qq purge azure-cli ghc* zulu* llvm* firefox powershell openjdk* dotnet* google* mysql* php* android*
-        sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
-        # sudo -E apt-get -qq autoremove --purge
-        sudo -E apt-get -qq clean
+        # sudo -E apt-get -qq update
+        # sudo -E apt-get -qq install build-essential clang flex g++ gawk gcc-multilib gettext \
+        # git libncurses5-dev libssl-dev python3-distutils python3-pyelftools python3-setuptools \
+        # libpython3-dev rsync unzip zlib1g-dev swig aria2 jq subversion qemu-utils ccache rename \
+        # libelf-dev device-tree-compiler libgnutls28-dev coccinelle libgmp3-dev libmpc-dev libfuse-dev
+        # sudo -E apt-get -qq purge azure-cli ghc* zulu* llvm* firefox powershell openjdk* dotnet* google* mysql* php* android*
+        # sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
+        # # sudo -E apt-get -qq autoremove --purge
+        # sudo -E apt-get -qq clean
+
+        apt update -y
+        apt install build-essential clang flex bison g++ gawk \
+        gcc-multilib g++-multilib gettext git libncurses-dev libssl-dev \
+        python3-distutils rsync unzip zlib1g-dev file wget -y
+
         sudo timedatectl set-timezone "$TZ"
         # git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
         # git config --global user.name "github-actions[bot]"
@@ -148,7 +154,7 @@ jobs:
         eval "$(/tmp/bin/micromamba shell hook -s posix)"
         micromamba activate build
         echo -e "$(($(nproc)+1)) thread compile"
-        make -j$(($(nproc)+1)) || make -j1 V=s      
+        make -j$(($(nproc)+1)) -lpthread || make -j1 V=s -lpthread
 
     - name: Upload bin directory
       uses: actions/upload-artifact@main
