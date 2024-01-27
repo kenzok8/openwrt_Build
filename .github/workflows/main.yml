@@ -30,7 +30,7 @@ env:
     
 jobs:
   build:
-    runs-on: ubuntu:latest
+    runs-on: ubuntu-23.10
     if: github.event.repository.owner.id == github.event.sender.id
 
     name: Build ${{matrix.target}}
