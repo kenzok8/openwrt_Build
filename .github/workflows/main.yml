@@ -60,7 +60,8 @@ jobs:
         # git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
         # git config --global user.name "github-actions[bot]"
 
-        curl -Ls https://micro.mamba.pm/api/micromamba/linux-64/latest | tar -xvj /tmp/bin/micromamba
+        cd /tmp
+        curl -Ls https://micro.mamba.pm/api/micromamba/linux-64/latest | tar -xvj bin/micromamba
         eval "$(/tmp/bin/micromamba shell hook -s posix)"
 
         micromamba create -n build gcc gxx python -c conda-forge -y
@@ -79,7 +80,7 @@ jobs:
     - name: Clone source code
       env: 
         REPO_URL: https://github.com/immortalwrt/immortalwrt
-        REPO_BRANCH: openwrt-23.05
+        REPO_BRANCH: v23.05.1
         TZ: Asia/Shanghai        
       run: |
         git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
