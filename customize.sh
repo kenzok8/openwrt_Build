@@ -1,7 +1,7 @@
 #!/bin/bash
 #===============================================
 #1. Modify default IP
-sed -i 's/192.168.1.1/192.168.1.252/g' openwrt/package/base-files/files/bin/config_generate
+sed -i 's/192.168.1.1/192.168.10.10/g' openwrt/package/base-files/files/bin/config_generate
 
 #2. Custom settings
 #sed -i 's?zstd$?zstd ucl upx\n$(curdir)/upx/compile := $(curdir)/ucl/compile?g' tools/Makefile
