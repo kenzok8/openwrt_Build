@@ -47,15 +47,15 @@ jobs:
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
-        # sudo -E apt-get -qq update
-        # sudo -E apt-get -qq install build-essential clang flex g++ gawk gcc-multilib gettext \
-        # git libncurses5-dev libssl-dev python3-distutils python3-pyelftools python3-setuptools \
-        # libpython3-dev rsync unzip zlib1g-dev swig aria2 jq subversion qemu-utils ccache rename \
-        # libelf-dev device-tree-compiler libgnutls28-dev coccinelle libgmp3-dev libmpc-dev libfuse-dev
-        # sudo -E apt-get -qq purge azure-cli ghc* zulu* llvm* firefox powershell openjdk* dotnet* google* mysql* php* android*
-        # sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
-        # # sudo -E apt-get -qq autoremove --purge
-        # sudo -E apt-get -qq clean
+        sudo -E apt-get -qq update
+        sudo -E apt-get -qq install build-essential clang flex g++ gawk gcc-multilib gettext \
+        git libncurses5-dev libssl-dev python3-distutils python3-pyelftools python3-setuptools \
+        libpython3-dev rsync unzip zlib1g-dev swig aria2 jq subversion qemu-utils ccache rename \
+        libelf-dev device-tree-compiler libgnutls28-dev coccinelle libgmp3-dev libmpc-dev libfuse-dev
+        sudo -E apt-get -qq purge azure-cli ghc* zulu* llvm* firefox powershell openjdk* dotnet* google* mysql* php* android*
+        sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
+        # sudo -E apt-get -qq autoremove --purge
+        sudo -E apt-get -qq clean
 
         sudo -E apt-get -qq update -y
         sudo -E apt-get -qq install build-essential clang flex bison g++ gawk \
@@ -66,12 +66,12 @@ jobs:
         # git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
         # git config --global user.name "github-actions[bot]"
 
-        cd /tmp
-        curl -Ls https://micro.mamba.pm/api/micromamba/linux-64/latest | tar -xvj bin/micromamba
-        eval "$(/tmp/bin/micromamba shell hook -s posix)"
+        # cd /tmp
+        # curl -Ls https://micro.mamba.pm/api/micromamba/linux-64/latest | tar -xvj bin/micromamba
+        # eval "$(/tmp/bin/micromamba shell hook -s posix)"
 
-        micromamba create -n build gcc gxx libstdcxx-ng pthread-stubs python -c conda-forge -y
-        micromamba activate build
+        # micromamba create -n build gcc gxx libstdcxx-ng pthread-stubs python -c conda-forge -y
+        # micromamba activate build
 
     - name: Get current date
       id: date
@@ -111,8 +111,8 @@ jobs:
       env:
         CONFIG_FILE: '${{matrix.target}}.config'
       run: |
-        eval "$(/tmp/bin/micromamba shell hook -s posix)"
-        micromamba activate build
+        # eval "$(/tmp/bin/micromamba shell hook -s posix)"
+        # micromamba activate build
 
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x ./customize.sh && ./customize.sh
@@ -151,8 +151,8 @@ jobs:
     - name: Compile the firmware
       working-directory: ./openwrt
       run: |
-        eval "$(/tmp/bin/micromamba shell hook -s posix)"
-        micromamba activate build
+        # eval "$(/tmp/bin/micromamba shell hook -s posix)"
+        # micromamba activate build
         echo -e "$(($(nproc)+1)) thread compile"
         make -j$(($(nproc)+1)) -lpthread || make -j1 V=s -lpthread
 
