@@ -9,7 +9,7 @@
 # Description: Source code update checker
 #
 
-name: Update Checker
+name: Update
 
 env:
   REPO_URL: https://github.com/kenzok8/small-package
