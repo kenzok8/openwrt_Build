@@ -56,7 +56,6 @@ jobs:
         echo "date=$(date +'%Y.%m.%d-%H%M')" >> $GITHUB_ENV
         echo "date2=$(date +'%m/%d %Y')" >> $GITHUB_ENV
         echo "date3=$(date +'%m.%d')" >> $GITHUB_ENV
-        echo "date4=$(date +'%m.%d.%H')" >> $GITHUB_ENV 
         sudo timedatectl set-timezone "$TZ"
 
     - name: Trigger build
