@@ -94,7 +94,7 @@ jobs:
         chmod +x ./customize.sh && ./customize.sh
         cd openwrt
         rm -rf feeds/packages/lang/golang
-        git clone git clone https://github.com/kenzok8/golang -b 1.21 feeds/packages/lang/golang
+        git clone https://github.com/kenzok8/golang -b 1.21 feeds/packages/lang/golang
         rm -rf feeds/smpackage/{base-files,dnsmasq,firewall*,fullconenat,libnftnl,nftables,ppp,opkg,ucl,upx,vsftpd-alt,miniupnpd-iptables,wireless-regdb}
         cp -f feeds/smpackage/.github/diy/default-settings package/lean/default-settings/files/zzz-default-settings
         cp -f feeds/smpackage/.github/diy/banner package/base-files/files/etc/banner
