@@ -72,7 +72,6 @@ jobs:
       run: |
         git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
         cd openwrt
-        git checkout eda76b336b6b6719434fd7cc314ba51fa18eda5c
         sed -i '$a src-git smpackage https://github.com/kenzok8/small-package' feeds.conf.default
 
     - name: Update feeds
