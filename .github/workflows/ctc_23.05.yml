@@ -100,7 +100,7 @@ jobs:
         git clone https://github.com/kenzok8/golang feeds/packages/lang/golang
         cp -f feeds/smpackage/.github/diy/default-settings package/emortal/default-settings/files/99-default-settings
         rm -rf feeds/packages/net/{alist,adguardhome,brook,gost,mosdns,redsocks*,smartdns,trojan*,v2ray*,xray*}
-        rm -rf feeds/smpackage/luci-theme-design && git clone -b js --single-branch https://github.com/gngpp/luci-theme-design feeds/smpackage/luci-theme-design
+        rm -rf feeds/smpackage/luci-theme-design && git clone -b js --single-branch https://github.com/kenzok78/luci-theme-design feeds/smpackage/luci-theme-design
         sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/Makefile
         cp -f feeds/smpackage/.github/diy/banner package/base-files/files/etc/banner
         sed -i "s/%D %V, %C/openwrt $(date +'%m.%d') by kenzo/g" package/base-files/files/etc/banner
