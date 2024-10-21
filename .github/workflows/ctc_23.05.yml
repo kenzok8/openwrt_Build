@@ -102,6 +102,7 @@ jobs:
         rm -rf feeds/packages/net/{alist,adguardhome,brook,gost,mosdns,redsocks*,smartdns,trojan*,v2ray*,xray*}
         rm -rf feeds/smpackage/luci-theme-design && git clone -b js --single-branch https://github.com/kenzok78/luci-theme-design feeds/smpackage/luci-theme-design
         sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/Makefile
+        patch -p1 < "feeds/smpackage/.github/diy/patches/0004-luci-mod-status-firewall-disable-legacy-firewall-rul.patch"
         cp -f feeds/smpackage/.github/diy/banner package/base-files/files/etc/banner
         sed -i "s/%D %V, %C/openwrt $(date +'%m.%d') by kenzo/g" package/base-files/files/etc/banner
         #cp -Rf feeds/smpackage/.github/diy/.packages/files/* files
