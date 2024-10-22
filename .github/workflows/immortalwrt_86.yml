@@ -23,7 +23,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [x86_immortalwrt_23.05]
+        target: [x86_immortalwrt]
     
     steps:
     - name: Checkout
