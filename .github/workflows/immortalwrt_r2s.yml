@@ -1,4 +1,4 @@
-name: r2s_immortalwrt_23.05
+name: immortalwrt_r2s_23.05
 
 on:
   repository_dispatch:
