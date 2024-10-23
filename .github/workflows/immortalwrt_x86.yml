@@ -1,4 +1,4 @@
-name: x86_immortalwrt_23.05
+name: immortalwrt_x86_23.05
 
 on:
   repository_dispatch:
@@ -23,7 +23,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [x86_immortalwrt]
+        target: [immortalwrt_x86]
     
     steps:
     - name: Checkout
