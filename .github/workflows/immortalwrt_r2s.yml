@@ -62,12 +62,10 @@ jobs:
         ./scripts/feeds install -a
 
     # 删除项目自带的luci-theme-argon主题 加上 另一个argon 和 lucky 项目
-    - name: Delete luci-theme-argon
+    - name: add luci-app-lucky
       working-directory: ./openwrt
       run: |
         git clone  https://github.com/gdy666/luci-app-lucky.git package/lucky
-        cd package
-        git clone https://github.com/jerrykuku/luci-theme-argon.git
 
     - name: Configure
       env:
