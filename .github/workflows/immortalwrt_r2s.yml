@@ -51,7 +51,7 @@ jobs:
     - name: Clone source code
       env: 
         REPO_URL: https://github.com/immortalwrt/immortalwrt
-        REPO_BRANCH: master
+        REPO_BRANCH: openwrt-23.05
       run: |
         git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
 
@@ -60,13 +60,15 @@ jobs:
       run: |
         ./scripts/feeds update -a
         ./scripts/feeds install -a
+
     # 删除项目自带的luci-theme-argon主题 加上 另一个argon 和 lucky 项目
     - name: Delete luci-theme-argon
       working-directory: ./openwrt
       run: |
         rm -rf feeds/luci/themes/luci-theme-argon
         git clone  https://github.com/gdy666/luci-app-lucky.git package/lucky
-        git clone  https://github.com/jerrykuku/luci-theme-argon.git package/
+        cd package
+        git clone https://github.com/jerrykuku/luci-theme-argon.git
 
     - name: Configure
       env:
