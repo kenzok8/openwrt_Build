@@ -65,7 +65,6 @@ jobs:
     - name: Delete luci-theme-argon
       working-directory: ./openwrt
       run: |
-        rm -rf feeds/luci/themes/luci-theme-argon
         git clone  https://github.com/gdy666/luci-app-lucky.git package/lucky
         cd package
         git clone https://github.com/jerrykuku/luci-theme-argon.git
