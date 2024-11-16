@@ -107,6 +107,7 @@ jobs:
         sed -i 's#GO_PKG_TARGET_VARS.*# #g' feeds/packages/utils/v2dat/Makefile 
         ./scripts/feeds install -a
         cp -f feeds/smpackage/.github/diy/${{matrix.target}}.config .config && make defconfig
+        sed -i 's/CONFIG_BINUTILS_VERSION="2.42"/CONFIG_BINUTILS_VERSION="2.43.1"/' .config
         
     - name: Download package
       working-directory: ./openwrt
