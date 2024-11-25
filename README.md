@@ -42,9 +42,9 @@
 
 ##### 固件下载链接
 
-- [Lienol_23.05固件地址](https://op.dllkids.xyz/op/firmware/Lienol/)
+- [Lienol_24.10固件地址](https://op.dllkids.xyz/op/firmware/Lienol/)
 - [Lean固件地址](https://op.dllkids.xyz/op/firmware/Lean/)
-- [immortalwrt-23.05固件](https://op.dllkids.xyz/op/firmware/ctc_23.05/)
+- [immortalwrt-24.10固件](https://op.dllkids.xyz/op/firmware/ctc_24.10/)
 - [immortalwrt-18.06固件](https://op.dllkids.xyz/op/firmware/ctc_18.06/)
 - [nanopi-r5s固件下载](https://op.dllkids.xyz/op/firmware/nanopi-r5s/)
 - [nanopi-r4s固件下载](https://op.dllkids.xyz/op/firmware/nanopi-r4s/)
