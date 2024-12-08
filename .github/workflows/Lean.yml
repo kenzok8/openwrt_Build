@@ -100,7 +100,7 @@ jobs:
         git clone https://github.com/kenzok8/golang feeds/packages/lang/golang        
         cp -f feeds/smpackage/.github/diy/default-settings package/lean/default-settings/files/zzz-default-settings
         cp -f feeds/smpackage/.github/diy/banner package/base-files/files/etc/banner
-        cp -f feeds/smpackage/.github/diy/index_x86.htm package/lean/autocore/files/x86/index.htm
+        #cp -f feeds/smpackage/.github/diy/index_x86.htm package/lean/autocore/files/x86/index.htm
         sed -i "s/%D %V, %C/openwrt $(date +'%m.%d') by kenzo/g" package/base-files/files/etc/banner
         sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/Makefile
         ./scripts/feeds update -a 
