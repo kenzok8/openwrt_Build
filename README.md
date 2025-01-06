@@ -47,7 +47,7 @@
 - [immortalwrt-24.10固件](https://op.dllkids.xyz/op/firmware/ctc_24.10/)
 - [immortalwrt-18.06固件](https://op.dllkids.xyz/op/firmware/ctc_18.06/)
 - [nanopi-r5s固件下载](https://op.dllkids.xyz/op/firmware/nanopi-r5s/)
-- [nanopi-r4s固件下载](https://op.dllkids.xyz/op/firmware/nanopi-r4s/)
+- [nanopi-r6s固件下载](https://op.dllkids.xyz/op/firmware/nanopi-r6s/)
 
 ### 默认插件包含:
 
