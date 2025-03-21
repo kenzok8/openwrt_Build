@@ -63,7 +63,7 @@ jobs:
         gcc-multilib g++-multilib gettext git libncurses5-dev libssl-dev \
         python3-setuptools rsync swig unzip zlib1g-dev file wget \
         llvm python3-pyelftools libpython3-dev aria2 jq qemu-utils ccache rename \
-        libelf-dev device-tree-compiler li libgmp-dev libmpc-dev libfuse-dev
+        libelf-dev device-tree-compiler libgmp3-dev libmpc-dev libfuse-dev
         sudo -E apt-get -qq autoremove --purge
         sudo -E apt-get -qq clean
         sudo timedatectl set-timezone "Asia/Shanghai"
@@ -234,7 +234,7 @@ jobs:
       id: tag
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
       run: |
-        echo -e "墙内外加速下载 🎈:\n" >> release.txt
+        echo -e "墙内外加速下�?🎈:\n" >> release.txt
         echo -e "[kenzo] (https://${{ secrets.REMOTE_HOST }}/op/firmware/${{matrix.target}})\n" >> release.txt
         touch release.txt
         [ $UPLOAD_COWTRANSFER = true ] && echo "🔗 [Cowtransfer](${{ steps.cowtransfer.outputs.url }})" >> release.txt
