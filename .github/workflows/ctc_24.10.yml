@@ -240,7 +240,7 @@ jobs:
       id: tag
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
       run: |
-        echo -e "澧欏唴澶栧姞閫熶笅杞?馃巿:\n" >> release.txt
+        echo -e "墙内外加速下载 ??:\n" >> release.txt
         echo -e "[kenzo] (https://${{ secrets.REMOTE_HOST }}/op/firmware/${{matrix.target}})\n" >> release.txt
         touch release.txt
         [ $UPLOAD_COWTRANSFER = true ] && echo "馃敆 [Cowtransfer](${{ steps.cowtransfer.outputs.url }})" >> release.txt
