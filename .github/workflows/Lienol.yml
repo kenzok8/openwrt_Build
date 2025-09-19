@@ -1,6 +1,6 @@
 #=================================================
 # Description: Build OpenWrt using GitHub Actions
-# Lisence: MIT
+# License: MIT
 # Author: kenzo
 #=================================================
 
@@ -11,9 +11,10 @@ on:
   workflow_dispatch:
     inputs:
       ssh:
-        description: 'ssh'
+        description: 'Enable SSH debugging'
         required: false
         default: 'false'
+        type: boolean
 
 env:
   UPLOAD_BIN_DIR: false
@@ -21,15 +22,10 @@ env:
   UPLOAD_COWTRANSFER: false
   UPLOAD_WETRANSFER: false
   UPLOAD_RELEASE: true
-  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-  REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
-  REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
-  DOCKER_ID: ${{ secrets.DOCKER_ID }}
-  DOCKER_PASSWD: ${{ secrets.DOCKER_PASSWD }}
   TZ: Asia/Shanghai
 
 jobs:
-  merge:
+  build:
     runs-on: ubuntu-latest
     if: github.event.repository.owner.id == github.event.sender.id
 
@@ -41,7 +37,7 @@ jobs:
     
     steps:
     - name: Checkout
-      uses: actions/checkout@main
+      uses: actions/checkout@v4
 
     - name: Free disk space
       uses: coder-xiaomo/free-disk-space@main
@@ -66,7 +62,7 @@ jobs:
         libelf-dev device-tree-compiler libgmp3-dev libmpc-dev libfuse-dev
         sudo -E apt-get -qq autoremove --purge
         sudo -E apt-get -qq clean
-        sudo timedatectl set-timezone "Asia/Shanghai"
+        sudo timedatectl set-timezone "$TZ"
         
     - name: Get current date
       id: date
@@ -74,7 +70,9 @@ jobs:
         echo "date=$(date +'%Y.%m.%d-%H%M')" >> $GITHUB_ENV
         echo "date2=$(date +'%m/%d %Y')" >> $GITHUB_ENV
         echo "date3=$(date +'%m.%d')" >> $GITHUB_ENV
-        echo "DOCKERTAG=${{ secrets.DOCKER_ID }}/openwrt-6p:latest" >> $GITHUB_ENV
+        if [ -n "${{ secrets.DOCKER_ID }}" ]; then
+          echo "DOCKERTAG=${{ secrets.DOCKER_ID }}/openwrt-6p:latest" >> $GITHUB_ENV
+        fi
         VERSION="$(echo "${{github.event.action}}" | grep -Eo " [0-9.]+" | sed -e 's/ //')" || true
         [ "$VERSION" ] && echo "VERSION=$VERSION" >> $GITHUB_ENV || echo "VERSION=$(date +'%m.%d')" >> $GITHUB_ENV         
         
@@ -101,74 +99,128 @@ jobs:
       run: |
         ./scripts/feeds update -a
         
-    - name: Defconfig ${{matrix.target}}
+    - name: Load custom configuration
       env:
         CONFIG_FILE: '${{matrix.target}}.config'
       run: |
-        [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
-        chmod +x ./customize.sh && ./customize.sh
+        [ -e "$CONFIG_FILE" ] && mv "$CONFIG_FILE" openwrt/.config
+        if [ -f ./customize.sh ]; then
+          chmod +x ./customize.sh && ./customize.sh
+        fi
         cd openwrt
+        
+        # Remove conflicting packages
         rm -rf feeds/packages/lang/golang
         git clone https://github.com/kenzok8/golang feeds/packages/lang/golang
         rm -rf feeds/smpackage/{base-files,dnsmasq,firewall*,fullconenat,libnftnl,nftables,ppp,opkg,ucl,upx,vsftpd-alt,miniupnpd-iptables,wireless-regdb}
-        rm -rf feeds/luci/themes/luci-theme-argon && rm -rf feeds/other/{luci-app-adguardhome,luci-app-dockerman}
-        rm -rf feeds/lienol/luci-app-fileassistant && rm -rf feeds/packages/net/{adguardhome,smartdns}
+        rm -rf feeds/luci/themes/luci-theme-argon feeds/other/{luci-app-adguardhome,luci-app-dockerman}
+        rm -rf feeds/lienol/luci-app-fileassistant feeds/packages/net/{adguardhome,smartdns}
+        
+        # Apply customizations
         cp -f feeds/smpackage/.github/diy/zzz-default-settings package/default-settings/files/zzz-default-settings
         cp -f feeds/smpackage/.github/diy/banner package/base-files/files/etc/banner
-        patch -p1 < "feeds/smpackage/.github/diy/patches/0004-luci-mod-status-firewall-disable-legacy-firewall-rul.patch"
-        rm -rf feeds/smpackage/luci-theme-design && git clone -b js --single-branch https://github.com/kenzok78/luci-theme-design feeds/smpackage/luci-theme-design
+        
+        # Apply patches
+        if [ -f "feeds/smpackage/.github/diy/patches/0004-luci-mod-status-firewall-disable-legacy-firewall-rul.patch" ]; then
+          patch -p1 < "feeds/smpackage/.github/diy/patches/0004-luci-mod-status-firewall-disable-legacy-firewall-rul.patch"
+        fi
+        
+        # Clone theme
+        rm -rf feeds/smpackage/luci-theme-design 
+        git clone -b js --single-branch https://github.com/kenzok78/luci-theme-design feeds/smpackage/luci-theme-design
+        
+        # Customize theme and banner
         sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/Makefile
         sed -i "s/%D %V, %C/openwrt $(date +'%m.%d') by kenzo/g" package/base-files/files/etc/banner
-        ./scripts/feeds update -a && ./scripts/feeds install -a
-        cp -f feeds/smpackage/.github/diy/${{matrix.target}}.config .config && make defconfig
         
-    - name: Download package
+        # Update feeds and install
+        ./scripts/feeds update -a && ./scripts/feeds install -a
+        
+        # Load configuration
+        if [ -f "feeds/smpackage/.github/diy/${{matrix.target}}.config" ]; then
+          cp -f "feeds/smpackage/.github/diy/${{matrix.target}}.config" .config
+        fi
+        make defconfig
+        
+    - name: Download packages
       working-directory: ./openwrt
       run: |
         make download -j$(nproc)
         find dl -size -1024c -exec rm -f {} \;
 
-    - name: Compile the firmware
+    - name: Compile firmware
+      id: compile
       working-directory: ./openwrt
       run: |
         echo -e "$(($(nproc)+1)) thread compile"
-        make -j$(($(nproc)+1)) || make -j1 V=s     
-     
+        make -j$(($(nproc)+1)) || make -j1 V=s
+        echo "status=success" >> $GITHUB_OUTPUT
+        
     - name: Check space usage
       if: (!cancelled())
       run: df -hT
 
     - name: Upload bin directory
-      uses: actions/upload-artifact@main
+      uses: actions/upload-artifact@v4
       if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
       with:
-        name: OpenWrt_bin${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        name: OpenWrt_bin_${{ env.date3 }}_${{matrix.target}}
         path: openwrt/bin
+        retention-days: 7
 
     - name: Organize files
       id: organize
       if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
       run: |
         mkdir firmware
-        mv -f openwrt/bin/targets/*/*/{*combined*,*sysupgrade*} ./firmware/ 2>/dev/null || true
-        cp openwrt/.config  ./firmware/${{matrix.target}}.config
-        cp openwrt/build_dir/target-*/linux-*/linux-*/.config ./firmware/${{matrix.target}}_kernel.config
+        # Use more robust file moving
+        find openwrt/bin/targets -name "*combined*" -o -name "*sysupgrade*" | xargs -I {} mv {} ./firmware/ 2>/dev/null || true
+        
+        if [ -f openwrt/.config ]; then
+          cp openwrt/.config ./firmware/${{matrix.target}}.config
+        fi
+        
+        # Find kernel config more robustly
+        kernel_config=$(find openwrt/build_dir -name ".config" -path "*/linux-*" | head -1)
+        if [ -f "$kernel_config" ]; then
+          cp "$kernel_config" ./firmware/${{matrix.target}}_kernel.config
+        fi
+        
         cd firmware
         echo "v${{ env.date2 }}" > version.txt
-        md5=$((md5sum *squashfs-sysupgrade* || md5sum *squashfs-combined-efi*) | awk '{print $1}') 2>/dev/null
-        echo $md5 >> version.txt
-        rename -v "s/^openwrt/${{ env.VERSION }}-openwrt/" * || true
-        rename -v "s/friendlyarm_//" *gz || true
-        echo $md5 >> version.txt
-        echo ${{matrix.target}} >> version.txt     
-        rm -rf sha256sums
-        echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         
-    - name: Deploy imagebuilder to server
+        # Calculate MD5 more safely
+        md5=""
+        if ls *squashfs-sysupgrade* 1> /dev/null 2>&1; then
+          md5=$(md5sum *squashfs-sysupgrade* | awk '{print $1}' | head -1)
+        elif ls *squashfs-combined-efi* 1> /dev/null 2>&1; then
+          md5=$(md5sum *squashfs-combined-efi* | awk '{print $1}' | head -1)
+        fi
+        
+        [ -n "$md5" ] && echo "$md5" >> version.txt
+        
+        # Rename files more safely
+        for file in openwrt*; do
+          [ -f "$file" ] && mv "$file" "${file/openwrt/${{ env.VERSION }}-openwrt}"
+        done 2>/dev/null || true
+        
+        for file in *friendlyarm_*.gz; do
+          [ -f "$file" ] && mv "$file" "${file/friendlyarm_/}"
+        done 2>/dev/null || true
+        
+        [ -n "$md5" ] && echo "$md5" >> version.txt
+        echo "${{matrix.target}}" >> version.txt     
+        rm -rf sha256sums
+        
+        echo "FIRMWARE=$PWD" >> $GITHUB_ENV
+        echo "status=success" >> $GITHUB_OUTPUT
+        
+    - name: Deploy to server
       uses: easingthemes/ssh-deploy@main
+      if: steps.organize.outputs.status == 'success' && env.SSH_PRIVATE_KEY
       with:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        ARGS: "-avzr --exclude="
+        ARGS: "-avzr --delete"
         SOURCE: firmware/
         REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
         REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
@@ -176,29 +228,30 @@ jobs:
         TARGET: "/www/wwwroot/${{ secrets.REMOTE_HOST }}/op/firmware/${{matrix.target}}/"         
       
     - name: Upload firmware directory
-      uses: actions/upload-artifact@main
+      uses: actions/upload-artifact@v4
       if: steps.organize.outputs.status == 'success' && !cancelled()
       with:
         name: ${{ env.date3 }}_${{matrix.target}}
         path: ${{ env.FIRMWARE }}
+        retention-days: 30
         
     - name: Set Up Docker Buildx
-      uses: docker/setup-buildx-action@master
-      if: env.DOCKER_ID && env.DOCKER_PASSWD
+      uses: docker/setup-buildx-action@v3
+      if: secrets.DOCKER_ID && secrets.DOCKER_PASSWD
 
     - name: Login To DockerHub
-      uses: docker/login-action@master
-      if: env.DOCKER_ID && env.DOCKER_PASSWD
+      uses: docker/login-action@v3
+      if: secrets.DOCKER_ID && secrets.DOCKER_PASSWD
       with:
         username: ${{ secrets.DOCKER_ID }}
         password: ${{ secrets.DOCKER_PASSWD }}
         
     - name: Build and push docker image
-      uses: docker/build-push-action@master
+      uses: docker/build-push-action@v6
       continue-on-error: true
-      if: env.DOCKER_ID && env.DOCKER_PASSWD && ! contains(github.event.action, 'noser')
+      if: secrets.DOCKER_ID && secrets.DOCKER_PASSWD && !contains(github.event.action, 'noser')
       with:
-        platforms: ${{ env.ARCH }}
+        platforms: linux/amd64
         file: Dockerfile
         context: .
         push: true
@@ -206,7 +259,7 @@ jobs:
           ${{ secrets.DOCKER_ID }}/openwrt-6p:${{matrix.target}}
           ${{ env.DOCKERTAG }}        
 
-    - name: Upload firmware to cowtransfer
+    - name: Upload to cowtransfer
       id: cowtransfer
       if: steps.organize.outputs.status == 'success' && env.UPLOAD_COWTRANSFER == 'true' && !cancelled()
       run: |
@@ -215,7 +268,7 @@ jobs:
         echo "::warning file=cowtransfer.com::$(cat cowtransfer.log | grep https)"
         echo "url=$(cat cowtransfer.log | grep https | cut -f3 -d" ")" >> $GITHUB_OUTPUT
 
-    - name: Upload firmware to WeTransfer
+    - name: Upload to WeTransfer
       id: wetransfer
       if: steps.organize.outputs.status == 'success' && env.UPLOAD_WETRANSFER == 'true' && !cancelled()
       run: |
@@ -229,10 +282,9 @@ jobs:
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
       run: |
         echo -e "墙内外加速下载 🎈:\n" >> release.txt
-        echo -e "[kenzo] (https://${{ secrets.REMOTE_HOST }}/op/firmware/${{matrix.target}})\n" >> release.txt
-        touch release.txt
-        [ $UPLOAD_COWTRANSFER = true ] && echo "🔗 [Cowtransfer](${{ steps.cowtransfer.outputs.url }})" >> release.txt
-        [ $UPLOAD_WETRANSFER = true ] && echo "🔗 [WeTransfer](${{ steps.wetransfer.outputs.url }})" >> release.txt
+        echo -e "[kenzo](https://${{ secrets.REMOTE_HOST }}/op/firmware/${{matrix.target}})\n" >> release.txt
+        [ "$UPLOAD_COWTRANSFER" = "true" ] && echo "🔗 [Cowtransfer](${{ steps.cowtransfer.outputs.url }})" >> release.txt
+        [ "$UPLOAD_WETRANSFER" = "true" ] && echo "🔗 [WeTransfer](${{ steps.wetransfer.outputs.url }})" >> release.txt
         echo "status=success" >> $GITHUB_OUTPUT
 
     - name: Upload firmware to release
@@ -247,17 +299,16 @@ jobs:
         body_path: release.txt
 
     - name: Delete workflow runs
-      uses: Mattraks/delete-workflow-runs@main
+      uses: Mattraks/delete-workflow-runs@v3
       with:
         retain_days: 1
         keep_minimum_runs: 0
 
     - name: Remove old Releases
-      uses: dev-drprasad/delete-older-releases@master
+      uses: dev-drprasad/delete-older-releases@v0.3.4
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
       with:
         keep_latest: 6
         delete_tags: true
       env:
         GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
-        
