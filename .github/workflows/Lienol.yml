@@ -217,7 +217,7 @@ jobs:
         
     - name: Deploy to server
       uses: easingthemes/ssh-deploy@main
-      if: steps.organize.outputs.status == 'success' && env.SSH_PRIVATE_KEY
+      if: steps.organize.outputs.status == 'success' && secrets.SSH_PRIVATE_KEY
       with:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         ARGS: "-avzr --delete"
