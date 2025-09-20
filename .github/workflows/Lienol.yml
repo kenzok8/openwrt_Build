@@ -120,6 +120,9 @@ jobs:
         sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/Makefile
         sed -i "s/%D %V, %C/openwrt $(date +'%m.%d') by kenzo/g" package/base-files/files/etc/banner
         ./scripts/feeds update -a && ./scripts/feeds install -a
+        if [ -f feeds/packages/lang/rust/files/config.toml ]; then
+          sed -i 's/download-ci-llvm = true/download-ci-llvm = "if-unchanged"/' feeds/packages/lang/rust/files/config.toml
+        fi
         cp -f feeds/smpackage/.github/diy/${{matrix.target}}.config .config && make defconfig
         
     - name: Download package
