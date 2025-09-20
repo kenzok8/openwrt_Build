@@ -120,8 +120,8 @@ jobs:
         sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/Makefile
         sed -i "s/%D %V, %C/openwrt $(date +'%m.%d') by kenzo/g" package/base-files/files/etc/banner
         ./scripts/feeds update -a && ./scripts/feeds install -a
-        # 修改 Rust 配置，避免 CI panic
         if [ -f feeds/packages/lang/rust/files/config.toml ]; then
+          sed -i 's/llvm.download-ci-llvm = true/llvm.download-ci-llvm = "if-unchanged"/' feeds/packages/lang/rust/files/config.toml
           sed -i 's/download-ci-llvm = true/download-ci-llvm = "if-unchanged"/' feeds/packages/lang/rust/files/config.toml
           grep download-ci-llvm feeds/packages/lang/rust/files/config.toml
         fi
