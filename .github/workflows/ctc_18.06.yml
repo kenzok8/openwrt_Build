@@ -99,7 +99,12 @@ jobs:
         sudo mkdir -p -m 777 /mnt/openwrt/dl /mnt/openwrt/staging_dir /mnt/openwrt/build_dir
         ln -sf /mnt/openwrt/dl openwrt/dl
         ln -sf /mnt/openwrt/staging_dir openwrt/staging_dir
-        ln -sf /mnt/openwrt/build_dir openwrt/build_dir        
+        ln -sf /mnt/openwrt/build_dir openwrt/build_dir
+
+    - name: Setup Go for host bootstrap
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.24.6'
 
     - name: Update feeds
       working-directory: ./openwrt
