@@ -104,7 +104,12 @@ jobs:
     - name: Setup Go for host bootstrap
       uses: actions/setup-go@v5
       with:
-        go-version: '1.24.6'
+        go-version: '1.22.6'
+
+    - name: Set GOROOT_BOOTSTRAP
+      run: |
+        echo "GOROOT_BOOTSTRAP=$(go env GOROOT)" >> $GITHUB_ENV
+        go version
 
     - name: Update feeds
       working-directory: ./openwrt
