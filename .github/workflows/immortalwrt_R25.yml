@@ -27,7 +27,7 @@ jobs:
 
     steps:
       - name: 🧾 拉取代码
-        uses: actions/upload-artifact@v4
+        uses: actions/checkout@v4
 
       - name: 🧱 初始化编译环境（清理空间 + 安装依赖）
         env:
@@ -110,7 +110,11 @@ jobs:
         run: |
           mkdir firmware
           mv -f openwrt/bin/targets/*/*/{*combined*,*sysupgrade*} ./firmware/ 2>/dev/null || true
-          cp openwrt/.config ./firmware/${{matrix.target}}.config
+          if [ -f openwrt/.config ]; then
+            cp openwrt/.config ./firmware/${{matrix.target}}.config
+          else
+            echo "⚠️ 警告：未找到 openwrt/.config 文件，跳过配置文件保存"
+          fi
           cd firmware
           echo "FIRMWARE=$PWD" >> $GITHUB_ENV
 
