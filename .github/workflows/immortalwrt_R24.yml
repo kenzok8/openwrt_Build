@@ -1,0 +1,164 @@
+name: immortalwrt_x86_R24_10
+
+on:
+  repository_dispatch:
+  workflow_dispatch:
+    inputs:
+      ssh:
+        description: "ssh"
+        required: false
+        default: "false"
+
+env:
+  UPLOAD_FIRMWARE: true
+  UPLOAD_RELEASE: true
+  TZ: Asia/Shanghai
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    if: github.event.repository.owner.id == github.event.sender.id
+
+    name: 构建固件 - ${{matrix.target}}
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [immortalwrt_r24]
+
+    steps:
+      - name: 🧾 拉取代码
+        uses: actions/upload-artifact@v4
+
+      - name: 🧱 初始化编译环境（清理空间 + 安装依赖）
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          echo "🧹 清理预装包释放空间..."
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/lib/android \
+                      /opt/hostedtoolcache /usr/lib/jvm \
+                      "$AGENT_TOOLSDIRECTORY" /usr/local/share/boost
+          sudo apt-get purge -y "mono*" "php*" || true
+          sudo apt-get autoremove -y
+          sudo apt-get clean
+
+          echo "📦 安装编译依赖..."
+          sudo -E apt-get update
+          sudo -E apt-get install -y ack antlr3 asciidoc autoconf automake autopoint binutils bison build-essential bzip2 ccache cmake cpio curl device-tree-compiler fastjar flex gawk gettext gcc-multilib g++-multilib git gperf haveged help2man intltool libc6-dev-i386 libelf-dev libfuse-dev libglib2.0-dev libgmp3-dev libltdl-dev libmpc-dev libmpfr-dev libncurses5-dev libncursesw5-dev libpython3-dev libreadline-dev libssl-dev libtool lrzsz mkisofs msmtp ninja-build p7zip p7zip-full patch pkgconf python2.7 python3 python3-pyelftools python3-setuptools qemu-utils rsync scons squashfs-tools subversion swig texinfo uglifyjs upx-ucl unzip vim wget xmlto xxd zlib1g-dev rename
+          sudo timedatectl set-timezone "$TZ"
+
+      - name: 📅 获取当前时间
+        id: date
+        run: |
+          echo "date=$(date +'%Y.%m.%d-%H%M')" >> $GITHUB_ENV
+          echo "date2=$(date +'%m/%d %Y')" >> $GITHUB_ENV
+          echo "date3=$(date +'%m.%d')" >> $GITHUB_ENV
+          echo "VERSION=$(date +'%m.%d')" >> $GITHUB_ENV
+
+      - name: 📦 克隆源代码
+        env:
+          REPO_URL: https://github.com/immortalwrt/immortalwrt
+          REPO_BRANCH: openwrt-24.10
+        run: |
+          git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
+
+      - name: 🔄 更新Feeds
+        working-directory: ./openwrt
+        run: |
+          git clone https://github.com/gdy666/luci-app-lucky.git package/lucky
+          ./scripts/feeds update -a
+          ./scripts/feeds install -a
+
+      - name: 🛠 修改默认配置
+        working-directory: ./openwrt
+        run: |
+          sed -i 's/192.168.1.1/10.159.1.66/g' package/base-files/files/bin/config_generate
+          sed -i 's/ImmortalWrt/LuckyWRT/g' package/base-files/files/bin/config_generate
+
+      - name: ⚙️ 加载自定义配置
+        run: |
+          CONFIG_FILE="${{matrix.target}}.config"
+          if [ -f "$CONFIG_FILE" ]; then
+            echo "✅ 发现配置文件：$CONFIG_FILE"
+            cp "$CONFIG_FILE" openwrt/.config
+          else
+            echo "❌ 未找到配置文件：$CONFIG_FILE"
+            exit 1
+          fi
+
+      - name: 📋 应用配置（make defconfig）
+        working-directory: ./openwrt
+        run: |
+          make defconfig
+          echo "📂 最终配置文件内容如下："
+          head -n 20 .config
+
+      - name: 📥 下载依赖包
+        working-directory: ./openwrt
+        run: |
+          make download -j$(nproc)
+          find dl -size -1024c -exec rm -f {} \;
+
+      - name: 🧩 编译固件
+        working-directory: ./openwrt
+        run: |
+          echo -e "$(nproc) 核心线程进行编译"
+          make -j$(nproc) || make -j1 V=s
+
+      - name: 📂 整理固件文件
+        id: organize
+        if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
+        run: |
+          mkdir firmware
+          mv -f openwrt/bin/targets/*/*/{*combined*,*sysupgrade*} ./firmware/ 2>/dev/null || true
+          cp openwrt/.config ./firmware/${{matrix.target}}.config
+          cd firmware
+          echo "FIRMWARE=$PWD" >> $GITHUB_ENV
+
+      - name: ☁️ 上传固件
+        uses: actions/upload-artifact@v4
+        if: steps.organize.outputs.status == 'success' && !cancelled()
+        with:
+          name: ${{ env.date3 }} _${{matrix.target}}
+          path: ${{ env.FIRMWARE }}
+
+      - name: 🏷 生成发布标签
+        id: tag
+        if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+        run: |
+          touch release.txt
+          echo "OpenWrt firmware for ${{matrix.target}}" >> release.txt
+          echo "Build date: ${{ env.date2 }}" >> release.txt
+          echo "status=success" >> $GITHUB_OUTPUT
+
+      - name: 🚀 上传到 Release
+        uses: softprops/action-gh-release@v1
+        if: steps.tag.outputs.status == 'success' && !cancelled()
+        env:
+          GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
+        with:
+          files: "${{ env.FIRMWARE }}/*"
+          name: ${{ env.date2 }} ${{matrix.target}}
+          tag_name: ${{ env.date }}_${{matrix.target}}
+          body_path: release.txt
+
+      - name: 🧹 构建完成后清理空间
+        if: always()
+        run: |
+          echo "🗑 清理构建中间文件释放磁盘..."
+          rm -rf openwrt/build_dir openwrt/staging_dir openwrt/tmp
+          df -h
+
+      - name: 🧹 删除旧的 Workflow 记录
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+          retain_days: 1
+          keep_minimum_runs: 0
+
+      - name: 🗑 清理旧的 Release
+        uses: dev-drprasad/delete-older-releases@v0.3.0
+        if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+        with:
+          keep_latest: 6
+          delete_tags: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
