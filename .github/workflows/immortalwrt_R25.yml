@@ -65,6 +65,7 @@ jobs:
         working-directory: ./openwrt
         run: |
           git clone https://github.com/gdy666/luci-app-lucky.git package/lucky
+          git clone https://github.com/nikkinikki-org/OpenWrt-nikki.git package/OpenWrt-nikki
           ./scripts/feeds update -a
           ./scripts/feeds install -a
 
