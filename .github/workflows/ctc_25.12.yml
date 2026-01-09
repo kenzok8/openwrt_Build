@@ -4,7 +4,7 @@
 # Author: kenzo
 #=================================================
 
-name: openwrt_24.10
+name: openwrt_25.12
 
 on:
   repository_dispatch:
@@ -37,7 +37,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [ctc_24.10]
+        target: [ctc_25.12]
     
     steps:
     - name: Checkout
@@ -81,7 +81,7 @@ jobs:
     - name: Clone source code
       env: 
         REPO_URL: https://github.com/immortalwrt/immortalwrt
-        REPO_BRANCH: openwrt-24.10
+        REPO_BRANCH: openwrt-25.10
         TZ: Asia/Shanghai        
       run: |
         git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
