@@ -23,7 +23,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [immortalwrt_r24]
+        target: [immortalwrt_r25]
 
     steps:
       - name: 🧾 拉取代码
