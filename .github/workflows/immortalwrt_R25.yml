@@ -64,9 +64,20 @@ jobs:
       - name: 🔄 更新Feeds
         working-directory: ./openwrt
         run: |
-          git clone https://github.com/gdy666/luci-app-lucky.git package/lucky
-          git clone https://github.com/nikkinikki-org/OpenWrt-nikki.git package/OpenWrt-nikki
+          echo "📦 克隆自定义包仓库..."
+          git clone --depth 1 https://github.com/gdy666/luci-app-lucky.git package/lucky || {
+            echo "❌ lucky 仓库克隆失败"
+            exit 1
+          }
+          git clone --depth 1 https://github.com/nikkinikki-org/OpenWrt-nikki.git package/nikki || {
+            echo "⚠️ nikki 仓库克隆失败，跳过该包"
+            rm -rf package/nikki
+          }
+
+          echo "🔄 更新软件源..."
           ./scripts/feeds update -a
+
+          echo "📦 安装软件包..."
           ./scripts/feeds install -a
 
       - name: 🛠 修改默认配置
@@ -102,8 +113,13 @@ jobs:
       - name: 🧩 编译固件
         working-directory: ./openwrt
         run: |
-          echo -e "$(nproc) 核心线程进行编译"
-          make -j$(nproc) || make -j1 V=s
+          echo "🔨 开始编译固件（$(nproc) 核心线程）..."
+          echo "💡 首次编译尝试（并行构建）..."
+          make -j$(nproc) || {
+            echo "⚠️ 并行编译失败，切换到单线程详细模式..."
+            echo "📋 开始单线程编译并输出详细日志..."
+            make -j1 V=s
+          }
 
       - name: 📂 整理固件文件
         id: organize
