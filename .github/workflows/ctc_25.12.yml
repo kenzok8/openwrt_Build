@@ -100,27 +100,52 @@ jobs:
     - name: Update feeds
       working-directory: ./openwrt
       run: |
-        ./scripts/feeds update -a
+        echo "🔄 更新所有软件源..."
+        ./scripts/feeds update -a || {
+          echo "❌ 软件源更新失败"
+          exit 1
+        }
         
     - name: Defconfig ${{matrix.target}}
       env:
         CONFIG_FILE: '${{matrix.target}}.config'
       run: |
+        echo "⚙️ 配置构建环境..."
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x ./customize.sh && ./customize.sh
         cd openwrt
+
+        echo "🔧 替换 golang 版本..."
         rm -rf feeds/packages/lang/golang
-        git clone https://github.com/kenzok8/golang -b 1.25 feeds/packages/lang/golang
-        cp -f feeds/smpackage/.github/diy/default-settings package/emortal/default-settings/files/99-default-settings
+        git clone --depth 1 https://github.com/kenzok8/golang -b 1.25 feeds/packages/lang/golang || {
+          echo "⚠️ golang 仓库克隆失败"
+        }
+
+        echo "📝 应用自定义配置..."
+        cp -f feeds/smpackage/.github/diy/default-settings package/emortal/default-settings/files/99-default-settings || true
+
+        echo "🗑️ 移除冲突的包..."
         rm -rf feeds/packages/net/{alist,adguardhome,brook,gost,mosdns,redsocks*,smartdns,trojan*,v2ray*,xray*}
         rm -rf feeds/packages/luci/{luci-app-homeproxy,luci-app-openclash,luci-app-passwall}
-        rm -rf feeds/smpackage/luci-theme-design && git clone -b js --single-branch https://github.com/kenzok78/luci-theme-design feeds/smpackage/luci-theme-design
+
+        echo "🎨 配置主题..."
+        rm -rf feeds/smpackage/luci-theme-design
+        git clone --depth 1 -b js --single-branch https://github.com/kenzok78/luci-theme-design feeds/smpackage/luci-theme-design || {
+          echo "⚠️ luci-theme-design 克隆失败"
+        }
         sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/Makefile
-        patch -p1 < "feeds/smpackage/.github/diy/patches/0004-luci-mod-status-firewall-disable-legacy-firewall-rul.patch"
-        cp -f feeds/smpackage/.github/diy/banner package/base-files/files/etc/banner
+
+        echo "🔧 应用补丁..."
+        patch -p1 < "feeds/smpackage/.github/diy/patches/0004-luci-mod-status-firewall-disable-legacy-firewall-rul.patch" || true
+
+        echo "🏷️ 自定义 banner..."
+        cp -f feeds/smpackage/.github/diy/banner package/base-files/files/etc/banner || true
         sed -i "s/%D %V, %C/openwrt $(date +'%m.%d') by kenzo/g" package/base-files/files/etc/banner
-        #cp -Rf feeds/smpackage/.github/diy/.packages/files/* files
+
+        echo "📦 更新并安装软件包..."
         ./scripts/feeds update -a && ./scripts/feeds install -a
+
+        echo "⚙️ 应用最终配置..."
         cp -f feeds/smpackage/.github/diy/${{matrix.target}}.config .config && make defconfig
         
     - name: Download package
@@ -147,8 +172,13 @@ jobs:
     - name: Compile the firmware
       working-directory: ./openwrt
       run: |
-        echo -e "$(($(nproc)+1)) thread compile"
-        make -j$(($(nproc)+1)) || make -j1 V=s      
+        echo "🔨 开始编译固件（$(($(nproc)+1)) 核心线程）..."
+        echo "💡 首次编译尝试（并行构建）..."
+        make -j$(($(nproc)+1)) || {
+          echo "⚠️ 并行编译失败，切换到单线程详细模式..."
+          echo "📋 开始单线程编译并输出详细日志..."
+          make -j1 V=s
+        }      
 
     - name: Upload bin directory
       uses: actions/upload-artifact@main
