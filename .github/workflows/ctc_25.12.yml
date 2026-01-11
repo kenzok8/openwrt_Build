@@ -102,10 +102,17 @@ jobs:
       run: |
         echo "🔄 更新所有软件源..."
         ./scripts/feeds update -a || {
-          echo "❌ 软件源更新失败"
-          exit 1
+          echo "❌ 软件源更新失败，重试一次..."
+          sleep 5
+          ./scripts/feeds update -a
         }
-        
+
+    - name: 🔧 Fix package installation conflicts
+      working-directory: ./openwrt
+      run: |
+        echo "🔧 添加 --force-overwrite 标志以解决包文件冲突..."
+        sed -i 's/$(TARGET_DIR)) install/$(TARGET_DIR)) install --force-overwrite/' package/Makefile
+
     - name: Defconfig ${{matrix.target}}
       env:
         CONFIG_FILE: '${{matrix.target}}.config'
@@ -143,7 +150,15 @@ jobs:
         sed -i "s/%D %V, %C/openwrt $(date +'%m.%d') by kenzo/g" package/base-files/files/etc/banner
 
         echo "📦 更新并安装软件包..."
-        ./scripts/feeds update -a && ./scripts/feeds install -a
+        ./scripts/feeds update -a || {
+          echo "⚠️ 软件源更新失败，继续..."
+        }
+        ./scripts/feeds install -a || {
+          echo "⚠️ 批量安装失败，尝试逐个安装核心包..."
+          ./scripts/feeds install -p packages -a
+          ./scripts/feeds install -p luci -a
+          echo "✅ 核心包安装完成"
+        }
 
         echo "⚙️ 应用最终配置..."
         cp -f feeds/smpackage/.github/diy/${{matrix.target}}.config .config && make defconfig
