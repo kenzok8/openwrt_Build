@@ -64,6 +64,20 @@ jobs:
       - name: 🔄 更新Feeds
         working-directory: ./openwrt
         run: |
+          echo "🔄 更新软件源..."
+          ./scripts/feeds update -a || {
+            echo "❌ 软件源更新失败，重试一次..."
+            sleep 5
+            ./scripts/feeds update -a
+          }
+
+          echo "🗑️ 移除可能冲突的包..."
+          rm -rf feeds/packages/net/lucky
+          rm -rf feeds/luci/applications/luci-app-lucky
+          rm -rf feeds/packages/net/sing-box
+          rm -rf feeds/luci/applications/luci-app-openclash
+          rm -rf feeds/luci/applications/luci-app-passwall
+
           echo "📦 克隆自定义包仓库..."
           git clone --depth 1 https://github.com/gdy666/luci-app-lucky.git package/lucky || {
             echo "❌ lucky 仓库克隆失败"
@@ -72,13 +86,6 @@ jobs:
           git clone --depth 1 https://github.com/nikkinikki-org/OpenWrt-nikki.git package/nikki || {
             echo "⚠️ nikki 仓库克隆失败，跳过该包"
             rm -rf package/nikki
-          }
-
-          echo "🔄 更新软件源..."
-          ./scripts/feeds update -a || {
-            echo "❌ 软件源更新失败，重试一次..."
-            sleep 5
-            ./scripts/feeds update -a
           }
 
           echo "📦 安装软件包..."
