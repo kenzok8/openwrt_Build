@@ -86,7 +86,7 @@ jobs:
     - name: Clone source code
       env: 
         REPO_URL: https://github.com/immortalwrt/immortalwrt
-        REPO_BRANCH: openwrt-18.06-k5.4
+        REPO_BRANCH: openwrt-25.12
       run: |
         git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
         cd openwrt
@@ -100,16 +100,6 @@ jobs:
         ln -sf /mnt/openwrt/dl openwrt/dl
         ln -sf /mnt/openwrt/staging_dir openwrt/staging_dir
         ln -sf /mnt/openwrt/build_dir openwrt/build_dir
-
-    - name: Setup Go for host bootstrap
-      uses: actions/setup-go@v5
-      with:
-        go-version: '1.22.6'
-
-    - name: Set GOROOT_BOOTSTRAP
-      run: |
-        echo "GOROOT_BOOTSTRAP=$(go env GOROOT)" >> $GITHUB_ENV
-        go version
 
     - name: Update feeds
       working-directory: ./openwrt
