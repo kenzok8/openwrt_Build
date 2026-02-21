@@ -204,7 +204,9 @@ jobs:
         key = ${B2_APPLICATION_KEY}
         hard_delete = true
         EOF
-        rclone copy "${{ env.FIRMWARE }}" "b2:${{ secrets.B2_BUCKET }}/op/firmware/${{matrix.target}}/" \
+        B2_PATH_PREFIX="${{ secrets.B2_PATH_PREFIX }}"
+        [ -z "$B2_PATH_PREFIX" ] && B2_PATH_PREFIX="op-dllkids-xyz-archive/dllkids.xyz"
+        rclone copy "${{ env.FIRMWARE }}" "b2:${{ secrets.B2_BUCKET }}/${B2_PATH_PREFIX}/op/firmware/${{matrix.target}}/" \
           --fast-list \
           --transfers 8 \
           --checkers 16 \
@@ -265,11 +267,13 @@ jobs:
       if: success() && env.UPLOAD_RELEASE == 'true' && !cancelled()
       run: |
         B2_PUBLIC_BASE_URL="${{ secrets.B2_PUBLIC_BASE_URL }}"
+        B2_PATH_PREFIX="${{ secrets.B2_PATH_PREFIX }}"
+        [ -z "$B2_PATH_PREFIX" ] && B2_PATH_PREFIX="op-dllkids-xyz-archive/dllkids.xyz"
         [ -z "$B2_PUBLIC_BASE_URL" ] && B2_PUBLIC_BASE_URL="https://down.dllkids.xyz"
         if [ -n "$B2_PUBLIC_BASE_URL" ]; then
           B2_LINK="${B2_PUBLIC_BASE_URL%/}/op/firmware/${{matrix.target}}/"
         else
-          B2_LINK="https://f000.backblazeb2.com/file/${{ secrets.B2_BUCKET }}/op/firmware/${{matrix.target}}/"
+          B2_LINK="https://f000.backblazeb2.com/file/${{ secrets.B2_BUCKET }}/${B2_PATH_PREFIX}/op/firmware/${{matrix.target}}/"
         fi
         echo -e "墙内外加速下载 🎈:\n" >> release.txt
         echo -e "[Backblaze B2]($B2_LINK)\n" >> release.txt
