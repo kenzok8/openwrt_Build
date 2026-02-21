@@ -165,29 +165,47 @@ jobs:
       run: |
         mkdir firmware
         mv -f openwrt/bin/targets/*/*/{*combined*,*sysupgrade*} ./firmware/ 2>/dev/null || true
-        cp openwrt/.config  ./firmware/${{matrix.target}}.config
-        cp openwrt/build_dir/target-*/linux-*/linux-*/.config ./firmware/${{matrix.target}}_kernel.config
+        cp openwrt/.config ./firmware/${{matrix.target}}.config 2>/dev/null || true
+        cp openwrt/build_dir/target-*/linux-*/linux-*/.config ./firmware/${{matrix.target}}_kernel.config 2>/dev/null || true
         cd firmware
         echo "v${{ env.date2 }}" > version.txt
-        md5=$((md5sum *squashfs-sysupgrade* || md5sum *squashfs-combined-efi*) | awk '{print $1}') 2>/dev/null
-        echo $md5 >> version.txt
+        md5_output=$( (md5sum *squashfs-sysupgrade* 2>/dev/null || md5sum *squashfs-combined-efi* 2>/dev/null) | awk '{print $1}' ) || true
+        echo "$md5_output" >> version.txt
         rename -v "s/^openwrt/${{ env.VERSION }}-openwrt/" * || true
         rename -v "s/friendlyarm_//" *gz || true
-        echo $md5 >> version.txt
+        echo "$md5_output" >> version.txt
         echo ${{matrix.target}} >> version.txt
         rm -rf sha256sums
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
+        echo "status=success" >> $GITHUB_OUTPUT
         
-    - name: Deploy imagebuilder to server
-      uses: easingthemes/ssh-deploy@main
-      with:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        ARGS: "-avzr --exclude="
-        SOURCE: firmware/
-        REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
-        REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
-        REMOTE_USER: root
-        TARGET: "/www/wwwroot/${{ secrets.REMOTE_HOST }}/op/firmware/${{matrix.target}}/"
+    - name: Upload firmware to Backblaze B2
+      env:
+        B2_ACCOUNT_ID: ${{ secrets.B2_ACCOUNT_ID }}
+        B2_KEY_ID: ${{ secrets.B2_KEY_ID }}
+        B2_APPLICATION_KEY: ${{ secrets.B2_APPLICATION_KEY }}
+      if: steps.organize.outputs.status == 'success' && !cancelled()
+      run: |
+        curl -fsSL https://rclone.org/install.sh | sudo bash
+        mkdir -p ~/.config/rclone
+        B2_ID="${B2_ACCOUNT_ID:-$B2_KEY_ID}"
+        if [ -z "$B2_ID" ] || [ -z "$B2_APPLICATION_KEY" ]; then
+          echo "Missing Backblaze B2 credentials"
+          exit 1
+        fi
+        cat > ~/.config/rclone/rclone.conf <<EOF
+        [b2]
+        type = b2
+        account = ${B2_ID}
+        key = ${B2_APPLICATION_KEY}
+        hard_delete = true
+        EOF
+        rclone copy "${{ env.FIRMWARE }}" "b2:${{ secrets.B2_BUCKET }}/op/firmware/${{matrix.target}}/" \
+          --fast-list \
+          --transfers 8 \
+          --checkers 16 \
+          --create-empty-src-dirs \
+          --checksum
 
     - name: Upload firmware directory
       uses: actions/upload-artifact@main
@@ -242,8 +260,15 @@ jobs:
       id: tag
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
       run: |
+        B2_PUBLIC_BASE_URL="${{ secrets.B2_PUBLIC_BASE_URL }}"
+        [ -z "$B2_PUBLIC_BASE_URL" ] && B2_PUBLIC_BASE_URL="https://down.dllkids.xyz"
+        if [ -n "$B2_PUBLIC_BASE_URL" ]; then
+          B2_LINK="${B2_PUBLIC_BASE_URL%/}/op/firmware/${{matrix.target}}/"
+        else
+          B2_LINK="https://f000.backblazeb2.com/file/${{ secrets.B2_BUCKET }}/op/firmware/${{matrix.target}}/"
+        fi
         echo -e "墙内外加速下载 🎈:\n" >> release.txt
-        echo -e "[kenzo] (https://${{ secrets.REMOTE_HOST }}/op/firmware/${{matrix.target}})\n" >> release.txt
+        echo -e "[Backblaze B2]($B2_LINK)\n" >> release.txt
         touch release.txt
         [ $UPLOAD_COWTRANSFER = true ] && echo "🔗 [Cowtransfer](${{ steps.cowtransfer.outputs.url }})" >> release.txt
         [ $UPLOAD_WETRANSFER = true ] && echo "🔗 [WeTransfer](${{ steps.wetransfer.outputs.url }})" >> release.txt
