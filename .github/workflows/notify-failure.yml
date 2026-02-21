@@ -48,7 +48,7 @@ jobs:
             core.setOutput('send', duplicate ? 'false' : 'true');
 
       - name: Send Telegram alert
-        if: ${{ steps.dedupe.outputs.send == 'true' && secrets.TELEGRAM_BOT_TOKEN != '' && secrets.TELEGRAM_CHAT_ID != '' }}
+        if: ${{ steps.dedupe.outputs.send == 'true' }}
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
@@ -58,6 +58,10 @@ jobs:
           RUN_URL: ${{ github.event.workflow_run.html_url }}
           COMMIT: ${{ github.event.workflow_run.head_sha }}
         run: |
+          if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then
+            echo "Telegram secrets missing, skip sending."
+            exit 0
+          fi
           MSG="[OpenWrt Build Failed]%0ARepo: ${REPO}%0AWorkflow: ${WORKFLOW_NAME}%0ABranch: ${BRANCH}%0ACommit: ${COMMIT}%0A${RUN_URL}"
           curl -sS "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
             -d "chat_id=${TELEGRAM_CHAT_ID}" \
@@ -65,6 +69,6 @@ jobs:
             -d "disable_web_page_preview=true" >/dev/null
 
       - name: Notification skipped
-        if: ${{ steps.dedupe.outputs.send != 'true' || secrets.TELEGRAM_BOT_TOKEN == '' || secrets.TELEGRAM_CHAT_ID == '' }}
+        if: ${{ steps.dedupe.outputs.send != 'true' }}
         run: |
-          echo "Skipped notification (duplicate within 24h or Telegram secrets missing)."
+          echo "Skipped notification (duplicate within 24h)."
