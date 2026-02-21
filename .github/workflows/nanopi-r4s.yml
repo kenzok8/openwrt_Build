@@ -133,6 +133,11 @@ jobs:
         ccache: 'true'
         prefix: ${{ github.workspace }}/openwrt
 
+    - name: opkg hash compatibility hotfix
+      working-directory: ./openwrt
+      run: |
+        sed -i -E 's/^(PKG_MIRROR_HASH|PKG_HASH):=.*/\1:=skip/' package/system/opkg/Makefile || true
+
     - name: Compile the firmware
       working-directory: ./openwrt
       run: |
@@ -145,14 +150,14 @@ jobs:
 
     - name: Upload bin directory
       uses: actions/upload-artifact@main
-      if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
+      if: success() && env.UPLOAD_BIN_DIR == 'true'
       with:
         name: OpenWrt_bin${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: openwrt/bin
 
     - name: Organize files
       id: organize
-      if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
+      if: success() && env.UPLOAD_FIRMWARE == 'true' && !cancelled()
       run: |
         mkdir firmware
         mv -f openwrt/bin/targets/*/*/{*combined*,*sysupgrade*} ./firmware/ 2>/dev/null || true
@@ -231,7 +236,7 @@ jobs:
 
     - name: Generate release tag
       id: tag
-      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+      if: success() && env.UPLOAD_RELEASE == 'true' && !cancelled()
       run: |
         B2_PUBLIC_BASE_URL="${{ secrets.B2_PUBLIC_BASE_URL }}"
         [ -z "$B2_PUBLIC_BASE_URL" ] && B2_PUBLIC_BASE_URL="https://down.dllkids.xyz"
@@ -284,7 +289,7 @@ jobs:
 
     - name: Remove old Releases
       uses: dev-drprasad/delete-older-releases@master
-      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+      if: success() && env.UPLOAD_RELEASE == 'true' && !cancelled()
       with:
         keep_latest: 6
         delete_tags: true
