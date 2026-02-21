@@ -144,6 +144,7 @@ jobs:
       run: |
         sed -i -E 's/^(PKG_MIRROR_HASH|PKG_HASH):=.*/\1:=skip/' package/system/opkg/Makefile || true
         [ -f package/network/utils/fullconenat-nft/Makefile ] && sed -i -E 's/^PKG_MIRROR_HASH:=.*/PKG_MIRROR_HASH:=skip/' package/network/utils/fullconenat-nft/Makefile || true
+        [ -f package/feeds/packages/rust/Makefile ] && sed -i -E 's/^(PKG_MIRROR_HASH|PKG_HASH):=.*/\1:=skip/' package/feeds/packages/rust/Makefile || true
 
     - name: Compile the firmware
       working-directory: ./openwrt
