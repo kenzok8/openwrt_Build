@@ -1,0 +1,74 @@
+name: Notify Build Failure
+
+on:
+  workflow_run:
+    workflows:
+      - Lean
+      - Lienol
+      - openwrt_18.06
+      - openwrt_24.10
+      - nanopi-r4s
+      - nanopi-r5s
+      - nanopi-r6s
+    types:
+      - completed
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  notify:
+    if: ${{ github.event.workflow_run.conclusion == 'failure' && github.event.workflow_run.head_branch == 'master' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Suppress duplicate alerts (24h)
+        id: dedupe
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const run = context.payload.workflow_run;
+            const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+
+            const { data } = await github.rest.actions.listWorkflowRuns({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: run.workflow_id,
+              branch: run.head_branch,
+              status: 'completed',
+              per_page: 100,
+            });
+
+            const duplicate = data.workflow_runs.some((r) =>
+              r.id !== run.id &&
+              r.conclusion === 'failure' &&
+              r.created_at >= since
+            );
+
+            core.setOutput('send', duplicate ? 'false' : 'true');
+
+      - name: Send Telegram alert
+        if: ${{ steps.dedupe.outputs.send == 'true' }}
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          REPO: ${{ github.repository }}
+          WORKFLOW_NAME: ${{ github.event.workflow_run.name }}
+          BRANCH: ${{ github.event.workflow_run.head_branch }}
+          RUN_URL: ${{ github.event.workflow_run.html_url }}
+          COMMIT: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then
+            echo "Telegram secrets missing, skip sending."
+            exit 0
+          fi
+          MSG="[OpenWrt Build Failed]%0ARepo: ${REPO}%0AWorkflow: ${WORKFLOW_NAME}%0ABranch: ${BRANCH}%0ACommit: ${COMMIT}%0A${RUN_URL}"
+          curl -sS "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -d "chat_id=${TELEGRAM_CHAT_ID}" \
+            -d "text=${MSG}" \
+            -d "disable_web_page_preview=true" >/dev/null
+
+      - name: Notification skipped
+        if: ${{ steps.dedupe.outputs.send != 'true' }}
+        run: |
+          echo "Skipped notification (duplicate within 24h)."
