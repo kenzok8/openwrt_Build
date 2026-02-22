@@ -119,21 +119,23 @@ jobs:
         rm -rf feeds/smpackage/luci-theme-design && git clone -b js --single-branch https://github.com/kenzok78/luci-theme-design feeds/smpackage/luci-theme-design
         sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/Makefile
         sed -i "s/%D %V, %C/openwrt $(date +'%m.%d') by kenzo/g" package/base-files/files/etc/banner
-        [ -f config.toml ] && sed -i 's/download-ci-llvm.*true/download-ci-llvm = "if-unchanged"/' config.toml || true
+        [ -f config.toml ] && sed -i 's/download-ci-llvm\s*=\s*.*/download-ci-llvm = false/' config.toml || true
+        find feeds/packages/lang/rust -name "*.toml" 2>/dev/null | xargs -I{} sed -i 's/download-ci-llvm\s*=\s*.*/download-ci-llvm = false/' {} || true
         ./scripts/feeds update -a && ./scripts/feeds install -a
         cp -f feeds/smpackage/.github/diy/${{matrix.target}}.config .config && make defconfig
-        
+
+    - name: Package hash compatibility hotfix
+      working-directory: ./openwrt
+      run: |
+        sed -i -E 's/^(PKG_MIRROR_HASH|PKG_HASH):=.*/\1:=skip/' package/system/opkg/Makefile || true
+        [ -f package/network/utils/fullconenat-nft/Makefile ] && sed -i -E 's/^PKG_MIRROR_HASH:=.*/PKG_MIRROR_HASH:=skip/' package/network/utils/fullconenat-nft/Makefile || true
+        [ -f package/feeds/packages/rust/Makefile ] && sed -i -E 's/^(PKG_MIRROR_HASH|PKG_HASH):=.*/\1:=skip/' package/feeds/packages/rust/Makefile || true
+
     - name: Download package
       working-directory: ./openwrt
       run: |
         make download -j$(nproc)
         find dl -size -1024c -exec rm -f {} \;
-
-    - name: opkg hash compatibility hotfix
-      working-directory: ./openwrt
-      run: |
-        sed -i -E 's/^(PKG_MIRROR_HASH|PKG_HASH):=.*/\1:=skip/' package/system/opkg/Makefile || true
-        [ -f package/network/utils/fullconenat-nft/Makefile ] && sed -i -E 's/^PKG_MIRROR_HASH:=.*/PKG_MIRROR_HASH:=skip/' package/network/utils/fullconenat-nft/Makefile || true
 
     - name: Compile the firmware
       working-directory: ./openwrt
@@ -193,9 +195,7 @@ jobs:
         key = ${B2_APPLICATION_KEY}
         hard_delete = true
         EOF
-        B2_PATH_PREFIX="${{ secrets.B2_PATH_PREFIX }}"
-        [ -z "$B2_PATH_PREFIX" ] && B2_PATH_PREFIX="op-dllkids-xyz-archive/dllkids.xyz"
-        rclone copy "${{ env.FIRMWARE }}" "b2:${{ secrets.B2_BUCKET }}/${B2_PATH_PREFIX}/op/firmware/${{matrix.target}}/" \
+        rclone copy "${{ env.FIRMWARE }}" "b2:${{ secrets.B2_BUCKET }}/op/firmware/${{matrix.target}}/" \
           --fast-list \
           --transfers 8 \
           --checkers 16 \
@@ -256,14 +256,8 @@ jobs:
       if: success() && env.UPLOAD_RELEASE == 'true' && !cancelled()
       run: |
         B2_PUBLIC_BASE_URL="${{ secrets.B2_PUBLIC_BASE_URL }}"
-        B2_PATH_PREFIX="${{ secrets.B2_PATH_PREFIX }}"
-        [ -z "$B2_PATH_PREFIX" ] && B2_PATH_PREFIX="op-dllkids-xyz-archive/dllkids.xyz"
         [ -z "$B2_PUBLIC_BASE_URL" ] && B2_PUBLIC_BASE_URL="https://down.dllkids.xyz"
-        if [ -n "$B2_PUBLIC_BASE_URL" ]; then
-          B2_LINK="${B2_PUBLIC_BASE_URL%/}/op/firmware/${{matrix.target}}/"
-        else
-          B2_LINK="https://f000.backblazeb2.com/file/${{ secrets.B2_BUCKET }}/${B2_PATH_PREFIX}/op/firmware/${{matrix.target}}/"
-        fi
+        B2_LINK="${B2_PUBLIC_BASE_URL%/}/op/firmware/${{matrix.target}}/"
         echo -e "墙内外加速下载 🎈:\n" >> release.txt
         echo -e "[Backblaze B2]($B2_LINK)\n" >> release.txt
         touch release.txt
