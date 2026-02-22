@@ -119,9 +119,13 @@ jobs:
         rm -rf feeds/smpackage/luci-theme-design && git clone -b js --single-branch https://github.com/kenzok78/luci-theme-design feeds/smpackage/luci-theme-design
         sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/Makefile
         sed -i "s/%D %V, %C/openwrt $(date +'%m.%d') by kenzo/g" package/base-files/files/etc/banner
-        [ -f config.toml ] && sed -i 's/download-ci-llvm\s*=\s*.*/download-ci-llvm = false/' config.toml || true
-        find feeds/packages/lang/rust -name "*.toml" 2>/dev/null | xargs -I{} sed -i 's/download-ci-llvm\s*=\s*.*/download-ci-llvm = false/' {} || true
         ./scripts/feeds update -a && ./scripts/feeds install -a
+        # Rust 1.90: download-ci-llvm=true rejected when CI=true (GitHub Actions sets CI=true)
+        # Must use false (build LLVM from source) since "if-unchanged" requires a git repo
+        # and OpenWrt extracts Rust from a tarball (not a git clone)
+        [ -f feeds/packages/lang/rust/Makefile ] && \
+          sed -i 's/--set=llvm\.download-ci-llvm=true/--set=llvm.download-ci-llvm=false/' \
+          feeds/packages/lang/rust/Makefile || true
         cp -f feeds/smpackage/.github/diy/${{matrix.target}}.config .config && make defconfig
 
     - name: Package hash compatibility hotfix
