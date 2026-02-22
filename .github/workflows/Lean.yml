@@ -112,7 +112,8 @@ jobs:
         rm -rf feeds/packages/lang/golang
         git clone https://github.com/kenzok8/golang -b 1.25 feeds/packages/lang/golang
         rm -rf feeds/luci/applications/luci-app-openclash
-        rm -rf feeds/smpackage/shadowsocks-libev
+        SS_LIBEV_FALLBACK_COMMIT="5eb432f1047fbab2fe0c6359d78ec64a0498626c"
+        git -C feeds/smpackage checkout "$SS_LIBEV_FALLBACK_COMMIT" -- shadowsocks-libev || true
         cp -f feeds/smpackage/.github/diy/default-settings package/lean/default-settings/files/zzz-default-settings
         cp -f feeds/smpackage/.github/diy/banner package/base-files/files/etc/banner
         #cp -f feeds/smpackage/.github/diy/index_x86.htm package/lean/autocore/files/x86/index.htm
