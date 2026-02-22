@@ -123,7 +123,7 @@ jobs:
         sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/Makefile
         sed -i "s/%D %V, %C/openwrt $(date +'%m.%d') by kenzo/g" package/base-files/files/etc/banner
         ./scripts/feeds update -a && ./scripts/feeds install -a
-        [ -f package/feeds/packages/rust/Makefile ] && sed -i -E 's/download-ci-llvm\s*=\s*"true"/download-ci-llvm = "if-unchanged"/g' package/feeds/packages/rust/Makefile || true
+        [ -f package/feeds/packages/rust/Makefile ] && sed -i 's/--set=llvm\.download-ci-llvm=true/--set=llvm.download-ci-llvm=if-unchanged/g' package/feeds/packages/rust/Makefile || true
         cp -f feeds/smpackage/.github/diy/${{matrix.target}}.config .config
         for cfg in \
           PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Libev_Client \
