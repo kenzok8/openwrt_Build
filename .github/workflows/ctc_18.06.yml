@@ -4,7 +4,7 @@
 # Author: kenzo
 #=================================================
 
-name: openwrt_18.06
+name: openwrt_25.12
 
 on:
   repository_dispatch:
@@ -37,7 +37,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [ctc_18.06]
+        target: [ctc_25.12]
     
     steps:
     - name: Checkout
