@@ -110,6 +110,7 @@ jobs:
         cd openwrt
         rm -rf feeds/packages/lang/golang
         git clone https://github.com/kenzok8/golang -b 1.25 feeds/packages/lang/golang
+        rm -rf feeds/smpackage/shadowsocks-libev
         rm -rf feeds/smpackage/{base-files,dnsmasq,firewall*,fullconenat,libnftnl,nftables,ppp,opkg,ucl,upx,vsftpd-alt,miniupnpd-iptables,wireless-regdb}
         rm -rf feeds/luci/themes/luci-theme-argon && rm -rf feeds/other/{luci-app-adguardhome,luci-app-dockerman}
         rm -rf feeds/lienol/luci-app-fileassistant && rm -rf feeds/packages/net/{adguardhome,smartdns}
