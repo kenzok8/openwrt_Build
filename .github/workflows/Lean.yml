@@ -123,6 +123,7 @@ jobs:
         ./scripts/feeds update -a 
         sed -i 's#GO_PKG_TARGET_VARS.*# #g' feeds/packages/utils/v2dat/Makefile 
         ./scripts/feeds install -a
+        [ -f package/feeds/packages/rust/Makefile ] && sed -i -E 's/download-ci-llvm\s*=\s*"true"/download-ci-llvm = "if-unchanged"/g' package/feeds/packages/rust/Makefile || true
         cp -f feeds/smpackage/.github/diy/${{matrix.target}}.config .config
         for cfg in \
           PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Libev_Client \
