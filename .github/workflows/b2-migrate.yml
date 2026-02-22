@@ -1,0 +1,47 @@
+name: B2 Migrate Files
+
+on:
+  workflow_dispatch:
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    env:
+      B2_KEY_ID: ${{ secrets.B2_KEY_ID }}
+      B2_APPLICATION_KEY: ${{ secrets.B2_APPLICATION_KEY }}
+      B2_BUCKET: ${{ secrets.B2_BUCKET }}
+
+    steps:
+      - name: Install rclone
+        run: curl -fsSL https://rclone.org/install.sh | sudo bash
+
+      - name: Configure rclone
+        run: |
+          mkdir -p ~/.config/rclone
+          cat > ~/.config/rclone/rclone.conf <<EOF
+          [b2]
+          type = b2
+          account = ${{ env.B2_KEY_ID }}
+          key = ${{ env.B2_APPLICATION_KEY }}
+          hard_delete = true
+          EOF
+
+      - name: Copy files to new path
+        run: |
+          rclone copy "b2:${{ env.B2_BUCKET }}/op-dllkids-xyz-archive/dllkids.xyz/" \
+                      "b2:${{ env.B2_BUCKET }}/" \
+                      --fast-list \
+                      --transfers 8 \
+                      --checkers 16 \
+                      --progress
+
+      - name: Verify new path
+        run: |
+          echo "=== New path contents ==="
+          rclone ls "b2:${{ env.B2_BUCKET }}/op/firmware/" --max-depth 2
+
+      - name: Delete old path after verification
+        run: |
+          rclone purge "b2:${{ env.B2_BUCKET }}/op-dllkids-xyz-archive/" \
+                       --fast-list
+          echo "Old path deleted successfully"
