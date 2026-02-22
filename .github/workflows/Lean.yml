@@ -113,6 +113,7 @@ jobs:
         git clone https://github.com/kenzok8/golang -b 1.25 feeds/packages/lang/golang
         rm -rf feeds/luci/applications/luci-app-openclash
         SS_LIBEV_FALLBACK_COMMIT="5eb432f1047fbab2fe0c6359d78ec64a0498626c"
+        git -C feeds/smpackage fetch --depth=1 origin "$SS_LIBEV_FALLBACK_COMMIT" || true
         git -C feeds/smpackage checkout "$SS_LIBEV_FALLBACK_COMMIT" -- shadowsocks-libev || true
         cp -f feeds/smpackage/.github/diy/default-settings package/lean/default-settings/files/zzz-default-settings
         cp -f feeds/smpackage/.github/diy/banner package/base-files/files/etc/banner
@@ -123,17 +124,20 @@ jobs:
         sed -i 's#GO_PKG_TARGET_VARS.*# #g' feeds/packages/utils/v2dat/Makefile 
         ./scripts/feeds install -a
         cp -f feeds/smpackage/.github/diy/${{matrix.target}}.config .config
-        ./scripts/config --file .config \
-          -d PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Libev_Client \
-          -d PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Libev_Server \
-          -d PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Rust_Client \
-          -d PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Rust_Server \
-          -d PACKAGE_shadowsocks-libev-ss-local \
-          -d PACKAGE_shadowsocks-libev-ss-redir \
-          -d PACKAGE_shadowsocks-libev-ss-rules \
-          -d PACKAGE_shadowsocks-libev-ss-server \
-          -d PACKAGE_shadowsocks-libev-ss-tunnel \
-          -d PACKAGE_rust
+        for cfg in \
+          PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Libev_Client \
+          PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Libev_Server \
+          PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Rust_Client \
+          PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Rust_Server \
+          PACKAGE_shadowsocks-libev-ss-local \
+          PACKAGE_shadowsocks-libev-ss-redir \
+          PACKAGE_shadowsocks-libev-ss-rules \
+          PACKAGE_shadowsocks-libev-ss-server \
+          PACKAGE_shadowsocks-libev-ss-tunnel \
+          PACKAGE_rust; do
+          sed -i "/^CONFIG_${cfg}=.*/d;/^# CONFIG_${cfg} is not set/d" .config
+          echo "# CONFIG_${cfg} is not set" >> .config
+        done
         make defconfig
         #sed -i 's/CONFIG_BINUTILS_VERSION="2.42"/CONFIG_BINUTILS_VERSION="2.43.1"/' .config
         
