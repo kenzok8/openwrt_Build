@@ -121,7 +121,19 @@ jobs:
         ./scripts/feeds update -a 
         sed -i 's#GO_PKG_TARGET_VARS.*# #g' feeds/packages/utils/v2dat/Makefile 
         ./scripts/feeds install -a
-        cp -f feeds/smpackage/.github/diy/${{matrix.target}}.config .config && make defconfig
+        cp -f feeds/smpackage/.github/diy/${{matrix.target}}.config .config
+        ./scripts/config --file .config \
+          -d PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Libev_Client \
+          -d PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Libev_Server \
+          -d PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Rust_Client \
+          -d PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Rust_Server \
+          -d PACKAGE_shadowsocks-libev-ss-local \
+          -d PACKAGE_shadowsocks-libev-ss-redir \
+          -d PACKAGE_shadowsocks-libev-ss-rules \
+          -d PACKAGE_shadowsocks-libev-ss-server \
+          -d PACKAGE_shadowsocks-libev-ss-tunnel \
+          -d PACKAGE_rust
+        make defconfig
         #sed -i 's/CONFIG_BINUTILS_VERSION="2.42"/CONFIG_BINUTILS_VERSION="2.43.1"/' .config
         
     - name: Download package

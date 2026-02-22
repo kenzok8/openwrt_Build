@@ -122,7 +122,19 @@ jobs:
         sed -i "s/%D %V, %C/openwrt $(date +'%m.%d') by kenzo/g" package/base-files/files/etc/banner
         [ -f config.toml ] && sed -i 's/download-ci-llvm.*true/download-ci-llvm = "if-unchanged"/' config.toml || true
         ./scripts/feeds update -a && ./scripts/feeds install -a
-        cp -f feeds/smpackage/.github/diy/${{matrix.target}}.config .config && make defconfig
+        cp -f feeds/smpackage/.github/diy/${{matrix.target}}.config .config
+        ./scripts/config --file .config \
+          -d PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Libev_Client \
+          -d PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Libev_Server \
+          -d PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Rust_Client \
+          -d PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Rust_Server \
+          -d PACKAGE_shadowsocks-libev-ss-local \
+          -d PACKAGE_shadowsocks-libev-ss-redir \
+          -d PACKAGE_shadowsocks-libev-ss-rules \
+          -d PACKAGE_shadowsocks-libev-ss-server \
+          -d PACKAGE_shadowsocks-libev-ss-tunnel \
+          -d PACKAGE_rust
+        make defconfig
         
     - name: Download package
       working-directory: ./openwrt
