@@ -5,7 +5,7 @@ on:
     workflows:
       - Lean
       - Lienol
-      - openwrt_18.06
+      - openwrt_25.12
       - openwrt_24.10
       - nanopi-r4s
       - nanopi-r5s
