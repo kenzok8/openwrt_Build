@@ -120,6 +120,7 @@ jobs:
         sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/Makefile
         sed -i "s/%D %V, %C/openwrt $(date +'%m.%d') by kenzo/g" package/base-files/files/etc/banner
         ./scripts/feeds update -a && ./scripts/feeds install -a
+        cp -f feeds/smpackage/.github/diy/10_system.js feeds/luci/modules/luci-mod-status/htdocs/luci-static/resources/view/status/include/10_system.js || true
         # Rust 1.90: download-ci-llvm=true rejected when CI=true (GitHub Actions sets CI=true)
         # Must use false (build LLVM from source) since "if-unchanged" requires a git repo
         # and OpenWrt extracts Rust from a tarball (not a git clone)
