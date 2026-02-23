@@ -125,6 +125,7 @@ jobs:
         cp -f feeds/smpackage/.github/diy/index_x86.htm package/emortal/autocore/files/generic/index.htm || true
         sed -i "s/%D %V, %C/openwrt $(date +'%m.%d') by kenzo/g" package/base-files/files/etc/banner
         ./scripts/feeds update -a && ./scripts/feeds install -a
+        cp -f feeds/smpackage/.github/diy/10_system.js feeds/luci/modules/luci-mod-status/htdocs/luci-static/resources/view/status/include/10_system.js || true
         cp -f feeds/smpackage/.github/diy/${{matrix.target}}.config .config && make defconfig
         
     - name: Package hash compatibility hotfix
