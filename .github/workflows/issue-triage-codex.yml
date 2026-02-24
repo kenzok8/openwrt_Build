@@ -1,0 +1,178 @@
+name: Issue Triage Codex
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run only (true/false)"
+        required: true
+        default: "true"
+      max_issues:
+        description: "Max issues to process"
+        required: true
+        default: "80"
+  schedule:
+    - cron: "20 */6 * * *"
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Fetch open issues
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT_TRIAGE }}
+        run: |
+          gh search issues \
+            --owner kenzok8 \
+            --state open \
+            --limit 1000 \
+            --json number,title,body,url,repository,createdAt,updatedAt,commentsCount,labels \
+            > /tmp/issues.json
+
+      - name: Triage with GPT-5.3-Codex
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT_TRIAGE }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          DRY_RUN: ${{ github.event.inputs.dry_run || 'true' }}
+          MAX_ISSUES: ${{ github.event.inputs.max_issues || '80' }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import subprocess
+          import time
+          from datetime import datetime, timezone
+          import requests
+
+          MODEL = "openai/gpt-5.3-codex"
+          API_URL = "https://api.openai.com/v1/responses"
+          DRY_RUN = os.getenv("DRY_RUN", "true").lower() == "true"
+          MAX_ISSUES = int(os.getenv("MAX_ISSUES", "80"))
+
+          with open('/tmp/issues.json', 'r', encoding='utf-8') as f:
+              issues = json.load(f)
+
+          issues = sorted(issues, key=lambda x: x.get('updatedAt', ''))
+          issues = issues[:MAX_ISSUES]
+
+          SYSTEM_PROMPT = (
+              "You triage GitHub issues for OpenWrt plugin repos. "
+              "Return strict JSON only, no markdown: "
+              "{\"action\":\"comment|close|skip\","
+              "\"labels\":[\"bug\"],"
+              "\"reason\":\"short reason\","
+              "\"comment\":\"final comment body\"}. "
+              "Rules: close only stale/duplicate/invalid with clear explanation. "
+              "For build failures request full logs from first error and build context."
+          )
+
+          def call_model(issue):
+              payload = {
+                  "model": MODEL,
+                  "input": [
+                      {"role": "system", "content": SYSTEM_PROMPT},
+                      {
+                          "role": "user",
+                          "content": json.dumps(
+                              {
+                                  "repo": issue["repository"]["nameWithOwner"],
+                                  "number": issue["number"],
+                                  "title": issue.get("title", ""),
+                                  "body": issue.get("body", "")[:7000],
+                                  "commentsCount": issue.get("commentsCount", 0),
+                                  "updatedAt": issue.get("updatedAt", ""),
+                                  "labels": [x.get("name", "") for x in issue.get("labels", [])],
+                              },
+                              ensure_ascii=False,
+                          ),
+                      },
+                  ],
+                  "temperature": 0.2,
+              }
+              r = requests.post(
+                  API_URL,
+                  headers={
+                      "Authorization": f"Bearer {os.environ['OPENAI_API_KEY']}",
+                      "Content-Type": "application/json",
+                  },
+                  json=payload,
+                  timeout=90,
+              )
+              r.raise_for_status()
+              data = r.json()
+              text = data["output"][0]["content"][0]["text"].strip()
+
+              if text.startswith("```"):
+                  text = text.strip("`")
+                  if text.startswith("json"):
+                      text = text[4:].strip()
+              return json.loads(text)
+
+          now = datetime.now(timezone.utc)
+          processed = 0
+          skipped = 0
+          failed = 0
+
+          for issue in issues:
+              repo = issue["repository"]["nameWithOwner"]
+              num = issue["number"]
+              age_days = (now - datetime.fromisoformat(issue["updatedAt"].replace("Z", "+00:00"))).days
+
+              try:
+                  plan = call_model(issue)
+              except Exception as e:
+                  print(f"[ERROR] {repo}#{num} model_call_failed: {e}")
+                  failed += 1
+                  continue
+
+              action = (plan.get("action") or "skip").lower().strip()
+              labels = [x for x in (plan.get("labels") or []) if isinstance(x, str) and x.strip()]
+              comment = (plan.get("comment") or "").strip()
+              reason = (plan.get("reason") or "").strip()
+
+              if action not in {"comment", "close", "skip"}:
+                  action = "skip"
+
+              if action == "close" and age_days < 30:
+                  action = "comment"
+                  reason = (reason + " | close_guard_lt_30d").strip(" |")
+
+              print(f"[PLAN] {repo}#{num} age={age_days} action={action} reason={reason}")
+
+              if DRY_RUN:
+                  processed += 1
+                  continue
+
+              try:
+                  if labels:
+                      subprocess.run(["gh", "issue", "edit", str(num), "--repo", repo, "--add-label", ",".join(labels)], check=False)
+
+                  if action in {"comment", "close"} and comment:
+                      subprocess.run(["gh", "issue", "comment", str(num), "--repo", repo, "--body", comment], check=True)
+
+                  if action == "close":
+                      subprocess.run(["gh", "issue", "close", str(num), "--repo", repo, "--comment", "Closed by Codex issue triage workflow."], check=True)
+
+                  processed += 1
+                  time.sleep(0.25)
+              except Exception as e:
+                  print(f"[ERROR] {repo}#{num} apply_failed: {e}")
+                  failed += 1
+
+          print(f"done processed={processed} skipped={skipped} failed={failed} dry_run={DRY_RUN}")
+          PY
