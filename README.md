@@ -24,7 +24,7 @@
 <img src="https://v1.jinrishici.com/all.svg?font-size=24&spacing=3">
 
 
-##### [openwrt固件与插件下载](https://op.dllkids.xyz/op/firmware/)
+##### [openwrt固件与插件下载](https://down.dllkids.xyz/firmware/)
 
 ##### [docker镜像下载](https://hub.docker.com/r/kenzok8/openwrt-6p/tags)
 
@@ -42,12 +42,12 @@
 
 ##### 固件下载链接
 
-- [Lienol_25.12固件地址](https://op.dllkids.xyz/op/firmware/Lienol/)
-- [Lean固件地址](https://op.dllkids.xyz/op/firmware/Lean/)
-- [immortalwrt-25.12固件](https://op.dllkids.xyz/op/firmware/ctc_25.12/)
-- [immortalwrt-24.10固件](https://op.dllkids.xyz/op/firmware/ctc_24.10/)
-- [nanopi-r5s固件下载](https://op.dllkids.xyz/op/firmware/nanopi-r5s/)
-- [nanopi-r6s固件下载](https://op.dllkids.xyz/op/firmware/nanopi-r6s/)
+- [Lienol_25.12固件地址](https://down.dllkids.xyz/firmware/Lienol/)
+- [Lean固件地址](https://down.dllkids.xyz/firmware/Lean/)
+- [immortalwrt-25.12固件](https://down.dllkids.xyz/firmware/ctc_25.12/)
+- [immortalwrt-24.10固件](https://down.dllkids.xyz/firmware/ctc_24.10/)
+- [nanopi-r5s固件下载](https://down.dllkids.xyz/firmware/nanopi-r5s/)
+- [nanopi-r6s固件下载](https://down.dllkids.xyz/firmware/nanopi-r6s/)
 
 ### 默认插件包含:
 
