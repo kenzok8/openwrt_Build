@@ -176,28 +176,32 @@ jobs:
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
         
-    - name: Upload firmware to Backblaze B2
+    - name: Upload firmware to Cloudflare R2
       env:
-        B2_ACCOUNT_ID: ${{ secrets.B2_ACCOUNT_ID }}
-        B2_KEY_ID: ${{ secrets.B2_KEY_ID }}
-        B2_APPLICATION_KEY: ${{ secrets.B2_APPLICATION_KEY }}
+        R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+        R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+        R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+        R2_BUCKET: ${{ secrets.R2_BUCKET }}
       if: steps.organize.outputs.status == 'success' && !cancelled()
       run: |
         curl -fsSL https://rclone.org/install.sh | sudo bash
         mkdir -p ~/.config/rclone
-        B2_ID="${B2_ACCOUNT_ID:-$B2_KEY_ID}"
-        if [ -z "$B2_ID" ] || [ -z "$B2_APPLICATION_KEY" ]; then
-          echo "Missing Backblaze B2 credentials"
+        R2_ID="${R2_ACCESS_KEY_ID}"
+        if [ -z "$R2_ID" ] || [ -z "$R2_SECRET_ACCESS_KEY" ] || [ -z "$R2_BUCKET" ] || [ -z "$R2_ENDPOINT" ]; then
+          echo "Missing Cloudflare R2 credentials"
           exit 1
         fi
         cat > ~/.config/rclone/rclone.conf <<EOF
-        [b2]
-        type = b2
-        account = ${B2_ID}
-        key = ${B2_APPLICATION_KEY}
-        hard_delete = true
+        [r2]
+        type = s3
+        provider = Cloudflare
+        access_key_id = ${R2_ID}
+        secret_access_key = ${R2_SECRET_ACCESS_KEY}
+        endpoint = ${R2_ENDPOINT}
+        acl = private
+        no_check_bucket = true
         EOF
-        rclone copy "${{ env.FIRMWARE }}" "b2:${{ secrets.B2_BUCKET }}/firmware/${{matrix.target}}/" \
+        rclone copy "${{ env.FIRMWARE }}" "r2:${R2_BUCKET}/firmware/${{matrix.target}}/" \
           --fast-list \
           --transfers 8 \
           --checkers 16 \
@@ -239,11 +243,11 @@ jobs:
       id: tag
       if: success() && env.UPLOAD_RELEASE == 'true' && !cancelled()
       run: |
-        B2_PUBLIC_BASE_URL="${{ secrets.B2_PUBLIC_BASE_URL }}"
-        [ -z "$B2_PUBLIC_BASE_URL" ] && B2_PUBLIC_BASE_URL="https://down.dllkids.xyz"
-        B2_LINK="${B2_PUBLIC_BASE_URL%/}/firmware/${{matrix.target}}/"
+        R2_PUBLIC_BASE_URL="${{ secrets.R2_PUBLIC_BASE_URL }}"
+        [ -z "$R2_PUBLIC_BASE_URL" ] && R2_PUBLIC_BASE_URL="https://down.dllkids.xyz"
+        R2_LINK="${R2_PUBLIC_BASE_URL%/}/firmware/${{matrix.target}}/"
         echo -e "墙内外加速下载 🎈:\n" >> release.txt
-        echo -e "[Backblaze B2]($B2_LINK)\n" >> release.txt
+        echo -e "[Cloudflare R2]($R2_LINK)\n" >> release.txt
         touch release.txt
         [ $UPLOAD_COWTRANSFER = true ] && echo "🔗 [Cowtransfer](${{ steps.cowtransfer.outputs.url }})" >> release.txt
         [ $UPLOAD_WETRANSFER = true ] && echo "🔗 [WeTransfer](${{ steps.wetransfer.outputs.url }})" >> release.txt
