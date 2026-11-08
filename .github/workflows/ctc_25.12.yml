@@ -55,7 +55,7 @@ jobs:
         swap-storage: true
 
     - name: Set up Python 3.8
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v7
       with:
         python-version: 3.8
 
